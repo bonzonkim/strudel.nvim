@@ -21,7 +21,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
 | **Sound Synthesis** | ✅ | Full Strudel audio engine support via browser. |
 | **Code Evaluation** | ✅ | Eval line, selection, or entire file (`:StrudelEvalFile`). |
 | **Bridge Management** | ✅ | Start/Stop the audio engine directly from Neovim (`:StrudelStart`). |
-| **Visuals ** | 🚧 | Toggle the browser window to see scopes, piano rolls, etc. (`:StrudelShow`). |
+| **Visuals** | 🚧 | Toggle the browser window to see scopes, piano rolls, etc. (`:StrudelShow`). |
 | **Autocomplete** | 🚧 | Basic dictionary-based completion for Strudel functions. |
 | **Syntax Highlighting** | 🚧 | Uses standard JavaScript syntax highlighting. |
 
