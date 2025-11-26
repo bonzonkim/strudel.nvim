@@ -1,0 +1,9 @@
+{
+    "name": "strudel-nvim-bridge",
+    "version": "1.0.0",
+    "description": "Headless Strudel bridge for Neovim",
+    "main": "headless-bridge.js",
+    "dependencies": {
+        "puppeteer": "^23.0.0"
+    }
+}
