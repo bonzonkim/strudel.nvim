@@ -22,7 +22,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
 | **Code Evaluation** | ✅ | Eval line, selection, or entire file (`:StrudelEvalFile`). |
 | **Bridge Management** | ✅ | Start/Stop the audio engine directly from Neovim (`:StrudelStart`). |
 | **Visuals** | 🚧 | Toggle the browser window to see scopes, piano rolls, etc. (`:StrudelShow`). |
-| **Autocomplete** | 🚧 | Basic dictionary-based completion for Strudel functions. |
+| **Autocomplete** | ✅ | Native `nvim-cmp` source + Dictionary support. |
 | **Syntax Highlighting** | 🚧 | Uses standard JavaScript syntax highlighting. |
 
 ## Installation
@@ -53,6 +53,29 @@ use {
     require("strudel").setup()
   end
 }
+```
+
+### nvim-cmp Setup
+
+The plugin attempts to automatically register the `strudel` completion source.
+Add it to your `nvim-cmp` configuration:
+
+```lua
+local cmp = require("cmp")
+cmp.setup({
+  sources = {
+    { name = "strudel" },
+    -- other sources...
+  }
+})
+```
+
+**Troubleshooting:**
+If autocompletion doesn't work (e.g., due to lazy loading order), you can manually register the source in your config:
+
+```lua
+-- After cmp setup
+require("cmp").register_source("strudel", require("strudel.cmp").new())
 ```
 
 ## Usage

@@ -1,0 +1,370 @@
+{
+  "cat": {
+    "description": "The given items are concatenated, where each one takes one cycle.",
+    "params": [
+      "items (any): The items to concatenate"
+    ]
+  },
+  "seq": {
+    "description": "Like cat, but the items are crammed into one cycle.",
+    "params": []
+  },
+  "stack": {
+    "description": "The given items are played at the same time at the same length.",
+    "params": []
+  },
+  "stepcat": {
+    "description": "'Concatenates' patterns like fastcat, but proportional to a number of steps per cycle.",
+    "params": []
+  },
+  "arrange": {
+    "description": "Allows to arrange multiple patterns together over multiple cycles.",
+    "params": []
+  },
+  "polymeter": {
+    "description": "Aligns the steps of the patterns, creating polymeters.",
+    "params": []
+  },
+  "silence": {
+    "description": "Does absolutely nothing..",
+    "params": []
+  },
+  "run": {
+    "description": "A discrete pattern of numbers from 0 to n-1",
+    "params": []
+  },
+  "binary": {
+    "description": "Creates a pattern from a binary number.",
+    "params": [
+      "n (number): input number to convert to binary"
+    ]
+  },
+  "binaryn": {
+    "description": "Creates a pattern from a binary number, padded to n bits long.",
+    "params": [
+      "n (number): input number to convert to binary",
+      "nBits (number): pattern length, defaults to 16"
+    ]
+  },
+  "slow": {
+    "description": "Slow down a pattern over the given number of cycles.",
+    "params": [
+      "factor (number|Pattern): slow down factor"
+    ]
+  },
+  "fast": {
+    "description": "Speed up a pattern by the given factor.",
+    "params": [
+      "factor (number|Pattern): speed up factor"
+    ]
+  },
+  "early": {
+    "description": "Nudge a pattern to start earlier in time.",
+    "params": [
+      "cycles (number|Pattern): number of cycles to nudge left"
+    ]
+  },
+  "late": {
+    "description": "Nudge a pattern to start later in time.",
+    "params": [
+      "cycles (number|Pattern): number of cycles to nudge right"
+    ]
+  },
+  "cliplegatoclip": {
+    "description": "Multiplies the duration with the given number. Also cuts samples off at the end if they exceed the duration.",
+    "params": [
+      "factor (number|Pattern): duration multiplier"
+    ]
+  },
+  "euclid": {
+    "description": "Changes the structure of the pattern to form an Euclidean rhythm.",
+    "params": [
+      "pulses (number): the number of onsets/beats",
+      "steps (number): the number of steps to fill"
+    ]
+  },
+  "euclidrot": {
+    "description": "Like euclid, but has an additional parameter for 'rotating' the resulting sequence.",
+    "params": [
+      "pulses (number): the number of onsets/beats",
+      "steps (number): the number of steps to fill",
+      "rotation (number): offset in steps"
+    ]
+  },
+  "euclidlegato": {
+    "description": "Similar to euclid, but each pulse is held until the next pulse, so there will be no gaps.",
+    "params": []
+  },
+  "rev": {
+    "description": "Reverse all haps in a pattern",
+    "params": []
+  },
+  "palindrome": {
+    "description": "Applies rev to a pattern every other cycle.",
+    "params": []
+  },
+  "iter": {
+    "description": "Divides a pattern into a given number of subdivisions, plays the subdivisions in order, but increments the starting subdivision each cycle.",
+    "params": []
+  },
+  "iterback": {
+    "description": "Like iter, but plays the subdivisions in reverse order.",
+    "params": []
+  },
+  "ply": {
+    "description": "The ply function repeats each event the given number of times.",
+    "params": []
+  },
+  "segment": {
+    "description": "Samples the pattern at a rate of n events per cycle.",
+    "params": [
+      "segments (number): number of segments per cycle"
+    ]
+  },
+  "compress": {
+    "description": "Compress each cycle into the given timespan, leaving a gap",
+    "params": []
+  },
+  "zoom": {
+    "description": "Plays a portion of a pattern, specified by the beginning and end of a time span.",
+    "params": []
+  },
+  "linger": {
+    "description": "Selects the given fraction of the pattern and repeats that part to fill the remainder of the cycle.",
+    "params": [
+      "fraction (number): fraction to select"
+    ]
+  },
+  "fastgap": {
+    "description": "speeds up a pattern like fast, but rather than it playing multiple times as fast would it instead leaves a gap.",
+    "params": []
+  },
+  "inside": {
+    "description": "Carries out an operation 'inside' a cycle.",
+    "params": []
+  },
+  "outside": {
+    "description": "Carries out an operation 'outside' a cycle.",
+    "params": []
+  },
+  "cpm": {
+    "description": "Plays the pattern at the given cycles per minute.",
+    "params": []
+  },
+  "ribbon": {
+    "description": "Loops the pattern inside an offset for cycles.",
+    "params": [
+      "offset (number): start point of loop in cycles",
+      "cycles (number): loop length in cycles"
+    ]
+  },
+  "swingby": {
+    "description": "Delays events in the second half of each slice by the amount x.",
+    "params": [
+      "subdivision (number): slice size",
+      "offset (number): delay amount"
+    ]
+  },
+  "swing": {
+    "description": "Shorthand for swingBy with 1/3.",
+    "params": []
+  },
+  "add": {
+    "description": "Adds the given number to each item in the pattern.",
+    "params": []
+  },
+  "sub": {
+    "description": "Like add, but the given numbers are subtracted.",
+    "params": []
+  },
+  "mul": {
+    "description": "Multiplies each number by the given factor.",
+    "params": []
+  },
+  "div": {
+    "description": "Divides each number by the given factor.",
+    "params": []
+  },
+  "round": {
+    "description": "Returns a new pattern with all values rounded to the nearest integer.",
+    "params": []
+  },
+  "floor": {
+    "description": "Returns a new pattern with all values set to their mathematical floor.",
+    "params": []
+  },
+  "ceil": {
+    "description": "Returns a new pattern with all values set to their mathematical ceiling.",
+    "params": []
+  },
+  "range": {
+    "description": "Returns a new pattern with values scaled to the given min/max range (from 0..1).",
+    "params": []
+  },
+  "rangex": {
+    "description": "Returns a new pattern with values scaled to the given min/max range, following an exponential curve.",
+    "params": []
+  },
+  "range2": {
+    "description": "Returns a new pattern with values scaled to the given min/max range (from -1..1).",
+    "params": []
+  },
+  "ratio": {
+    "description": "Allows dividing numbers via list notation using \":\".",
+    "params": []
+  },
+  "as": {
+    "description": "Sets properties in a batch.",
+    "params": [
+      "mapping (String|Array): the control names that are set"
+    ]
+  },
+  "begin": {
+    "description": "Skips the beginning of each sample.",
+    "params": [
+      "amount (number|Pattern): between 0 and 1"
+    ]
+  },
+  "end": {
+    "description": "Cuts off the end off each sample.",
+    "params": [
+      "length (number|Pattern): 1 = whole sample"
+    ]
+  },
+  "loop": {
+    "description": "Loops the sample.",
+    "params": [
+      "on (number|Pattern): If 1, the sample is looped"
+    ]
+  },
+  "loopbegin": {
+    "description": "Begin to loop at a specific point in the sample.",
+    "params": [
+      "time (number|Pattern): between 0 and 1"
+    ]
+  },
+  "loopend": {
+    "description": "End the looping section at a specific point in the sample.",
+    "params": [
+      "time (number|Pattern): between 0 and 1"
+    ]
+  },
+  "cut": {
+    "description": "Cut will stop a playing sample as soon as another samples with in same cutgroup is to be played.",
+    "params": [
+      "group (number|Pattern): cut group number"
+    ]
+  },
+  "loopat": {
+    "description": "Makes the sample fit the given number of cycles by changing the speed.",
+    "params": []
+  },
+  "fit": {
+    "description": "Makes the sample fit its event duration.",
+    "params": []
+  },
+  "chop": {
+    "description": "Cuts each sample into the given number of parts.",
+    "params": []
+  },
+  "striate": {
+    "description": "Cuts each sample into the given number of parts, triggering progressive portions.",
+    "params": []
+  },
+  "slice": {
+    "description": "Chops samples into the given number of slices, triggering those slices with a given pattern.",
+    "params": []
+  },
+  "splice": {
+    "description": "Works the same as slice, but changes the playback speed of each slice.",
+    "params": []
+  },
+  "scrub": {
+    "description": "Allows you to scrub an audio file like a tape loop.",
+    "params": []
+  },
+  "speed": {
+    "description": "Changes the speed of sample playback.",
+    "params": [
+      "speed (number|Pattern): playback speed"
+    ]
+  },
+  "basicwaveforms": {
+    "description": "s, sound Selects the sound/synth to use.",
+    "params": [
+      "sound (string): sine, sawtooth, square, triangle, or sample name"
+    ]
+  },
+  "noise": {
+    "description": "noise Adds noise to the sound.",
+    "params": [
+      "amount (number): noise amount"
+    ]
+  },
+  "vib": {
+    "description": "vibrato, v, vib Applies a vibrato to the frequency of the oscillator.",
+    "params": [
+      "frequency (number|Pattern): of the vibrato in hertz"
+    ]
+  },
+  "vibmod": {
+    "description": "vmod Sets the vibrato depth in semitones.",
+    "params": [
+      "depth (number|Pattern): of vibrato (in semitones)"
+    ]
+  },
+  "fm": {
+    "description": "fmi Sets the Frequency Modulation of the synth.",
+    "params": [
+      "brightness (number|Pattern): modulation index"
+    ]
+  },
+  "fmh": {
+    "description": "Sets the Frequency Modulation Harmonicity Ratio.",
+    "params": [
+      "harmonicity (number|Pattern): ratio"
+    ]
+  },
+  "fmattack": {
+    "description": "Attack time for the FM envelope.",
+    "params": [
+      "time (number|Pattern): attack time"
+    ]
+  },
+  "fmdecay": {
+    "description": "Decay time for the FM envelope.",
+    "params": [
+      "time (number|Pattern): decay time"
+    ]
+  },
+  "fmsustain": {
+    "description": "Sustain level for the FM envelope.",
+    "params": [
+      "level (number|Pattern): sustain level"
+    ]
+  },
+  "fmenv": {
+    "description": "Ramp type of fm envelope.",
+    "params": [
+      "type (number|Pattern): lin | exp"
+    ]
+  },
+  "note": {
+    "description": "note Sets the note to play.",
+    "params": [
+      "note (string|number): note name or midi number"
+    ]
+  },
+  "gain": {
+    "description": "gain Sets the volume of the sound.",
+    "params": [
+      "amount (number): volume (0..1 usually)"
+    ]
+  },
+  "cutoff": {
+    "description": "cutoff Sets the filter cutoff frequency.",
+    "params": [
+      "frequency (number): cutoff in Hz"
+    ]
+  }
+}

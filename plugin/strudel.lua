@@ -52,3 +52,34 @@ vim.keymap.set("n", "<leader>sS", function() strudel.start_bridge() end, { desc 
 vim.keymap.set("n", "<leader>sq", function() strudel.stop_bridge() end, { desc = "Strudel Stop Bridge" })
 vim.keymap.set("n", "<leader>sv", function() strudel.show_window() end, { desc = "Strudel Show Window" })
 vim.keymap.set("n", "<leader>sh", function() strudel.hide_window() end, { desc = "Strudel Hide Window" })
+
+vim.api.nvim_create_user_command("StrudelDebug", function()
+  local status, cmp = pcall(require, "cmp")
+  print("--- Strudel Debug Info ---")
+  print("nvim-cmp loaded: " .. tostring(status))
+  
+  local strudel_mod = require("strudel")
+  print("Strudel module loaded: true")
+  print("Strudel setup called: " .. tostring(strudel_mod.is_setup or false))
+  
+  -- Check dictionary path resolution
+  local info = debug.getinfo(require("strudel.cmp").new().complete, "S")
+  local source_path = info.source:sub(2)
+  print("cmp.lua path: " .. source_path)
+  
+  local plugin_dir = vim.fn.fnamemodify(source_path, ":h:h:h")
+  print("Resolved plugin_dir: " .. plugin_dir)
+  
+  local dict_path = plugin_dir .. "/dict/strudel.dict"
+  print("Resolved dict_path: " .. dict_path)
+  
+  local f = io.open(dict_path, "r")
+  if f then
+    print("Dictionary file exists: YES")
+    f:close()
+  else
+    print("Dictionary file exists: NO")
+  end
+  
+  print("--------------------------")
+end, {})

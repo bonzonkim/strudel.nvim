@@ -7,9 +7,10 @@ M.config = {
 }
 
 function M.setup(opts)
+  M.is_setup = true
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
   
-  -- Setup dictionary for autocomplete
+  -- Setup dictionary for autocomplete (if setup is called)
   local plugin_dir = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":h:h:h")
   local dict_path = plugin_dir .. "/dict/strudel.dict"
   
@@ -22,6 +23,33 @@ function M.setup(opts)
     end,
   })
 end
+
+-- Auto-register nvim-cmp source (Top-level execution)
+local function register_cmp()
+  local has_cmp, cmp = pcall(require, "cmp")
+  if has_cmp then
+    cmp.register_source("strudel", require("strudel.cmp").new())
+    vim.notify("Strudel: Registered nvim-cmp source", vim.log.levels.INFO)
+    return true
+  end
+  return false
+end
+
+vim.schedule(function()
+  if not register_cmp() then
+    -- If cmp is not loaded yet, try again on InsertEnter (common for lazy loading)
+    vim.api.nvim_create_autocmd("InsertEnter", {
+      once = true,
+      callback = function()
+        if register_cmp() then
+           -- Success
+        else
+           vim.notify("Strudel: nvim-cmp not found even after InsertEnter. Please configure manually.", vim.log.levels.WARN)
+        end
+      end
+    })
+  end
+end)
 
 function M.eval(code)
   if not code or code == "" then return end
