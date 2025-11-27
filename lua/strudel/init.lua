@@ -29,7 +29,7 @@ local function register_cmp()
   local has_cmp, cmp = pcall(require, "cmp")
   if has_cmp then
     cmp.register_source("strudel", require("strudel.cmp").new())
-    vim.notify("Strudel: Registered nvim-cmp source", vim.log.levels.INFO)
+    --vim.notify("Strudel: Registered nvim-cmp source", vim.log.levels.INFO)
     return true
   end
   return false
