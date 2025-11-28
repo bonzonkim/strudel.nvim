@@ -8,16 +8,17 @@ const UDP_PORT = 9129;
 
     // Launch Chrome with autoplay allowed
     const browser = await puppeteer.launch({
-        headless: false, // Must be false for audio
+        headless: 'new', // Launch headless
+        ignoreDefaultArgs: ['--mute-audio'],
         args: [
             '--autoplay-policy=no-user-gesture-required',
             '--use-fake-ui-for-media-stream',
-            '--window-size=1,1', // Make window tiny
-            '--window-position=0,0', // Keep it in corner
+            '--window-size=1920,1080', // To ensure sufficient viewport
         ]
     });
 
     const page = await browser.newPage();
+    await page.setViewport({ width: 800, height: 600 })
 
     // Log console messages (only errors)
     page.on('console', msg => {
@@ -146,7 +147,9 @@ const UDP_PORT = 9129;
 
     // Simulate a click to unlock audio context
     try {
-        await page.click('body');
+        await page.evaluate(() => {
+          document.body.click();
+        })
     } catch (e) { }
 
 })();
