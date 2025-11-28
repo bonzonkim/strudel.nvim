@@ -1,2 +1,2 @@
 run:
-	nvim -c "set rtp+=$(PWD)"
+	nvim -c "set rtp+=$(PWD)" -c "source plugin/strudel.lua"
