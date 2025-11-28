@@ -2,6 +2,14 @@
 
 A Neovim plugin for live coding with [Strudel](https://strudel.cc/), bringing the TidalCycles experience to your favorite editor.
 
+## Demo
+
+
+https://github.com/user-attachments/assets/86431c80-c05c-4d93-833d-c56ed92e7e2f
+
+code source: (switch angel) https://www.youtube.com/shorts/AJ7atBkisOU 
+
+
 ## How it Works
 
 This plugin enables a seamless "Neovim-only" live coding experience by bridging Neovim with a browser.
