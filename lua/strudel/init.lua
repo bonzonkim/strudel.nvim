@@ -1,4 +1,5 @@
 local osc = require("strudel.osc")
+local visuals = require("strudel.visuals")
 local M = {}
 
 M.config = {
@@ -58,7 +59,10 @@ function M.eval(code)
 end
 
 function M.eval_line()
+  local line_num = vim.api.nvim_win_get_cursor(0)[1]
   local line = vim.api.nvim_get_current_line()
+  visuals.flash_line(line_num)
+  visuals.set_eval_line(line_num)  -- Track for inline beat visuals
   M.eval(line)
 end
 
@@ -77,6 +81,8 @@ function M.eval_visual()
 
   local lines = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
   local code = table.concat(lines, "\n")
+  visuals.flash_range(start_row + 1, end_row + 1)
+  visuals.set_eval_line(start_row + 1)  -- Track first line for inline beat visuals
   M.eval(code)
 end
 
@@ -134,6 +140,11 @@ function M.start_bridge()
   
   if M.bridge_job_id > 0 then
     vim.notify("Strudel Bridge started!", vim.log.levels.INFO)
+    -- Start beat listener automatically
+    local has_listener, listener = pcall(require, "strudel.listener")
+    if has_listener then
+      listener.start()
+    end
   else
     vim.notify("Failed to start Strudel Bridge.", vim.log.levels.ERROR)
     M.bridge_job_id = nil

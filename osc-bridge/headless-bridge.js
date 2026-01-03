@@ -148,8 +148,81 @@ const UDP_PORT = 9129;
     // Simulate a click to unlock audio context
     try {
         await page.evaluate(() => {
-          document.body.click();
+            document.body.click();
         })
     } catch (e) { }
+
+    // === BEAT EVENT STREAMING TO NEOVIM ===
+    const NVIM_PORT = 9130;
+    let lastBeat = -1;
+    let isPlaying = false;
+
+    // Poll for beat events and send to Neovim
+    setInterval(async () => {
+        try {
+            const beatData = await page.evaluate(() => {
+                const s = window.strudelMirror?.repl?.scheduler;
+                if (!s || !s.pattern) return null;
+
+                const time = s.getTime();
+                const cps = s.cps || 1;
+                const beat = Math.floor(time * 4) % 4; // 4 beats per cycle
+                const cycle = Math.floor(time);
+                const cyclePos = time % 1;
+
+                // Query events happening now
+                const events = s.pattern.queryArc(time, time + 0.05);
+                const activeNotes = events.map(e => {
+                    const val = e.value;
+                    return {
+                        note: val.note || val.n || '',
+                        sound: val.sound || val.s || '',
+                    };
+                });
+
+                return {
+                    time,
+                    beat,
+                    cycle,
+                    cyclePos,
+                    cps,
+                    activeNotes,
+                    playing: s.started || false
+                };
+            });
+
+            if (beatData && beatData.playing) {
+                if (!isPlaying) {
+                    isPlaying = true;
+                    console.log('Beat sync started');
+                }
+
+                // Send beat data to Neovim
+                const msg = Buffer.from(JSON.stringify({
+                    type: 'beat',
+                    ...beatData
+                }));
+                udp.send(msg, 0, msg.length, NVIM_PORT, '127.0.0.1');
+
+                // Log beat changes
+                if (beatData.beat !== lastBeat) {
+                    lastBeat = beatData.beat;
+                    // console.log(`Beat ${beatData.beat + 1}/4 | Cycle ${beatData.cycle}`);
+                }
+            } else if (isPlaying && beatData && !beatData.playing) {
+                isPlaying = false;
+                lastBeat = -1;
+                console.log('Beat sync stopped');
+
+                // Notify Neovim that playback stopped
+                const msg = Buffer.from(JSON.stringify({ type: 'stop' }));
+                udp.send(msg, 0, msg.length, NVIM_PORT, '127.0.0.1');
+            }
+        } catch (e) {
+            // Ignore errors during beat polling
+        }
+    }, 50); // Poll every 50ms for smooth updates
+
+    console.log('Beat sync enabled (UDP 9130)');
 
 })();

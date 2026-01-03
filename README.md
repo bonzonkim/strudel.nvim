@@ -29,7 +29,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
 | **Sound Synthesis** | ✅ | Full Strudel audio engine support via browser. |
 | **Code Evaluation** | ✅ | Eval line, selection, or entire file (`:StrudelEvalFile`). |
 | **Bridge Management** | ✅ | Start/Stop the audio engine directly from Neovim (`:StrudelStart`). |
-| **Visuals** | 🚧 | Toggle the browser window to see scopes, piano rolls, etc. (`:StrudelShow`). |
+| **Visual Feedback** | ✅ | Flash effects on eval, ASCII visualizer window (`:StrudelVisuals`). |
 | **Autocomplete** | ✅ | Native `nvim-cmp` source + Dictionary support. |
 | **Syntax Highlighting** | 🚧 | Uses standard JavaScript syntax highlighting. |
 
@@ -102,9 +102,10 @@ require("cmp").register_source("strudel", require("strudel.cmp").new())
     *   Command: `:StrudelStop`
     *   Keybinding: `<leader>ss`
 
-4.  **Visuals**:
-    *   **Graphical**: `<leader>sv` (Show Window), `<leader>sh` (Hide Window)
-    *   **Text**: Add `.log()` to your pattern (e.g., `s("bd").log().play()`) to see events in Neovim.
+4.  **Visual Feedback**:
+    *   **Flash Effect**: Code lines flash gold when evaluated (automatic)
+    *   **ASCII Visualizer**: `<leader>sv` or `:StrudelVisuals` (toggle animated waveform display)
+    *   **Browser Visuals**: `:StrudelShow` / `:StrudelHide` for scopes and piano rolls
 
 ## Keybindings
 
@@ -115,5 +116,27 @@ require("cmp").register_source("strudel", require("strudel.cmp").new())
 | `<leader>sf` | Evaluate File |
 | `<leader>se` | Evaluate Line / Selection |
 | `<leader>ss` | Stop Sound (Hush) |
-| `<leader>sv` | Show Browser Window |
+| `<leader>sv` | Toggle ASCII Visualizer |
 | `<leader>sh` | Hide Browser Window |
+
+## Visual Feedback
+
+The plugin provides native visual feedback in Neovim:
+
+### Flash Effect
+When you evaluate code (`<leader>se`), the line or selection flashes with a gold highlight that fades out smoothly. This gives immediate visual confirmation that code was sent to Strudel.
+
+### ASCII Visualizer
+Toggle an animated ASCII waveform display with `:StrudelVisuals`:
+
+```
+  ╭─────────────────────────────────────────────────────╮
+  │  ♪ STRUDEL VISUALIZER                               │
+  ├─────────────────────────────────────────────────────┤
+  │  Waveform:                                          │
+  │  ▁▂▃▄▅▆▇█▇▆▅▄▃▂▁▂▃▄▅▆▇█▇▆▅▄▃▂▁▂▃▄▅▆▇█              │
+  │  Beat Pattern:                                      │
+  │  █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░       │
+  ╰─────────────────────────────────────────────────────╯
+```
+
