@@ -57,7 +57,17 @@ function M.eval(code)
   osc.send(M.config.host, M.config.port, "/eval", { code })
 end
 
+local function visual()
+  -- Lazy load to avoid hard dep at file scope
+  return require("strudel.visual")
+end
+
 function M.eval_line()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local row = vim.api.nvim_win_get_cursor(0)[1] - 1  -- 0-indexed
+  local offset = vim.api.nvim_buf_get_offset(bufnr, row)
+  visual().set_last_eval(bufnr, offset)
+
   local line = vim.api.nvim_get_current_line()
   M.eval(line)
 end
@@ -66,14 +76,18 @@ function M.eval_visual()
   -- Get visual selection
   local _, start_row, start_col, _ = unpack(vim.fn.getpos("'<"))
   local _, end_row, end_col, _ = unpack(vim.fn.getpos("'>"))
-  
+
   -- Adjust for 0-based indexing in API
   start_row = start_row - 1
   start_col = start_col - 1
   end_row = end_row - 1
-  
+
   -- Handle end_col being 2147483647 (max int) when selecting whole line
   if end_col > 2147483647 then end_col = 2147483647 end
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  local offset = vim.api.nvim_buf_get_offset(bufnr, start_row) + start_col
+  visual().set_last_eval(bufnr, offset)
 
   local lines = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
   local code = table.concat(lines, "\n")
@@ -81,6 +95,9 @@ function M.eval_visual()
 end
 
 function M.eval_file()
+  local bufnr = vim.api.nvim_get_current_buf()
+  visual().set_last_eval(bufnr, 0)
+
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local code = table.concat(lines, "\n")
   M.eval(code)
