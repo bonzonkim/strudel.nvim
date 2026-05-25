@@ -9,11 +9,14 @@ M.config = {
 function M.setup(opts)
   M.is_setup = true
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-  
+
+  -- Forward visual_effects opts to the visual module
+  require("strudel.visual").setup((opts or {}).visual_effects)
+
   -- Setup dictionary for autocomplete (if setup is called)
   local plugin_dir = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":h:h:h")
   local dict_path = plugin_dir .. "/dict/strudel.dict"
-  
+
   -- Add autocmd to set dictionary for javascript files (or specific filetype)
   vim.api.nvim_create_autocmd("FileType", {
     pattern = {"javascript", "javascriptreact"},
@@ -130,9 +133,16 @@ function M.start_bridge()
 
   M.bridge_job_id = vim.fn.jobstart({"node", script_path}, {
     on_stdout = function(_, data)
-      if data then
-        for _, line in ipairs(data) do
-          if line ~= "" then print("[Strudel] " .. line) end
+      if not data then return end
+      local prefix = "__STRUDEL_EVENT__"
+      local prefix_len = #prefix
+      for _, line in ipairs(data) do
+        if line ~= "" then
+          if line:sub(1, prefix_len) == prefix then
+            require("strudel.visual").handle_event(line:sub(prefix_len + 1))
+          else
+            print("[Strudel] " .. line)
+          end
         end
       end
     end,
@@ -145,6 +155,7 @@ function M.start_bridge()
     end,
     on_exit = function()
       M.bridge_job_id = nil
+      require("strudel.visual").clear_all()
       print("[Strudel] Bridge stopped.")
     end,
   })
@@ -161,6 +172,7 @@ function M.stop_bridge()
   if M.bridge_job_id then
     vim.fn.jobstop(M.bridge_job_id)
     M.bridge_job_id = nil
+    require("strudel.visual").clear_all()
   else
     vim.notify("Strudel Bridge is not running.", vim.log.levels.WARN)
   end
