@@ -268,3 +268,50 @@ describe("strudel.visual handle_event guards", function()
     assert.are.equal(1, mark_count())
   end)
 end)
+
+describe("strudel.visual duration timer", function()
+  local visual
+  local bufnr
+
+  before_each(function()
+    package.loaded["strudel.visual"] = nil
+    visual = require("strudel.visual")
+    visual.setup({})
+    bufnr = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { 's("bd").play()' })
+  end)
+
+  after_each(function()
+    if vim.api.nvim_buf_is_valid(bufnr) then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end)
+
+  local function mark_count()
+    return #vim.api.nvim_buf_get_extmarks(bufnr, visual.ns_id, 0, -1, {})
+  end
+
+  it("removes extmark after duration elapses", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":0.08}')  -- 80ms
+    assert.are.equal(1, mark_count())
+
+    -- Wait until the timer fires (poll with a margin)
+    vim.wait(200, function() return mark_count() == 0 end)
+    assert.are.equal(0, mark_count())
+  end)
+
+  it("clamps sub-50ms durations to 50ms minimum", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":0.01}')  -- 10ms requested
+    assert.are.equal(1, mark_count())
+
+    -- After 30ms, mark must still be alive (not removed at 10ms)
+    vim.wait(30, function() return false end)
+    assert.are.equal(1, mark_count())
+
+    -- By 200ms, mark should be gone (50ms clamp + scheduling slack)
+    vim.wait(200, function() return mark_count() == 0 end)
+    assert.are.equal(0, mark_count())
+  end)
+end)
