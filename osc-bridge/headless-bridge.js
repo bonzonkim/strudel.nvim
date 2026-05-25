@@ -3,6 +3,44 @@ const dgram = require('dgram');
 
 const UDP_PORT = 9129;
 
+async function injectHook(page) {
+    try {
+        await page.evaluate(() => {
+            if (window.__strudelHookInstalled) return;
+            window.__strudelHookInstalled = true;
+            try {
+                // `all` is a Strudel global that applies a transformation to every active pattern
+                all((p) => p.onTrigger((hap, dur, cps, t) => {
+                    const locs = hap && hap.context && hap.context.locations;
+                    if (!locs || !locs.length) return;
+                    const v = hap.value || {};
+                    let sound;
+                    if (v.s != null) {
+                        sound = String(v.s);
+                    } else if (v.note != null) {
+                        sound = 'note:' + v.note;
+                    } else if (v.n != null) {
+                        sound = 'n:' + v.n;
+                    } else {
+                        sound = 'unknown';
+                    }
+                    const payload = {
+                        locs: locs.map((l) => [l.start, l.end]),
+                        s: sound,
+                        dur: (hap.duration && cps) ? (hap.duration / cps) : 0.1,
+                    };
+                    // The leading prefix lets the Neovim side distinguish event lines.
+                    console.log('__STRUDEL_EVENT__' + JSON.stringify(payload));
+                }, false));  // false = NOT a dominant trigger; preserves the audio output
+            } catch (e) {
+                console.error('Strudel visual hook installation failed:', e && e.message);
+            }
+        });
+    } catch (err) {
+        console.error('injectHook page.evaluate failed:', err && err.message);
+    }
+}
+
 (async () => {
     console.log('Starting Headless Strudel...');
 
@@ -137,6 +175,8 @@ const UDP_PORT = 9129;
                     console.error('Could not find REPL instance');
                 }
             }, code);
+
+            await injectHook(page);
         } catch (err) {
             console.error('Eval failed:', err);
         }
