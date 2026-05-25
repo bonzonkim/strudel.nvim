@@ -41,6 +41,11 @@ vim.api.nvim_create_user_command("StrudelHide", function()
   strudel.hide_window()
 end, {})
 
+vim.api.nvim_create_user_command("StrudelVisualToggle", function()
+  local enabled = require("strudel.visual").toggle()
+  vim.notify("Strudel visual effects: " .. (enabled and "ON" or "OFF"), vim.log.levels.INFO)
+end, {})
+
 -- Keybindings
 vim.keymap.set("n", "<leader>se", function() strudel.eval_line() end, { desc = "Strudel Eval Line" })
 vim.keymap.set("v", "<leader>se", function() strudel.eval_visual() end, { desc = "Strudel Eval Selection" })
@@ -52,6 +57,10 @@ vim.keymap.set("n", "<leader>sS", function() strudel.start_bridge() end, { desc 
 vim.keymap.set("n", "<leader>sq", function() strudel.stop_bridge() end, { desc = "Strudel Stop Bridge" })
 vim.keymap.set("n", "<leader>sv", function() strudel.show_window() end, { desc = "Strudel Show Window" })
 vim.keymap.set("n", "<leader>sh", function() strudel.hide_window() end, { desc = "Strudel Hide Window" })
+vim.keymap.set("n", "<leader>sV", function()
+  local enabled = require("strudel.visual").toggle()
+  vim.notify("Strudel visual effects: " .. (enabled and "ON" or "OFF"), vim.log.levels.INFO)
+end, { desc = "Strudel Toggle Visual Effects" })
 
 vim.api.nvim_create_user_command("StrudelDebug", function()
   local status, cmp = pcall(require, "cmp")
