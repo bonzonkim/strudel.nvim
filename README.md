@@ -29,7 +29,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
 | **Sound Synthesis** | ✅ | Full Strudel audio engine support via browser. |
 | **Code Evaluation** | ✅ | Eval line, selection, or entire file (`:StrudelEvalFile`). |
 | **Bridge Management** | ✅ | Start/Stop the audio engine directly from Neovim (`:StrudelStart`). |
-| **Visuals** | 🚧 | Toggle the browser window to see scopes, piano rolls, etc. (`:StrudelShow`). |
+| **Visuals** | ✅ | In-buffer per-note flash on the exact mini-notation token, distinct color per sound. Toggle: `:StrudelVisualToggle`. Browser window: `:StrudelShow`. |
 | **Autocomplete** | ✅ | Native `nvim-cmp` source + Dictionary support. |
 | **Syntax Highlighting** | 🚧 | Uses standard JavaScript syntax highlighting. |
 
@@ -86,6 +86,32 @@ If autocompletion doesn't work (e.g., due to lazy loading order), you can manual
 require("cmp").register_source("strudel", require("strudel.cmp").new())
 ```
 
+## Visual Effects Configuration
+
+When Strudel is playing, each mini-notation token in your buffer flashes the moment its sound triggers. Colors are assigned automatically per sound name; you can override:
+
+```lua
+require("strudel").setup({
+  visual_effects = {
+    enabled = true,  -- default
+    colors = {
+      bd = "#ff5555",   -- override auto-assigned color
+      sd = "#55ff55",
+    },
+  }
+})
+```
+
+Toggle at runtime with `:StrudelVisualToggle` or `<leader>sV`.
+
+### Development
+
+Tests use [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). With plenary installed via your plugin manager, run:
+
+```bash
+make test
+```
+
 ## Usage
 
 1.  **Start the Bridge**:
@@ -117,3 +143,4 @@ require("cmp").register_source("strudel", require("strudel.cmp").new())
 | `<leader>ss` | Stop Sound (Hush) |
 | `<leader>sv` | Show Browser Window |
 | `<leader>sh` | Hide Browser Window |
+| `<leader>sV` | Toggle Visual Effects |
