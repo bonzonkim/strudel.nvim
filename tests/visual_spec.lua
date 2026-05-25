@@ -192,3 +192,79 @@ describe("strudel.visual handle_event happy path", function()
     assert.are.equal(2, #marks)
   end)
 end)
+
+describe("strudel.visual handle_event guards", function()
+  local visual
+  local bufnr
+
+  before_each(function()
+    package.loaded["strudel.visual"] = nil
+    visual = require("strudel.visual")
+    visual.setup({})
+    bufnr = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { 's("bd").play()' })
+  end)
+
+  after_each(function()
+    if vim.api.nvim_buf_is_valid(bufnr) then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end)
+
+  local function mark_count()
+    return #vim.api.nvim_buf_get_extmarks(bufnr, visual.ns_id, 0, -1, {})
+  end
+
+  it("skips when enabled is false", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.enabled = false
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":1.0}')
+    assert.are.equal(0, mark_count())
+  end)
+
+  it("skips when last_eval.bufnr is nil", function()
+    -- Don't call set_last_eval
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":1.0}')
+    assert.are.equal(0, mark_count())
+  end)
+
+  it("skips invalid JSON silently", function()
+    visual.set_last_eval(bufnr, 0)
+    -- Must not raise
+    visual.handle_event("not valid json {")
+    assert.are.equal(0, mark_count())
+  end)
+
+  it("skips when bufnr no longer valid", function()
+    visual.set_last_eval(bufnr, 0)
+    vim.api.nvim_buf_delete(bufnr, { force = true })
+    -- Must not raise
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":1.0}')
+    -- bufnr is gone; no asserting on it
+  end)
+
+  it("skips empty locs array", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[],"s":"bd","dur":1.0}')
+    assert.are.equal(0, mark_count())
+  end)
+
+  it("skips loc with from > to", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[[5,3]],"s":"bd","dur":1.0}')
+    assert.are.equal(0, mark_count())
+  end)
+
+  it("skips non-numeric loc entries", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[["a","b"]],"s":"bd","dur":1.0}')
+    assert.are.equal(0, mark_count())
+  end)
+
+  it("uses 'unknown' when s is missing", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[[3,5]],"dur":1.0}')
+    -- Should still place the mark (under "unknown" hl group)
+    assert.are.equal(1, mark_count())
+  end)
+end)
