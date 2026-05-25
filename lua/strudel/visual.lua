@@ -149,4 +149,16 @@ function M.handle_event(json_str)
   flash(payload.locs, sound, dur_ms)
 end
 
+function M.toggle()
+  M.enabled = not M.enabled
+  return M.enabled
+end
+
+function M.clear_all()
+  if M.last_eval.bufnr and vim.api.nvim_buf_is_valid(M.last_eval.bufnr) then
+    pcall(vim.api.nvim_buf_clear_namespace, M.last_eval.bufnr, M.ns_id, 0, -1)
+  end
+  M.last_eval = { bufnr = nil, offset = 0 }
+end
+
 return M

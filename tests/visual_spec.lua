@@ -315,3 +315,50 @@ describe("strudel.visual duration timer", function()
     assert.are.equal(0, mark_count())
   end)
 end)
+
+describe("strudel.visual toggle and clear_all", function()
+  local visual
+  local bufnr
+
+  before_each(function()
+    package.loaded["strudel.visual"] = nil
+    visual = require("strudel.visual")
+    visual.setup({})
+    bufnr = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { 's("bd").play()' })
+  end)
+
+  after_each(function()
+    if vim.api.nvim_buf_is_valid(bufnr) then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end)
+
+  it("toggle flips enabled and returns new state", function()
+    assert.is_true(visual.enabled)
+    assert.is_false(visual.toggle())
+    assert.is_false(visual.enabled)
+    assert.is_true(visual.toggle())
+    assert.is_true(visual.enabled)
+  end)
+
+  it("clear_all removes all extmarks in the namespace", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":10.0}')  -- long duration
+    assert.are.equal(1, #vim.api.nvim_buf_get_extmarks(bufnr, visual.ns_id, 0, -1, {}))
+
+    visual.clear_all()
+    assert.are.equal(0, #vim.api.nvim_buf_get_extmarks(bufnr, visual.ns_id, 0, -1, {}))
+  end)
+
+  it("clear_all clears last_eval", function()
+    visual.set_last_eval(bufnr, 42)
+    visual.clear_all()
+    assert.is_nil(visual.last_eval.bufnr)
+  end)
+
+  it("clear_all is safe when last_eval.bufnr is nil", function()
+    -- Must not raise
+    visual.clear_all()
+  end)
+end)
