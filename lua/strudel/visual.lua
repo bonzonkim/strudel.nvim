@@ -74,4 +74,28 @@ function M.color_for(sound)
   return hl_group
 end
 
+-- Convert an absolute byte offset to (row, byte_col), both 0-indexed.
+-- byte_col is a byte offset within the line (what nvim_buf_set_extmark expects).
+-- Exposed as M._byte_to_pos for unit testing.
+function M._byte_to_pos(bufnr, byte_offset)
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
+  if byte_offset <= 0 then return 0, 0 end
+
+  local lo, hi = 0, line_count
+  while lo < hi do
+    local mid = math.floor((lo + hi) / 2)
+    local start = vim.api.nvim_buf_get_offset(bufnr, mid)
+    if start <= byte_offset then
+      lo = mid + 1
+    else
+      hi = mid
+    end
+  end
+
+  local row = lo - 1
+  if row < 0 then row = 0 end
+  local row_start = vim.api.nvim_buf_get_offset(bufnr, row)
+  return row, byte_offset - row_start
+end
+
 return M

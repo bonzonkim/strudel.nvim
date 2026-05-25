@@ -85,3 +85,51 @@ describe("strudel.visual color_for", function()
     assert.is_truthy(hl_group:match("^[%w_]+$"))
   end)
 end)
+
+describe("strudel.visual byte_to_pos", function()
+  local visual
+  local bufnr
+
+  before_each(function()
+    package.loaded["strudel.visual"] = nil
+    visual = require("strudel.visual")
+    visual.setup({})
+    bufnr = vim.api.nvim_create_buf(false, true)
+  end)
+
+  after_each(function()
+    if vim.api.nvim_buf_is_valid(bufnr) then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end)
+
+  it("returns (0,0) for byte offset 0", function()
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "abc", "def" })
+    local row, col = visual._byte_to_pos(bufnr, 0)
+    assert.are.equal(0, row)
+    assert.are.equal(0, col)
+  end)
+
+  it("returns column within first line", function()
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "abc", "def" })
+    local row, col = visual._byte_to_pos(bufnr, 2)
+    assert.are.equal(0, row)
+    assert.are.equal(2, col)
+  end)
+
+  it("returns position on second line", function()
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "abc", "def" })
+    -- "abc\n" = 4 bytes; "d" is at byte 4, "e" at 5
+    local row, col = visual._byte_to_pos(bufnr, 5)
+    assert.are.equal(1, row)
+    assert.are.equal(1, col)
+  end)
+
+  it("handles multibyte (UTF-8) characters", function()
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "한글", "abc" })
+    -- "한" = 3 bytes, "글" = 3 bytes; byte 6 is the end of "한글"
+    local row, col = visual._byte_to_pos(bufnr, 6)
+    assert.are.equal(0, row)
+    assert.are.equal(6, col)
+  end)
+end)
