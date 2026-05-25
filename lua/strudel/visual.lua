@@ -98,4 +98,55 @@ function M._byte_to_pos(bufnr, byte_offset)
   return row, byte_offset - row_start
 end
 
+function M.set_last_eval(bufnr, offset)
+  M.last_eval = { bufnr = bufnr, offset = offset or 0 }
+end
+
+local function flash(locs, sound, dur_ms)
+  local bufnr = M.last_eval.bufnr
+  local offset = M.last_eval.offset
+  local hl_group = M.color_for(sound)
+
+  for _, loc in ipairs(locs) do
+    local from, to = loc[1], loc[2]
+    if type(from) == "number" and type(to) == "number" and from >= 0 and from <= to then
+      local row_from, col_from = M._byte_to_pos(bufnr, offset + from)
+      local row_to, col_to = M._byte_to_pos(bufnr, offset + to)
+
+      local ok, mark_id = pcall(vim.api.nvim_buf_set_extmark, bufnr, M.ns_id, row_from, col_from, {
+        end_row = row_to,
+        end_col = col_to,
+        hl_group = hl_group,
+        priority = 200,
+      })
+
+      if ok and mark_id then
+        vim.defer_fn(function()
+          if vim.api.nvim_buf_is_valid(bufnr) then
+            pcall(vim.api.nvim_buf_del_extmark, bufnr, M.ns_id, mark_id)
+          end
+        end, dur_ms)
+      end
+    end
+  end
+end
+
+function M.handle_event(json_str)
+  if not M.enabled then return end
+  if not M.last_eval.bufnr then return end
+  if not vim.api.nvim_buf_is_valid(M.last_eval.bufnr) then return end
+
+  local ok, payload = pcall(vim.json.decode, json_str)
+  if not ok or type(payload) ~= "table" then return end
+  if type(payload.locs) ~= "table" or #payload.locs == 0 then return end
+
+  local sound = payload.s
+  if type(sound) ~= "string" then sound = "unknown" end
+
+  local dur = tonumber(payload.dur) or 0.1
+  local dur_ms = math.max(dur * 1000, 50)
+
+  flash(payload.locs, sound, dur_ms)
+end
+
 return M

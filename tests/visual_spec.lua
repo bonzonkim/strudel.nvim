@@ -133,3 +133,62 @@ describe("strudel.visual byte_to_pos", function()
     assert.are.equal(6, col)
   end)
 end)
+
+describe("strudel.visual handle_event happy path", function()
+  local visual
+  local bufnr
+
+  before_each(function()
+    package.loaded["strudel.visual"] = nil
+    visual = require("strudel.visual")
+    visual.setup({})
+    bufnr = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { 's("bd sd hh cp").play()' })
+  end)
+
+  after_each(function()
+    if vim.api.nvim_buf_is_valid(bufnr) then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end)
+
+  it("set_last_eval stores bufnr and offset", function()
+    visual.set_last_eval(bufnr, 42)
+    assert.are.equal(bufnr, visual.last_eval.bufnr)
+    assert.are.equal(42, visual.last_eval.offset)
+  end)
+
+  it("places an extmark at offset + loc for a valid event", function()
+    visual.set_last_eval(bufnr, 0)
+    -- "bd" is at character offsets 3..5 in 's("bd sd hh cp").play()'
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":1.0}')
+
+    local marks = vim.api.nvim_buf_get_extmarks(bufnr, visual.ns_id, 0, -1, { details = true })
+    assert.are.equal(1, #marks)
+    local mark = marks[1]
+    -- mark = { id, row, col, details }
+    assert.are.equal(0, mark[2])  -- row
+    assert.are.equal(3, mark[3])  -- col
+    assert.are.equal(5, mark[4].end_col)
+  end)
+
+  it("applies offset when last_eval.offset is non-zero", function()
+    -- Imagine a buffer where the eval'd region starts 10 bytes in
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { 'xxxxxxxxxxs("bd").play()' })
+    visual.set_last_eval(bufnr, 10)
+    visual.handle_event('{"locs":[[3,5]],"s":"bd","dur":1.0}')
+
+    local marks = vim.api.nvim_buf_get_extmarks(bufnr, visual.ns_id, 0, -1, { details = true })
+    assert.are.equal(1, #marks)
+    assert.are.equal(13, marks[1][3])  -- 10 + 3 = 13
+    assert.are.equal(15, marks[1][4].end_col)
+  end)
+
+  it("places one extmark per loc in the event", function()
+    visual.set_last_eval(bufnr, 0)
+    visual.handle_event('{"locs":[[3,5],[6,8]],"s":"bd","dur":1.0}')
+
+    local marks = vim.api.nvim_buf_get_extmarks(bufnr, visual.ns_id, 0, -1, {})
+    assert.are.equal(2, #marks)
+  end)
+end)
