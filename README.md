@@ -120,9 +120,10 @@ make test
     *   Wait for the message "Strudel Bridge started!".
 
 2.  **Play Sound**:
-    *   Write some code: `note("c3").play()`
+    *   Write some code: `note("c3")` or `s("bd sd hh cp")`
     *   Evaluate File: `<leader>sf` (or `:StrudelEvalFile`)
     *   Evaluate Line: `<leader>se` (or `:StrudelEval`)
+    *   Note: don't append `.play()` — current Strudel auto-plays evaluated patterns; `.play()` throws and leaves the previous (or default) pattern running.
 
 3.  **Stop Sound**:
     *   Command: `:StrudelStop`
@@ -130,7 +131,7 @@ make test
 
 4.  **Visuals**:
     *   **Graphical**: `<leader>sv` (Show Window), `<leader>sh` (Hide Window)
-    *   **Text**: Add `.log()` to your pattern (e.g., `s("bd").log().play()`) to see events in Neovim.
+    *   **Text**: Add `.log()` to your pattern (e.g., `s("bd").log()`) to see events in Neovim.
 
 ## Keybindings
 
