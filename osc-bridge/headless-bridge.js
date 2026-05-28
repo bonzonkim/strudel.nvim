@@ -127,6 +127,20 @@ async function injectHook(page) {
     // evaluated thereafter — so it must be set before the first user /eval.
     await injectHook(page);
 
+    // Unlock audio context first (a click event is required by browser autoplay
+    // policy). Without this, repl.evaluate hangs because the scheduler can't
+    // start without audio. Then silence strudel.cc's auto-loaded starter
+    // pattern — otherwise its haps keep firing through our hook with locations
+    // that don't correspond to the user's buffer, producing phantom highlights
+    // when a user eval errors (e.g. an outdated .play() call).
+    try {
+        const playBtn = await page.$('button[title="play"]');
+        if (playBtn) { await playBtn.click(); } else { await page.click('body'); }
+        await page.evaluate(() => window.strudelMirror.repl.evaluate('silence'));
+    } catch (e) {
+        console.error('Failed to silence starter pattern:', e && e.message);
+    }
+
     console.log('Strudel loaded!');
 
     // Setup UDP Server
