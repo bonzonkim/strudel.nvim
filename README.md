@@ -20,7 +20,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
     *   It loads the Strudel REPL.
     *   It listens for OSC messages and evaluates the code in the browser.
     *   It handles audio playback (bypassing autoplay restrictions).
-    *   It captures browser console logs (e.g., note events) and streams them back to Neovim for text-based visualization.
+    *   It installs an `onTrigger` hook on the Strudel scheduler that streams per-hap events (sound name + source location + duration) back to Neovim, which renders them as in-buffer highlights on the exact mini-notation tokens.
 
 ## Features
 
@@ -29,7 +29,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
 | **Sound Synthesis** | ✅ | Full Strudel audio engine support via browser. |
 | **Code Evaluation** | ✅ | Eval line, selection, or entire file (`:StrudelEvalFile`). |
 | **Bridge Management** | ✅ | Start/Stop the audio engine directly from Neovim (`:StrudelStart`). |
-| **Visuals** | ✅ | In-buffer per-note flash on the exact mini-notation token, distinct color per sound. Toggle: `:StrudelVisualToggle`. Browser window: `:StrudelShow`. |
+| **Visuals** | ✅ | In-buffer per-note flash on the exact mini-notation token, distinct color per sound. Browser window: `:StrudelShow` / `:StrudelHide`. |
 | **Autocomplete** | ✅ | Native `nvim-cmp` source + Dictionary support. |
 | **Syntax Highlighting** | 🚧 | Uses standard JavaScript syntax highlighting. |
 
@@ -88,12 +88,12 @@ require("cmp").register_source("strudel", require("strudel.cmp").new())
 
 ## Visual Effects Configuration
 
-When Strudel is playing, each mini-notation token in your buffer flashes the moment its sound triggers. Colors are assigned automatically per sound name; you can override:
+When Strudel is playing, each mini-notation token in your buffer flashes the moment its sound triggers. Colors are assigned automatically per sound name (deterministic FNV-1a hash → HSL hue); override per-sound if you want specific colors:
 
 ```lua
 require("strudel").setup({
   visual_effects = {
-    enabled = true,  -- default
+    enabled = true,  -- default; set false to suppress all highlights
     colors = {
       bd = "#ff5555",   -- override auto-assigned color
       sd = "#55ff55",
@@ -101,8 +101,6 @@ require("strudel").setup({
   }
 })
 ```
-
-Toggle at runtime with `:StrudelVisualToggle` or `<leader>sV`.
 
 ### Development
 
@@ -123,15 +121,16 @@ make test
     *   Write some code: `note("c3")` or `s("bd sd hh cp")`
     *   Evaluate File: `<leader>sf` (or `:StrudelEvalFile`)
     *   Evaluate Line: `<leader>se` (or `:StrudelEval`)
-    *   Note: don't append `.play()` — current Strudel auto-plays evaluated patterns; `.play()` throws and leaves the previous (or default) pattern running.
+    *   Note: don't append `.play()`. Current Strudel auto-plays evaluated patterns; `.play()` throws inside the browser, so the eval is rejected and no highlights appear.
 
 3.  **Stop Sound**:
     *   Command: `:StrudelStop`
     *   Keybinding: `<leader>ss`
 
 4.  **Visuals**:
-    *   **Graphical**: `<leader>sv` (Show Window), `<leader>sh` (Hide Window)
-    *   **Text**: Add `.log()` to your pattern (e.g., `s("bd").log()`) to see events in Neovim.
+    *   **In-buffer**: highlights flash on each mini-notation token in beat with the audio. Automatic — no command needed. Configure colors via `setup({ visual_effects = ... })` (see below).
+    *   **Browser window**: `<leader>sv` (Show), `<leader>sh` (Hide).
+    *   **Text log**: add `.log()` to your pattern (e.g., `s("bd").log()`) to see events in Neovim's `:messages`.
 
 ## Keybindings
 
@@ -144,4 +143,3 @@ make test
 | `<leader>ss` | Stop Sound (Hush) |
 | `<leader>sv` | Show Browser Window |
 | `<leader>sh` | Hide Browser Window |
-| `<leader>sV` | Toggle Visual Effects |
