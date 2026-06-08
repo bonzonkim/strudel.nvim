@@ -80,6 +80,14 @@ vim.api.nvim_create_user_command("StrudelDebug", function()
   else
     print("Dictionary file exists: NO")
   end
+
+  local catalog_status = require("strudel.cmp")._catalog_status()
+  print("Completion catalog path: " .. catalog_status.path)
+  print("Completion catalog loaded: " .. tostring(catalog_status.ok))
+  print("Completion catalog entries: " .. tostring(catalog_status.entry_count))
+  if catalog_status.error then
+    print("Completion catalog error: " .. catalog_status.error)
+  end
   
   print("--------------------------")
 end, {})

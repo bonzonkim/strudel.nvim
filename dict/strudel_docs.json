@@ -1,89 +1,1072 @@
 {
-  "cat": {
-    "description": "The given items are concatenated, where each one takes one cycle.",
+  "DoughVoice": {
+    "description": "",
     "params": [
-      "items (any): The items to concatenate"
+      "value (DoughVoice)"
     ]
   },
-  "seq": {
-    "description": "Like cat, but the items are crammed into one cycle.",
+  "FX": {
+    "description": "Establishes an FX chain. Can be called by chaining .FX(fx1).FX(fx2).. calls and/or in a single .FX(fx1, fx2, ..) call. The fx1, .. are patterns which establish the controls of the given effect. See examples.",
     "params": []
   },
-  "stack": {
-    "description": "The given items are played at the same time at the same length.",
+  "K": {
+    "description": "Produces a Kabelsalat modular sound engine. This can be used as either an effect (by including audioin() at the beginning of your kabel expression) or as a sound source (via any expression which doesn't start with audioin()). Some helpers you have available to you: Strudel mini notation works fine in K(..) via &quot;&quot; or `` More complex Strudel expressions (like &quot;0 1 2&quot;.fast(4) or irand(24)) can be written by wrapping them in S(..) inside your Kabel code We expose Strudel's note frequency under sFreq and Strudel's gate information under sGate You can use more complex multi-line expressions (like let x = a; let y = b; x.lpf(y);) by wrapping them inside a function in K (see example).",
+    "params": [
+      "expr (KabelsalatExpression | function): Kabelsalat graph definition"
+    ]
+  },
+  "MidiInput": {
+    "description": "",
+    "params": [
+      "input (string | number): MIDI device name or index defaulting to 0"
+    ]
+  },
+  "OLAProcessor": {
+    "description": "",
     "params": []
   },
-  "stepcat": {
-    "description": "'Concatenates' patterns like fastcat, but proportional to a number of steps per cycle.",
+  "absOriA": {
+    "description": "The device's absolute orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "absOriB": {
+    "description": "The device's absolute orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "absOriG": {
+    "description": "The device's absolute orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "absOriX": {
+    "description": "The device's absolute orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "absOriY": {
+    "description": "The device's absolute orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "absOriZ": {
+    "description": "The device's absolute orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "absoluteOrientationAlpha": {
+    "description": "The device's absolute orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "absoluteOrientationBeta": {
+    "description": "The device's absolute orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "absoluteOrientationGamma": {
+    "description": "The device's absolute orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "absoluteOrientationX": {
+    "description": "The device's absolute orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "absoluteOrientationY": {
+    "description": "The device's absolute orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "absoluteOrientationZ": {
+    "description": "The device's absolute orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "accX": {
+    "description": "The accelerometer's x-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "accY": {
+    "description": "The accelerometer's y-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "accZ": {
+    "description": "The accelerometer's z-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "accelerationX": {
+    "description": "The accelerometer's x-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "accelerationY": {
+    "description": "The accelerometer's y-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "accelerationZ": {
+    "description": "The accelerometer's z-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "add": {
+    "description": "Assumes a pattern of numbers. Adds the given number to each item in the pattern.",
+    "params": []
+  },
+  "addVoicings": {
+    "description": "Adds a new custom voicing dictionary.",
+    "params": [
+      "name (string): identifier for the voicing dictionary",
+      "dictionary (Object): maps chord symbol to possible voicings",
+      "range (Array): min, max note"
+    ]
+  },
+  "adsr": {
+    "description": "ADSR envelope: Combination of Attack, Decay, Sustain, and Release.",
+    "params": [
+      "time (number | Pattern): attack time in seconds",
+      "time (number | Pattern): decay time in seconds",
+      "gain (number | Pattern): sustain level (0 to 1)",
+      "time (number | Pattern): release time in seconds"
+    ]
+  },
+  "aliasBank": {
+    "description": "Register an alias for a bank of sounds. Optionally accepts a single argument map of bank aliases. Optionally accepts a single argument string of a path to a JSON file containing bank aliases.",
+    "params": [
+      "bank (string): The bank to alias",
+      "alias (string): The alias to use for the bank"
+    ]
+  },
+  "all": {
+    "description": "Applies a function to all the running patterns. Note that the patterns are grouped together into a single stack before the function is applied. This is probably what you want, but see each for a version that applies the function to each pattern separately. Note: Patterns must be labeled (e.g. with $:) to be picked up by all. An unlabeled pattern such as note(&quot;c4&quot;) is not registered and will produce no audio when all is present. Use $: note(&quot;c4&quot;) instead. $: sound(&quot;bd - cp sd&quot;) $: sound(&quot;hh*8&quot;) all(fast(&quot;<2 3>&quot;)) $: sound(&quot;bd - cp sd&quot;) $: sound(&quot;hh*8&quot;) all(x => x.pianoroll())",
+    "params": []
+  },
+  "almostAlways": {
+    "description": "Shorthand for .sometimesBy(0.9, fn)",
+    "params": []
+  },
+  "almostNever": {
+    "description": "Shorthand for .sometimesBy(0.1, fn)",
+    "params": []
+  },
+  "always": {
+    "description": "Shorthand for .sometimesBy(1, fn) (always calls fn)",
+    "params": []
+  },
+  "anchor": {
+    "description": "The top note to align the voicing to. Defaults to c5",
+    "params": [
+      "anchorNote (string | Pattern): the note to align the voicing or scale to"
+    ]
+  },
+  "apply": {
+    "description": "Applies the given function to the pattern. Like layer, but with a single function:",
+    "params": []
+  },
+  "applyGradualLowpass": {
+    "description": "Applies a constantly changing lowpass filter to the given sound.",
+    "params": [
+      "input (AudioBuffer)",
+      "lpFreqStart (number)",
+      "lpFreqEnd (number)",
+      "lpFreqEndAt (number)",
+      "callback (function): May be called immediately within the current execution context, or later."
+    ]
+  },
+  "applyHannWindow": {
+    "description": "Apply Hann window in-place",
+    "params": []
+  },
+  "arp": {
+    "description": "Selects indices in in stacked notes.",
+    "params": []
+  },
+  "arpWith": {
+    "description": "Selects indices in in stacked notes.",
     "params": []
   },
   "arrange": {
-    "description": "Allows to arrange multiple patterns together over multiple cycles.",
+    "description": "Allows to arrange multiple patterns together over multiple cycles. Takes a variable number of arrays with two elements specifying the number of cycles and the pattern to use.",
     "params": []
   },
-  "polymeter": {
-    "description": "Aligns the steps of the patterns, creating polymeters.",
+  "as": {
+    "description": "Sets properties in a batch.",
+    "params": [
+      "mapping (String | Array): the control names that are set"
+    ]
+  },
+  "asNumber": {
+    "description": "Returns a new pattern with all values parsed as numerals.",
     "params": []
   },
-  "silence": {
-    "description": "Does absolutely nothing..",
+  "asym": {
+    "description": "Asymmetrical diode distortion",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "att": {
+    "description": "Amplitude envelope attack time: Specifies how long it takes for the sound to reach its peak value, relative to the onset.",
+    "params": [
+      "attack (number | Pattern): time in seconds."
+    ]
+  },
+  "attack": {
+    "description": "Amplitude envelope attack time: Specifies how long it takes for the sound to reach its peak value, relative to the onset.",
+    "params": [
+      "attack (number | Pattern): time in seconds."
+    ]
+  },
+  "bandf": {
+    "description": "Sets the center frequency of the band-pass filter. When using mininotation, you can also optionally supply the 'bpq' parameter separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): center frequency"
+    ]
+  },
+  "bandq": {
+    "description": "Sets the band-pass q-factor (resonance).",
+    "params": [
+      "q (number | Pattern): q factor"
+    ]
+  },
+  "bank": {
+    "description": "Select the sound bank to use. To be used together with s. The bank name (+ &quot;_&quot;) will be prepended to the value of s.",
+    "params": [
+      "bank (string | Pattern): the name of the bank"
+    ]
+  },
+  "bb": {
+    "description": "Create byte beats with custom expressions",
+    "params": [
+      "byteBeatExpression (number | Pattern): bitwise expression for creating bytebeat"
+    ]
+  },
+  "bbexpr": {
+    "description": "Create byte beats with custom expressions",
+    "params": [
+      "byteBeatExpression (number | Pattern): bitwise expression for creating bytebeat"
+    ]
+  },
+  "bbst": {
+    "description": "Create byte beats with custom expressions",
+    "params": [
+      "byteBeatStartTime (number | Pattern): in samples (t)"
+    ]
+  },
+  "beat": {
+    "description": "creates a structure pattern from divisions of a cycle especially useful for creating rhythms",
     "params": []
   },
-  "run": {
-    "description": "A discrete pattern of numbers from 0 to n-1",
+  "begin": {
+    "description": "A pattern of numbers from 0 to 1. Skips the beginning of each sample, e.g. 0.25 to cut off the first quarter from each sample.",
+    "params": [
+      "amount (number | Pattern): between 0 and 1, where 1 is the length of the sample"
+    ]
+  },
+  "berlin": {
+    "description": "Generates a continuous pattern of [berlin noise](conceived by Jame Coyne and Jade Rowland as a joke but turned out to be surprisingly cool and useful, like perlin noise but with sawtooth waves), in the range 0..1.",
     "params": []
+  },
+  "bgain": {
+    "description": "Postgain multiplier prior to sending the signal to the audio bus.",
+    "params": [
+      "number (number | Pattern)"
+    ]
   },
   "binary": {
-    "description": "Creates a pattern from a binary number.",
+    "description": "Creates a binary pattern from a number.",
     "params": [
       "n (number): input number to convert to binary"
     ]
   },
-  "binaryn": {
-    "description": "Creates a pattern from a binary number, padded to n bits long.",
+  "binaryL": {
+    "description": "Creates a binary list pattern from a number.",
+    "params": [
+      "n (number): input number to convert to binary s(&quot;saw&quot;).seg(8) .partials(binaryL(irand(4096).add(1)))"
+    ]
+  },
+  "binaryN": {
+    "description": "Creates a binary pattern from a number, padded to n bits long.",
     "params": [
       "n (number): input number to convert to binary",
       "nBits (number): pattern length, defaults to 16"
     ]
   },
-  "slow": {
-    "description": "Slow down a pattern over the given number of cycles.",
+  "binaryNL": {
+    "description": "Creates a binary list pattern from a number, padded to n bits long.",
     "params": [
-      "factor (number|Pattern): slow down factor"
+      "n (number): input number to convert to binary",
+      "nBits (number): pattern length, defaults to 16"
     ]
   },
-  "fast": {
-    "description": "Speed up a pattern by the given factor.",
+  "bite": {
+    "description": "Splits a pattern into the given number of slices, and plays them according to a pattern of slice numbers. Similar to slice, but slices up patterns rather than sound samples.",
     "params": [
-      "factor (number|Pattern): speed up factor"
+      "number (number): of slices",
+      "slices (number): to play"
     ]
   },
-  "early": {
-    "description": "Nudge a pattern to start earlier in time.",
+  "bmod": {
+    "description": "Modulates with the output from a given bus. Can be called in sequence like pat.bmod(...).bmod(...) to set up multiple modulators Send to an audio bus with otherPat.bus(..). There are two ways to declare which control will be modulated: Explicitly put control in the config (e.g. bmod({ id: 2, c: &quot;lpf&quot; })) If the control parameter is absent, the control immediately before the bmod call will be used (e.g. s(&quot;saw&quot;).lpf(500).bmod({ id: 2 }) to modulate lpf) Modulators can be referred to by id so that they can be updated later e.g. inside a sometimes. See example below.",
     "params": [
-      "cycles (number|Pattern): number of cycles to nudge left"
+      "config (Object): Bus modulation configuration.",
+      "config.bus (string | Pattern): Bus to get modulation signal from",
+      "config.control (string | Pattern): Node to modulate. Aliases: c",
+      "config.subControl (string | Pattern): Sub-control name to append to the control key. Aliases: sc",
+      "config.depth (number | Pattern): Relative modulation depth. Aliases: dep, dr",
+      "config.depthabs (number | Pattern): Absolute modulation depth. Aliases: da",
+      "config.dc (number | Pattern): DC offset prior to application",
+      "config.fxi (number | Pattern): FX index to target",
+      "id (string | Pattern): ID to use for this modulator"
     ]
   },
-  "late": {
-    "description": "Nudge a pattern to start later in time.",
+  "bp": {
+    "description": "Sets the center frequency of the band-pass filter. When using mininotation, you can also optionally supply the 'bpq' parameter separated by ':'.",
     "params": [
-      "cycles (number|Pattern): number of cycles to nudge right"
+      "frequency (number | Pattern): center frequency"
     ]
   },
-  "cliplegatoclip": {
+  "bpa": {
+    "description": "Sets the attack duration for the bandpass filter envelope.",
+    "params": [
+      "attack (number | Pattern): time of the bandpass filter envelope"
+    ]
+  },
+  "bpattack": {
+    "description": "Sets the attack duration for the bandpass filter envelope.",
+    "params": [
+      "attack (number | Pattern): time of the bandpass filter envelope"
+    ]
+  },
+  "bpd": {
+    "description": "Sets the decay duration for the bandpass filter envelope.",
+    "params": [
+      "decay (number | Pattern): time of the bandpass filter envelope"
+    ]
+  },
+  "bpdc": {
+    "description": "DC offset of the LFO for the bandpass filter",
+    "params": [
+      "dcoffset (number | Pattern): dc offset. set to 0 for unipolar"
+    ]
+  },
+  "bpdecay": {
+    "description": "Sets the decay duration for the bandpass filter envelope.",
+    "params": [
+      "decay (number | Pattern): time of the bandpass filter envelope"
+    ]
+  },
+  "bpdepth": {
+    "description": "Depth of the LFO for the bandpass filter",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "bpdepthfreq": {
+    "description": "Depth of the LFO for the bandpass filter, in HZ",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "bpdepthfrequency": {
+    "description": "Depth of the LFO for the bandpass filter, in HZ",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "bpe": {
+    "description": "Sets the bandpass filter envelope modulation depth.",
+    "params": [
+      "modulation (number | Pattern): depth of the bandpass filter envelope between 0 and n"
+    ]
+  },
+  "bpenv": {
+    "description": "Sets the bandpass filter envelope modulation depth.",
+    "params": [
+      "modulation (number | Pattern): depth of the bandpass filter envelope between 0 and n"
+    ]
+  },
+  "bpf": {
+    "description": "Sets the center frequency of the band-pass filter. When using mininotation, you can also optionally supply the 'bpq' parameter separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): center frequency"
+    ]
+  },
+  "bpq": {
+    "description": "Sets the band-pass q-factor (resonance).",
+    "params": [
+      "q (number | Pattern): q factor"
+    ]
+  },
+  "bpr": {
+    "description": "Sets the release time for the bandpass filter envelope.",
+    "params": [
+      "release (number | Pattern): time of the bandpass filter envelope"
+    ]
+  },
+  "bprate": {
+    "description": "Rate of the LFO for the bandpass filter",
+    "params": [
+      "rate (number | Pattern): rate in hertz"
+    ]
+  },
+  "bprelease": {
+    "description": "Sets the release time for the bandpass filter envelope.",
+    "params": [
+      "release (number | Pattern): time of the bandpass filter envelope"
+    ]
+  },
+  "bps": {
+    "description": "Sets the sustain amplitude for the bandpass filter envelope.",
+    "params": [
+      "sustain (number | Pattern): amplitude of the bandpass filter envelope"
+    ]
+  },
+  "bpshape": {
+    "description": "Shape of the LFO for the bandpass filter",
+    "params": [
+      "shape (number | Pattern): Shape of the lfo (0, 1, 2, ..)"
+    ]
+  },
+  "bpskew": {
+    "description": "Skew of the LFO for the bandpass filter",
+    "params": [
+      "skew (number | Pattern): How much to bend the LFO shape"
+    ]
+  },
+  "bpsustain": {
+    "description": "Sets the sustain amplitude for the bandpass filter envelope.",
+    "params": [
+      "sustain (number | Pattern): amplitude of the bandpass filter envelope"
+    ]
+  },
+  "bpsync": {
+    "description": "Cycle-synced rate of the LFO for the bandpass filter",
+    "params": [
+      "rate (number | Pattern): rate in cycles"
+    ]
+  },
+  "brak": {
+    "description": "Returns a new pattern where every other cycle is played once, twice as fast, and offset in time by one quarter of a cycle. Creates a kind of breakbeat feel.",
+    "params": []
+  },
+  "brand": {
+    "description": "A continuous pattern of 0 or 1 (binary random)",
+    "params": []
+  },
+  "brandBy": {
+    "description": "A continuous pattern of 0 or 1 (binary random), with a probability for the value being 1",
+    "params": [
+      "probability (number): a number between 0 and 1"
+    ]
+  },
+  "bus": {
+    "description": "A bus is a send which can be used for mixing patterns. It combines with.. s(&quot;bus&quot;) to play that bus through another pattern (for, say, applying non-linear effects like distortion to multiple signals) otherPat.bmod(..) (to modulate another pattern with the bus)",
+    "params": [
+      "number (number | Pattern)"
+    ]
+  },
+  "busgain": {
+    "description": "Postgain multiplier prior to sending the signal to the audio bus.",
+    "params": [
+      "number (number | Pattern)"
+    ]
+  },
+  "byteBeatExpression": {
+    "description": "Create byte beats with custom expressions",
+    "params": [
+      "byteBeatExpression (number | Pattern): bitwise expression for creating bytebeat"
+    ]
+  },
+  "byteBeatStartTime": {
+    "description": "Create byte beats with custom expressions",
+    "params": [
+      "byteBeatStartTime (number | Pattern): in samples (t)"
+    ]
+  },
+  "cat": {
+    "description": "Concatenation: combines a list of patterns, switching between them successively, one per cycle.",
+    "params": []
+  },
+  "ccn": {
+    "description": "MIDI control number: Sends a MIDI control change message.",
+    "params": [
+      "MIDI (number | Pattern): control number (0-127)"
+    ]
+  },
+  "ccv": {
+    "description": "MIDI control value: Sends a MIDI control change message.",
+    "params": [
+      "MIDI (number | Pattern): control value (0-127)"
+    ]
+  },
+  "ceil": {
+    "description": "Assumes a numerical pattern. Returns a new pattern with all values set to their mathematical ceiling. E.g. 3.2 replaced with 4, and -4.2 replaced with -4.",
+    "params": []
+  },
+  "ch": {
+    "description": "Allows you to set the output channels on the interface",
+    "params": [
+      "channels (number | Pattern): pattern the output channels"
+    ]
+  },
+  "channel": {
+    "description": "Choose the channel the pattern is sent to",
+    "params": [
+      "channel (number | Pattern): channel number"
+    ]
+  },
+  "channels": {
+    "description": "Allows you to set the output channels on the interface",
+    "params": [
+      "channels (number | Pattern): pattern the output channels"
+    ]
+  },
+  "chebyshev": {
+    "description": "Distortion via Chebyshev polynomials",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "choose": {
+    "description": "Chooses randomly from the given list of elements.",
+    "params": [
+      "xs (any): values / patterns to choose from."
+    ]
+  },
+  "choose2": {
+    "description": "As with choose, but the pattern that this method is called on should be in the range -1 .. 1",
+    "params": [
+      "xs (any)"
+    ]
+  },
+  "chooseCycles": {
+    "description": "Picks one of the elements at random each cycle.",
+    "params": []
+  },
+  "chooseInWith": {
+    "description": "As with {chooseWith}, but the structure comes from the chosen values, rather than the pattern you're using to choose with.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "chooseWith": {
+    "description": "Choose from the list of values (or patterns of values) using the given pattern of numbers, which should be in the range of 0..1",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "chop": {
+    "description": "Cuts each sample into the given number of parts, allowing you to explore a technique known as 'granular synthesis'. It turns a pattern of samples into a pattern of parts of samples.",
+    "params": []
+  },
+  "chord": {
+    "description": "The chord to voice",
+    "params": [
+      "symbols (string | Pattern): chord symbols to voice e.g., C, Eb, Fm7, G7. The symbols can be defined via addVoicings"
+    ]
+  },
+  "chorus": {
+    "description": "mix control for the chorus effect",
+    "params": [
+      "chorus (string | Pattern): mix amount between 0 and 1"
+    ]
+  },
+  "chunk": {
+    "description": "Divides a pattern into a given number of parts, then cycles through those parts in turn, applying the given function to each part in turn (one part per cycle).",
+    "params": []
+  },
+  "chunkBack": {
+    "description": "Like chunk, but cycles through the parts in reverse order. Known as chunk' in tidalcycles",
+    "params": []
+  },
+  "chunkBackInto": {
+    "description": "Like chunkInto, but moves backwards through the chunks.",
+    "params": []
+  },
+  "chunkInto": {
+    "description": "Like chunk, but the function is applied to a looped subcycle of the source pattern.",
+    "params": []
+  },
+  "chunkback": {
+    "description": "Like chunk, but cycles through the parts in reverse order. Known as chunk' in tidalcycles",
+    "params": []
+  },
+  "chunkbackinto": {
+    "description": "Like chunkInto, but moves backwards through the chunks.",
+    "params": []
+  },
+  "chunkinto": {
+    "description": "Like chunk, but the function is applied to a looped subcycle of the source pattern.",
+    "params": []
+  },
+  "chyx": {
+    "description": "BYTE BEATS",
+    "params": []
+  },
+  "clearScope": {
+    "description": "Clears all user-defined variables and functions from the scope. This removes variables created during block-based evaluation.",
+    "params": []
+  },
+  "clip": {
     "description": "Multiplies the duration with the given number. Also cuts samples off at the end if they exceed the duration.",
     "params": [
-      "factor (number|Pattern): duration multiplier"
+      "factor (number | Pattern): = 0"
+    ]
+  },
+  "coarse": {
+    "description": "Fake-resampling for lowering the sample rate. Caution: This effect seems to only work in chromium based browsers",
+    "params": [
+      "factor (number | Pattern): 1 for original 2 for half, 3 for a third and so on."
+    ]
+  },
+  "color": {
+    "description": "Sets the color of the hap in visualizations like pianoroll or highlighting.",
+    "params": [
+      "color (string): Hexadecimal or CSS color name"
+    ]
+  },
+  "colour": {
+    "description": "Sets the color of the hap in visualizations like pianoroll or highlighting.",
+    "params": [
+      "color (string): Hexadecimal or CSS color name"
+    ]
+  },
+  "compress": {
+    "description": "Compress each cycle into the given timespan, leaving a gap",
+    "params": []
+  },
+  "compressor": {
+    "description": "Dynamics Compressor. The params are compressor(&quot;threshold:ratio:knee:attack:release&quot;) More info here",
+    "params": []
+  },
+  "computeMagnitudes": {
+    "description": "Compute squared magnitudes for peak finding",
+    "params": []
+  },
+  "contract": {
+    "description": "Experimental Contracts the step size of the pattern by the given factor. See also expand.",
+    "params": []
+  },
+  "control": {
+    "description": "MIDI control: Sends a MIDI control change message.",
+    "params": [
+      "MIDI (number | Pattern): control number (0-127)",
+      "MIDI (number | Pattern): controller value (0-127)"
+    ]
+  },
+  "cosine": {
+    "description": "A cosine signal between 0 and 1.",
+    "params": []
+  },
+  "cosine2": {
+    "description": "A cosine signal between -1 and 1 (like cosine, but bipolar).",
+    "params": []
+  },
+  "cpm": {
+    "description": "Plays the pattern at the given cycles per minute.",
+    "params": []
+  },
+  "createCC": {
+    "description": "Implementation for the cc() factory function tied to this specific input.",
+    "params": [
+      "cc (number): MIDI CC number",
+      "chan (number | undefined): MIDI channel (1-16) or undefined for all channels"
+    ]
+  },
+  "crossfade": {
+    "description": "Equal Power Crossfade function. Smoothly transitions between signals A and B, maintaining consistent perceived loudness.",
+    "params": [
+      "a (number): Signal A (can be a single value or an array value in buffer processing).",
+      "b (number): Signal B (can be a single value or an array value in buffer processing).",
+      "m (number): Crossfade parameter (0.0 = all A, 1.0 = all B, 0.5 = equal mix)."
+    ]
+  },
+  "crush": {
+    "description": "Bit crusher effect.",
+    "params": [
+      "depth (number | Pattern): between 1 (for drastic reduction in bit-depth) to 16 (for barely no reduction)."
+    ]
+  },
+  "csoundm": {
+    "description": "Sends notes to Csound for rendering with MIDI semantics. The hap value is translated to these Csound pfields: p1 -- Csound instrument either as a number (1-based, can be a fraction), or as a string name. p2 -- time in beats (usually seconds) from start of performance. p3 -- duration in beats (usually seconds). p4 -- MIDI key number (as a real number, not an integer but in [0, 127]. p5 -- MIDI velocity (as a real number, not an integer but in [0, 127]. p6 -- Strudel controls, as a string.",
+    "params": []
+  },
+  "ctf": {
+    "description": "Applies the cutoff frequency of the low-pass filter. When using mininotation, you can also optionally add the 'lpq' parameter, separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): audible between 0 and 20000"
+    ]
+  },
+  "cubic": {
+    "description": "Cubic polynomial distortion",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "cut": {
+    "description": "In the style of classic drum-machines, cut will stop a playing sample as soon as another samples with in same cutgroup is to be played. An example would be an open hi-hat followed by a closed one, essentially muting the open.",
+    "params": [
+      "group (number | Pattern): cut group number"
+    ]
+  },
+  "cutoff": {
+    "description": "Applies the cutoff frequency of the low-pass filter. When using mininotation, you can also optionally add the 'lpq' parameter, separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): audible between 0 and 20000"
+    ]
+  },
+  "cyclesPer": {
+    "description": "A pattern measuring the duration of events, in cycles per event. cyclesPer doesn't have structure itself, but takes structure, and therefore event durations, from the pattern that it is combined with. For example cyclesPer.struct(&quot;1 1 [1 1] 1&quot;) would give the same as &quot;0.25 0.25 [0.125 0.125] 0.25&quot;. See also its reciprocal, per, also known as perCycle.",
+    "params": []
+  },
+  "datt": {
+    "description": "The time required for the ducked signal(s) to return to their normal volume. Can vary across orbits with the ':' mininotation, e.g. duckonset(&quot;0:0.003&quot;). Note: this requires first applying the effect to multiple orbits with e.g. duckorbit(&quot;2:3&quot;).",
+    "params": [
+      "time (number | Pattern): The attack time in seconds"
+    ]
+  },
+  "dec": {
+    "description": "Amplitude envelope decay time: the time it takes after the attack time to reach the sustain level. Note that the decay is only audible if the sustain value is lower than 1.",
+    "params": [
+      "time (number | Pattern): decay time in seconds"
+    ]
+  },
+  "decay": {
+    "description": "Amplitude envelope decay time: the time it takes after the attack time to reach the sustain level. Note that the decay is only audible if the sustain value is lower than 1.",
+    "params": [
+      "time (number | Pattern): decay time in seconds"
+    ]
+  },
+  "defaultmidimap": {
+    "description": "configures the default midimap, which is used when no &quot;midimap&quot; port is set",
+    "params": []
+  },
+  "degrade": {
+    "description": "Randomly removes 50% of events from the pattern. Shorthand for .degradeBy(0.5)",
+    "params": []
+  },
+  "degradeBy": {
+    "description": "Randomly removes events from the pattern by a given amount. 0 = 0% chance of removal 1 = 100% chance of removal",
+    "params": [
+      "amount (number): a number between 0 and 1"
+    ]
+  },
+  "delay": {
+    "description": "Sets the level of the delay signal. When using mininotation, you can also optionally add the 'delaytime' and 'delayfeedback' parameter, separated by ':'.",
+    "params": [
+      "level (number | Pattern): between 0 and 1"
+    ]
+  },
+  "delayfb": {
+    "description": "Sets the level of the signal that is fed back into the delay. Caution: Values >= 1 will result in a signal that gets louder and louder! Don't do it",
+    "params": [
+      "feedback (number | Pattern): between 0 and 1"
+    ]
+  },
+  "delayfeedback": {
+    "description": "Sets the level of the signal that is fed back into the delay. Caution: Values >= 1 will result in a signal that gets louder and louder! Don't do it",
+    "params": [
+      "feedback (number | Pattern): between 0 and 1"
+    ]
+  },
+  "delays": {
+    "description": "Sets the time of the delay effect in cycles.",
+    "params": [
+      "cycles (number | Pattern): delay length in cycles"
+    ]
+  },
+  "delayspeed": {
+    "description": "Sets the time of the delay effect.",
+    "params": [
+      "delayspeed (number | Pattern): controls the pitch of the delay feedback"
+    ]
+  },
+  "delaysync": {
+    "description": "Sets the time of the delay effect in cycles.",
+    "params": [
+      "cycles (number | Pattern): delay length in cycles"
+    ]
+  },
+  "delayt": {
+    "description": "Sets the time of the delay effect.",
+    "params": [
+      "delayspeed (number | Pattern): controls the pitch of the delay feedback"
+    ]
+  },
+  "delaytime": {
+    "description": "Sets the time of the delay effect in seconds.",
+    "params": [
+      "delay (number | Pattern): in seconds"
+    ]
+  },
+  "density": {
+    "description": "crackle noise density",
+    "params": [
+      "density (number | Pattern): between 0 and x"
+    ]
+  },
+  "det": {
+    "description": "Set detune for stacked voices of supported oscillators.",
+    "params": [
+      "amount (number | Pattern)"
+    ]
+  },
+  "detune": {
+    "description": "Set detune for stacked voices of supported oscillators.",
+    "params": [
+      "amount (number | Pattern)"
+    ]
+  },
+  "dfb": {
+    "description": "Sets the level of the signal that is fed back into the delay. Caution: Values >= 1 will result in a signal that gets louder and louder! Don't do it",
+    "params": [
+      "feedback (number | Pattern): between 0 and 1"
+    ]
+  },
+  "dictionary": {
+    "description": "Which dictionary to use for the voicings. This falls back to the default dictionary if not provided",
+    "params": [
+      "dictionaryName (string): which dictionary (having been defined with addVoicings) to use"
+    ]
+  },
+  "diode": {
+    "description": "Diode-emulating distortion",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "dist": {
+    "description": "Wave shaping distortion. CAUTION: it can get loud. Second option in optional array syntax (ex: &quot;.9:.5&quot;) applies a postgain to the output. Third option sets the waveshaping type. Most useful values are usually between 0 and 10 (depending on source gain). If you are feeling adventurous, you can turn it up to 11 and beyond ;)",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion",
+      "type (number | string | Pattern): type of distortion to apply"
+    ]
+  },
+  "distort": {
+    "description": "Wave shaping distortion. CAUTION: it can get loud. Second option in optional array syntax (ex: &quot;.9:.5&quot;) applies a postgain to the output. Third option sets the waveshaping type. Most useful values are usually between 0 and 10 (depending on source gain). If you are feeling adventurous, you can turn it up to 11 and beyond ;)",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion",
+      "type (number | string | Pattern): type of distortion to apply"
+    ]
+  },
+  "distortion": {
+    "description": "Postgain for waveshaping distortion.",
+    "params": [
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "distorttype": {
+    "description": "Type of waveshaping distortion to apply.",
+    "params": [
+      "type (number | string | Pattern): type of distortion to apply"
+    ]
+  },
+  "distortvol": {
+    "description": "Postgain for waveshaping distortion.",
+    "params": [
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "disttype": {
+    "description": "Type of waveshaping distortion to apply.",
+    "params": [
+      "type (number | string | Pattern): type of distortion to apply"
+    ]
+  },
+  "distvol": {
+    "description": "Postgain for waveshaping distortion.",
+    "params": [
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "div": {
+    "description": "Divides each number by the given factor.",
+    "params": []
+  },
+  "djf": {
+    "description": "DJ filter, below 0.5 is low pass filter, above is high pass filter.",
+    "params": [
+      "cutoff (number | Pattern): below 0.5 is low pass filter, above is high pass filter"
+    ]
+  },
+  "drawLine": {
+    "description": "Intended for a debugging, drawLine renders the pattern as a string, where each character represents the same time span. Should only be used with single characters as values, otherwise the character slots will be messed up. Character legend: &quot;|&quot; cycle separator &quot;-&quot; hold previous value &quot;.&quot; silence",
+    "params": [
+      "pattern (Pattern): the pattern to use",
+      "chars (number): max number of characters (approximately)"
+    ]
+  },
+  "drive": {
+    "description": "Filter overdrive for supported filter types",
+    "params": [
+      "amount (number | Pattern)"
+    ]
+  },
+  "drop": {
+    "description": "Experimental Drops the given number of steps from a pattern. A positive number will drop steps from the start of a pattern, and a negative number from the end.",
+    "params": []
+  },
+  "ds": {
+    "description": "Sets the time of the delay effect in cycles.",
+    "params": [
+      "cycles (number | Pattern): delay length in cycles"
+    ]
+  },
+  "dt": {
+    "description": "Sets the time of the delay effect.",
+    "params": [
+      "delayspeed (number | Pattern): controls the pitch of the delay feedback"
+    ]
+  },
+  "duck": {
+    "description": "Modulate the amplitude of an orbit to create a &quot;sidechain&quot; like effect. Can be applied to multiple orbits with the ':' mininotation, e.g. duckorbit(&quot;2:3&quot;)",
+    "params": [
+      "orbit (number | Pattern): target orbit"
+    ]
+  },
+  "duckatt": {
+    "description": "The time required for the ducked signal(s) to return to their normal volume. Can vary across orbits with the ':' mininotation, e.g. duckonset(&quot;0:0.003&quot;). Note: this requires first applying the effect to multiple orbits with e.g. duckorbit(&quot;2:3&quot;).",
+    "params": [
+      "time (number | Pattern): The attack time in seconds"
+    ]
+  },
+  "duckattack": {
+    "description": "The time required for the ducked signal(s) to return to their normal volume. Can vary across orbits with the ':' mininotation, e.g. duckonset(&quot;0:0.003&quot;). Note: this requires first applying the effect to multiple orbits with e.g. duckorbit(&quot;2:3&quot;).",
+    "params": [
+      "time (number | Pattern): The attack time in seconds"
+    ]
+  },
+  "duckdepth": {
+    "description": "The amount of ducking applied to target orbit Can vary across orbits with the ':' mininotation, e.g. duckdepth(&quot;0.3:0.1&quot;). Note: this requires first applying the effect to multiple orbits with e.g. duckorbit(&quot;2:3&quot;).",
+    "params": [
+      "depth (number | Pattern): depth of modulation from 0 to 1"
+    ]
+  },
+  "duckons": {
+    "description": "The time required for the ducked signal(s) to reach their lowest volume. Can be used to prevent clicking or for creative rhythmic effects. Can vary across orbits with the ':' mininotation, e.g. duckonset(&quot;0:0.003&quot;). Note: this requires first applying the effect to multiple orbits with e.g. duckorbit(&quot;2:3&quot;).",
+    "params": [
+      "time (number | Pattern): The onset time in seconds"
+    ]
+  },
+  "duckonset": {
+    "description": "The time required for the ducked signal(s) to reach their lowest volume. Can be used to prevent clicking or for creative rhythmic effects. Can vary across orbits with the ':' mininotation, e.g. duckonset(&quot;0:0.003&quot;). Note: this requires first applying the effect to multiple orbits with e.g. duckorbit(&quot;2:3&quot;).",
+    "params": [
+      "time (number | Pattern): The onset time in seconds"
+    ]
+  },
+  "duckorbit": {
+    "description": "Modulate the amplitude of an orbit to create a &quot;sidechain&quot; like effect. Can be applied to multiple orbits with the ':' mininotation, e.g. duckorbit(&quot;2:3&quot;)",
+    "params": [
+      "orbit (number | Pattern): target orbit"
+    ]
+  },
+  "dur": {
+    "description": "Sets the duration of the event in cycles. Similar to clip / legato, it also cuts samples off at the end if they exceed the duration.",
+    "params": [
+      "seconds (number | Pattern): = 0"
+    ]
+  },
+  "duration": {
+    "description": "Sets the duration of the event in cycles. Similar to clip / legato, it also cuts samples off at the end if they exceed the duration.",
+    "params": [
+      "seconds (number | Pattern): = 0"
+    ]
+  },
+  "each": {
+    "description": "Applies a function to each of the running patterns separately. This is intended for future use with upcoming 'stepwise' features. See all for a version that applies the function to all the patterns stacked together into a single pattern. Note: Patterns must be labeled (e.g. with $:) to be picked up by each. An unlabeled pattern such as note(&quot;c4&quot;) is not registered and will produce no audio when each is present. Use $: note(&quot;c4&quot;) instead. $: sound(&quot;bd - cp sd&quot;) $: sound(&quot;hh*8&quot;) each(fast(&quot;<2 3>&quot;))",
+    "params": []
+  },
+  "early": {
+    "description": "Nudge a pattern to start earlier in time. Equivalent of Tidal's <~ operator",
+    "params": [
+      "cycles (number | Pattern): number of cycles to nudge left"
+    ]
+  },
+  "echo": {
+    "description": "Superimpose and offset multiple times, gradually decreasing the velocity",
+    "params": [
+      "times (number): how many times to repeat",
+      "time (number): cycle offset between iterations",
+      "feedback (number): velocity multiplicator for each iteration"
+    ]
+  },
+  "echoWith": {
+    "description": "Superimpose and offset multiple times, applying the given function each time.",
+    "params": [
+      "times (number): how many times to repeat",
+      "time (number): cycle offset between iterations",
+      "func (function): function to apply, given the pattern and the iteration index"
+    ]
+  },
+  "echowith": {
+    "description": "Superimpose and offset multiple times, applying the given function each time.",
+    "params": [
+      "times (number): how many times to repeat",
+      "time (number): cycle offset between iterations",
+      "func (function): function to apply, given the pattern and the iteration index"
+    ]
+  },
+  "edoScale": {
+    "description": "Turns numbers into notes in the given EDO scale (zero indexed). An EDO scale definition looks like this: e.g. C:LLsLLLs:2:1 <- this is the C major scale, 12 EDO e.g. C:LLsLLL:3:1 <- this is the Gorgo 6 note scale, 16 EDO An EDO scale, e.g. C:LLsLLLs:2:1, consists of a root note (e.g. C) followed by semicolon (':') and then a Large/small step notation sequence (e.g. LLsLLLs) followed by semicolon, then the large step size (e.g. 2) followed by semicolon, then the small step size (e.g. 1). The number of divisions of the octave is calculated as the sum of the steps in the EDO scale definition. e.g. C:LLsLLLs:2:1 is 2+2+1+2+2+2+1 = 12 EDO, 7 note scale e.g. C:LLsLLL:3:1 is 3+3+1+3+3+3 = 16 EDO, 6 note scale The root note defaults to octave 3, if no octave number is given.",
+    "params": [
+      "scale (string): Definition of EDO scale."
+    ]
+  },
+  "eish": {
+    "description": "A 'euclid' variant with an additional parameter that morphs the resulting rhythm from 0 (no morphing) to 1 (completely 'even'). For example sound(&quot;bd&quot;).euclidish(3,8,0) would be the same as sound(&quot;bd&quot;).euclid(3,8), and sound(&quot;bd&quot;).euclidish(3,8,1) would be the same as sound(&quot;bd bd bd&quot;). sound(&quot;bd&quot;).euclidish(3,8,0.5) would have a groove somewhere between. Inspired by the work of Malcom Braff.",
+    "params": [
+      "pulses (number): the number of onsets",
+      "steps (number): the number of steps to fill",
+      "groove (number): exists between the extremes of 0 (straight euclidian) and 1 (straight pulse)"
+    ]
+  },
+  "end": {
+    "description": "The same as .begin, but cuts off the end off each sample.",
+    "params": [
+      "length (number | Pattern): 1 = whole sample, .5 = half sample, .25 = quarter sample etc.."
+    ]
+  },
+  "env": {
+    "description": "Configures an envelope. Can be called in sequence like pat.env(...).env(...) to set up multiple envelopes There are two ways to declare which control will be modulated: Explicitly put control in the config (e.g. env({ c: &quot;lpf&quot; })) If the control parameter is absent, the control immediately before the env call will be used (e.g. s(&quot;saw&quot;).lpf(500).env({ a: 1 }) to modulate lpf) Modulators can be referred to by id so that they can be updated later e.g. inside a sometimes. See example below.",
+    "params": [
+      "config (Object): Envelope configuration.",
+      "config.control (string | Pattern): Node to modulate. Aliases: c",
+      "config.subControl (string | Pattern): Sub-control name to append to the control key. Aliases: sc",
+      "config.depth (number | Pattern): Relative modulation depth. Aliases: dep, dr",
+      "config.depthabs (number | Pattern): Absolute modulation depth. Aliases: da",
+      "config.attack (number | Pattern): Time to reach depth. Aliases: att, a",
+      "config.decay (number | Pattern): Time to reach sustain. Aliases: dec, d",
+      "config.sustain (number | Pattern): Sustain depth. Aliases: sus, s",
+      "config.release (number | Pattern): Time to return to nominal value. Aliases: rel, r",
+      "config.acurve (number | Pattern): Snappiness of attack curve (-1 = relaxed, 1 = snappy). Aliases: ac",
+      "config.dcurve (number | Pattern): Snappiness of decay curve (-1 = relaxed, 1 = snappy). Aliases: dc",
+      "config.rcurve (number | Pattern): Snappiness of release curve (-1 = relaxed, 1 = snappy). Aliases: rc",
+      "config.fxi (number | Pattern): FX index to target",
+      "id (string | Pattern): ID to use for this modulator"
     ]
   },
   "euclid": {
-    "description": "Changes the structure of the pattern to form an Euclidean rhythm.",
+    "description": "Changes the structure of the pattern to form an Euclidean rhythm. Euclidean rhythms are rhythms obtained using the greatest common divisor of two numbers. They were described in 2004 by Godfried Toussaint, a Canadian computer scientist. Euclidean rhythms are really useful for computer/algorithmic music because they can describe a large number of rhythms with a couple of numbers.",
     "params": [
       "pulses (number): the number of onsets/beats",
       "steps (number): the number of steps to fill"
     ]
   },
-  "euclidrot": {
+  "euclidLegato": {
+    "description": "Similar to euclid, but each pulse is held until the next pulse, so there will be no gaps.",
+    "params": [
+      "pulses (number): the number of onsets/beats",
+      "steps (number): the number of steps to fill",
+      "rotation: offset in steps",
+      "pat"
+    ]
+  },
+  "euclidLegatoRot": {
+    "description": "Similar to euclid, but each pulse is held until the next pulse, so there will be no gaps, and has an additional parameter for 'rotating' the resulting sequence",
+    "params": [
+      "pulses (number): the number of onsets/beats",
+      "steps (number): the number of steps to fill",
+      "rotation (number): offset in steps"
+    ]
+  },
+  "euclidRot": {
     "description": "Like euclid, but has an additional parameter for 'rotating' the resulting sequence.",
     "params": [
       "pulses (number): the number of onsets/beats",
@@ -91,43 +1074,703 @@
       "rotation (number): offset in steps"
     ]
   },
-  "euclidlegato": {
-    "description": "Similar to euclid, but each pulse is held until the next pulse, so there will be no gaps.",
+  "euclidish": {
+    "description": "A 'euclid' variant with an additional parameter that morphs the resulting rhythm from 0 (no morphing) to 1 (completely 'even'). For example sound(&quot;bd&quot;).euclidish(3,8,0) would be the same as sound(&quot;bd&quot;).euclid(3,8), and sound(&quot;bd&quot;).euclidish(3,8,1) would be the same as sound(&quot;bd bd bd&quot;). sound(&quot;bd&quot;).euclidish(3,8,0.5) would have a groove somewhere between. Inspired by the work of Malcom Braff.",
+    "params": [
+      "pulses (number): the number of onsets",
+      "steps (number): the number of steps to fill",
+      "groove (number): exists between the extremes of 0 (straight euclidian) and 1 (straight pulse)"
+    ]
+  },
+  "every": {
+    "description": "An alias for firstOf",
+    "params": [
+      "n (number): how many cycles",
+      "func (function): function to apply"
+    ]
+  },
+  "expand": {
+    "description": "Experimental Expands the step size of the pattern by the given factor.",
     "params": []
   },
-  "rev": {
-    "description": "Reverse all haps in a pattern",
+  "extend": {
+    "description": "Experimental extend is similar to fast in that it increases its density, but it also increases the step count accordingly. So stepcat(&quot;a b&quot;.extend(2), &quot;c d&quot;) would be the same as &quot;a b a b c d&quot;, whereas stepcat(&quot;a b&quot;.fast(2), &quot;c d&quot;) would be the same as &quot;[a b] [a b] c d&quot;.",
     "params": []
   },
-  "palindrome": {
-    "description": "Applies rev to a pattern every other cycle.",
+  "fTrans": {
+    "description": "Frequency transpose. Assumes pattern either has freq set, or has values that can be interpreted as frequencies amt has optional edoSize param, defaults to 12. If haps have edoSize param set, such as from the output of xen(&quot;31edo&quot;), ftrans will fallback to that instead of 12 as the default. Transposes the frequency by amt edoSteps",
+    "params": [
+      "amt (number)",
+      "edoSize (number): (optional)"
+    ]
+  },
+  "fTranspose": {
+    "description": "Frequency transpose. Assumes pattern either has freq set, or has values that can be interpreted as frequencies amt has optional edoSize param, defaults to 12. If haps have edoSize param set, such as from the output of xen(&quot;31edo&quot;), ftrans will fallback to that instead of 12 as the default. Transposes the frequency by amt edoSteps",
+    "params": [
+      "amt (number)",
+      "edoSize (number): (optional)"
+    ]
+  },
+  "fadeOutTime": {
+    "description": "Used when using begin/end or chop/striate and friends, to change the fade out time of the 'grain' envelope.",
+    "params": [
+      "time (number | Pattern): between 0 and 1"
+    ]
+  },
+  "fadeTime": {
+    "description": "Used when using begin/end or chop/striate and friends, to change the fade out time of the 'grain' envelope.",
+    "params": [
+      "time (number | Pattern): between 0 and 1"
+    ]
+  },
+  "fanchor": {
+    "description": "controls the center of the filter envelope. 0 is unipolar positive, .5 is bipolar, 1 is unipolar negative",
+    "params": [
+      "center (number | Pattern): 0 to 1"
+    ]
+  },
+  "fast": {
+    "description": "Speed up a pattern by the given factor. Used by &quot;*&quot; in mini notation.",
+    "params": [
+      "factor (number | Pattern): speed up factor"
+    ]
+  },
+  "fastChunk": {
+    "description": "Like chunk, but the cycles of the source pattern aren't repeated for each set of chunks.",
+    "params": []
+  },
+  "fastGap": {
+    "description": "speeds up a pattern like fast, but rather than it playing multiple times as fast would it instead leaves a gap in the remaining space of the cycle. For example, the following will play the sound pattern &quot;bd sn&quot; only once but compressed into the first half of the cycle, i.e. twice as fast.",
+    "params": []
+  },
+  "fastcat": {
+    "description": "Like cat, but the items are crammed into one cycle.",
+    "params": []
+  },
+  "fastchunk": {
+    "description": "Like chunk, but the cycles of the source pattern aren't repeated for each set of chunks.",
+    "params": []
+  },
+  "fastgap": {
+    "description": "speeds up a pattern like fast, but rather than it playing multiple times as fast would it instead leaves a gap in the remaining space of the cycle. For example, the following will play the sound pattern &quot;bd sn&quot; only once but compressed into the first half of the cycle, i.e. twice as fast.",
+    "params": []
+  },
+  "filter": {
+    "description": "Filters haps using the given function",
+    "params": [
+      "test (function): function to test Hap"
+    ]
+  },
+  "filterHaps": {
+    "description": "Returns a new Pattern, which only returns haps that meet the given test.",
+    "params": [
+      "hap_test (function): a function which returns false for haps to be removed from the pattern"
+    ]
+  },
+  "filterValues": {
+    "description": "As with filterHaps, but the function is applied to values inside haps.",
+    "params": [
+      "value_test (function)"
+    ]
+  },
+  "filterWhen": {
+    "description": "Filters haps by their begin time",
+    "params": [
+      "test (function): function to test Hap.whole.begin"
+    ]
+  },
+  "findPeaks": {
+    "description": "Find peaks in spectrum magnitudes",
+    "params": []
+  },
+  "firstOf": {
+    "description": "Applies the given function every n cycles, starting from the first cycle.",
+    "params": [
+      "n (number): how many cycles",
+      "func (function): function to apply"
+    ]
+  },
+  "fit": {
+    "description": "Makes the sample fit its event duration. Good for rhythmical loops like drum breaks. Similar to loopAt.",
+    "params": []
+  },
+  "floor": {
+    "description": "Assumes a numerical pattern. Returns a new pattern with all values set to their mathematical floor. E.g. 3.7 replaced with to 3, and -4.2 replaced with -5.",
+    "params": []
+  },
+  "flux": {
+    "description": "Like jux, but flips the ears each cycle.",
+    "params": []
+  },
+  "fluxBy": {
+    "description": "Like juxBy, except it flips the ears each cycle.",
+    "params": []
+  },
+  "fluxby": {
+    "description": "Like juxBy, except it flips the ears each cycle.",
+    "params": []
+  },
+  "fm": {
+    "description": "Sets the Frequency Modulation of the synth. Controls the modulation index, which defines the brightness of the sound. A number may be added afterwards to control the modulation index of any of the 8 individual FMs (e.g. fm3). Also, FMs may be routed into each other with matrix commands like fm13, which would send fm1 back into fm3",
+    "params": [
+      "brightness (number | Pattern): modulation index"
+    ]
+  },
+  "fmap": {
+    "description": "Returns a new pattern, with the function applied to the value of each hap. It has the alias fmap.",
+    "params": [
+      "func (function): to to apply to the value"
+    ]
+  },
+  "fmatt": {
+    "description": "Attack time for the FM envelope: time it takes to reach maximum modulation A number may be added afterwards to control the attack of the envelope of any of the 8 individual FMs (e.g. fmatt5)",
+    "params": [
+      "time (number | Pattern): attack time"
+    ]
+  },
+  "fmattack": {
+    "description": "Attack time for the FM envelope: time it takes to reach maximum modulation A number may be added afterwards to control the attack of the envelope of any of the 8 individual FMs (e.g. fmatt5)",
+    "params": [
+      "time (number | Pattern): attack time"
+    ]
+  },
+  "fmdec": {
+    "description": "Decay time for the FM envelope: seconds until the sustain level is reached after the attack phase. A number may be added afterwards to control the decay of the envelope of any of the 8 individual FMs (e.g. fmdec6)",
+    "params": [
+      "time (number | Pattern): decay time"
+    ]
+  },
+  "fmdecay": {
+    "description": "Decay time for the FM envelope: seconds until the sustain level is reached after the attack phase. A number may be added afterwards to control the decay of the envelope of any of the 8 individual FMs (e.g. fmdec6)",
+    "params": [
+      "time (number | Pattern): decay time"
+    ]
+  },
+  "fme": {
+    "description": "Ramp type of fm envelope. Exp might be a bit broken.. A number may be added afterwards to control the envelope of any of the 8 individual FMs (e.g. fmenv4)",
+    "params": [
+      "type (number | Pattern): lin | exp"
+    ]
+  },
+  "fmenv": {
+    "description": "Ramp type of fm envelope. Exp might be a bit broken.. A number may be added afterwards to control the envelope of any of the 8 individual FMs (e.g. fmenv4)",
+    "params": [
+      "type (number | Pattern): lin | exp"
+    ]
+  },
+  "fmh": {
+    "description": "Sets the Frequency Modulation Harmonicity Ratio. Controls the timbre of the sound. Whole numbers and simple ratios sound more natural, while decimal numbers and complex ratios sound metallic. A number may be added afterwards to control the harmonicity of any of the 8 individual FMs (e.g. fmh2)",
+    "params": [
+      "harmonicity (number | Pattern)"
+    ]
+  },
+  "fmi": {
+    "description": "Sets the Frequency Modulation of the synth. Controls the modulation index, which defines the brightness of the sound. A number may be added afterwards to control the modulation index of any of the 8 individual FMs (e.g. fm3). Also, FMs may be routed into each other with matrix commands like fm13, which would send fm1 back into fm3",
+    "params": [
+      "brightness (number | Pattern): modulation index"
+    ]
+  },
+  "fmrel": {
+    "description": "Release time for the FM envelope: how much modulation is applied after the note is released A number may be added afterwards to control the release of the envelope of any of the 8 individual FMs (e.g. fmrel8)",
+    "params": [
+      "time (number | Pattern): release time"
+    ]
+  },
+  "fmrelease": {
+    "description": "Release time for the FM envelope: how much modulation is applied after the note is released A number may be added afterwards to control the release of the envelope of any of the 8 individual FMs (e.g. fmrel8)",
+    "params": [
+      "time (number | Pattern): release time"
+    ]
+  },
+  "fmsus": {
+    "description": "Sustain level for the FM envelope: how much modulation is applied after the decay phase A number may be added afterwards to control the sustain of the envelope of any of the 8 individual FMs (e.g. fmsus7)",
+    "params": [
+      "level (number | Pattern): sustain level"
+    ]
+  },
+  "fmsustain": {
+    "description": "Sustain level for the FM envelope: how much modulation is applied after the decay phase A number may be added afterwards to control the sustain of the envelope of any of the 8 individual FMs (e.g. fmsus7)",
+    "params": [
+      "level (number | Pattern): sustain level"
+    ]
+  },
+  "fmwave": {
+    "description": "Waveform of the fm modulator A number may be added afterwards to control the waveform any of the 8 individual FMs (e.g. fmwave6)",
+    "params": [
+      "wave (number | Pattern): waveform"
+    ]
+  },
+  "focus": {
+    "description": "Similar to compress, but doesn't leave gaps, and the 'focus' can be bigger than a cycle",
+    "params": []
+  },
+  "fold": {
+    "description": "Wavefolding distortion",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "freq": {
+    "description": "Set frequency of sound.",
+    "params": [
+      "frequency (number | Pattern): in Hz. the audible range is between 20 and 20000 Hz"
+    ]
+  },
+  "fscope": {
+    "description": "Renders an oscilloscope for the frequency domain of the audio signal.",
+    "params": [
+      "color (string): line color as hex or color name. defaults to white.",
+      "scale (number): scales the y-axis. Defaults to 0.25",
+      "pos (number): y-position relative to screen height. 0 = top, 1 = bottom of screen",
+      "lean (number): y-axis alignment where 0 = top and 1 = bottom",
+      "min (number): min value",
+      "max (number): max value"
+    ]
+  },
+  "ftrans": {
+    "description": "Frequency transpose. Assumes pattern either has freq set, or has values that can be interpreted as frequencies amt has optional edoSize param, defaults to 12. If haps have edoSize param set, such as from the output of xen(&quot;31edo&quot;), ftrans will fallback to that instead of 12 as the default. Transposes the frequency by amt edoSteps",
+    "params": [
+      "amt (number)",
+      "edoSize (number): (optional)"
+    ]
+  },
+  "ftranspose": {
+    "description": "Frequency transpose. Assumes pattern either has freq set, or has values that can be interpreted as frequencies amt has optional edoSize param, defaults to 12. If haps have edoSize param set, such as from the output of xen(&quot;31edo&quot;), ftrans will fallback to that instead of 12 as the default. Transposes the frequency by amt edoSteps",
+    "params": [
+      "amt (number)",
+      "edoSize (number): (optional)"
+    ]
+  },
+  "ftype": {
+    "description": "Sets the filter type. The ladder filter is more aggressive. More types might be added in the future.",
+    "params": [
+      "type (number | Pattern): 12db (0), ladder (1), or 24db (2)"
+    ]
+  },
+  "gain": {
+    "description": "Controls the gain by an exponential amount.",
+    "params": [
+      "amount (number | Pattern): gain."
+    ]
+  },
+  "gap": {
+    "description": "Does absolutely nothing, but with a given metrical 'steps'",
+    "params": [
+      "steps (number)"
+    ]
+  },
+  "generateGraph": {
+    "description": "Creates a canvas element showing a graph of the given data.",
+    "params": [
+      "data (Float32Array): An array of numbers, or a Float32Array.",
+      "width (number): Width in pixels of the canvas.",
+      "height (number): Height in pixels of the canvas.",
+      "min (number): Minimum value of data for the graph (lower edge).",
+      "max (number): Maximum value of data in the graph (upper edge)."
+    ]
+  },
+  "generateReverb": {
+    "description": "Generates a reverb impulse response.",
+    "params": [
+      "params (Object): TODO: Document the properties.",
+      "callback (function): Function to call when the impulse response has been generated. The impulse response is passed to this function as its parameter. May be called immediately within the current execution context, or later."
+    ]
+  },
+  "getAllChannelData": {
+    "description": "",
+    "params": [
+      "buffer (AudioBuffer)"
+    ]
+  },
+  "getDevice": {
+    "description": "Look up a device by index or name. Otherwise return a default device, or fail if none are connected.",
+    "params": [
+      "indexOrName (string | number)",
+      "devices (Array.<Input> | Array.<Output>)"
+    ]
+  },
+  "getDur": {
+    "description": "Returns the duration, in seconds, of the given sample. Has optional param n (for instance, the 2 in s(&quot;casio:2&quot;)) Note: must be called with await, otherwise you'll get a pending Promise object.",
+    "params": [
+      "sampleName (string)",
+      "(optional) (number): n"
+    ]
+  },
+  "getMidiDeviceNamesString": {
+    "description": "Get a string listing device names for error messages.",
+    "params": [
+      "devices (Array.<Input> | Array.<Output>)"
+    ]
+  },
+  "gravX": {
+    "description": "The device's gravity x-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "gravY": {
+    "description": "The device's gravity y-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "gravZ": {
+    "description": "The device's gravity z-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "gravityX": {
+    "description": "The device's gravity x-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "gravityY": {
+    "description": "The device's gravity y-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "gravityZ": {
+    "description": "The device's gravity z-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "grow": {
+    "description": "Experimental Progressively grows the pattern by 'n' steps until the full pattern is played, or if a second value is given (using mininotation list syntax with :), that number of times. A positive number will progressively grow steps from the start of a pattern, and a negative number from the end.",
+    "params": []
+  },
+  "handleOutputBuffersToRetrieve": {
+    "description": "Add contents of output buffers just processed to output buffers",
+    "params": []
+  },
+  "hard": {
+    "description": "Hard-clipping distortion",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "hcutoff": {
+    "description": "Applies the cutoff frequency of the high-pass filter. When using mininotation, you can also optionally add the 'hpq' parameter, separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): audible between 0 and 20000"
+    ]
+  },
+  "hp": {
+    "description": "Applies the cutoff frequency of the high-pass filter. When using mininotation, you can also optionally add the 'hpq' parameter, separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): audible between 0 and 20000"
+    ]
+  },
+  "hpa": {
+    "description": "Sets the attack duration for the highpass filter envelope.",
+    "params": [
+      "attack (number | Pattern): time of the highpass filter envelope"
+    ]
+  },
+  "hpattack": {
+    "description": "Sets the attack duration for the highpass filter envelope.",
+    "params": [
+      "attack (number | Pattern): time of the highpass filter envelope"
+    ]
+  },
+  "hpd": {
+    "description": "Sets the decay duration for the highpass filter envelope.",
+    "params": [
+      "decay (number | Pattern): time of the highpass filter envelope"
+    ]
+  },
+  "hpdc": {
+    "description": "DC offset of the LFO for the highpass filter",
+    "params": [
+      "dcoffset (number | Pattern): dc offset. set to 0 for unipolar"
+    ]
+  },
+  "hpdecay": {
+    "description": "Sets the decay duration for the highpass filter envelope.",
+    "params": [
+      "decay (number | Pattern): time of the highpass filter envelope"
+    ]
+  },
+  "hpdepth": {
+    "description": "Depth of the LFO for the highpass filter",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "hpdepthfreq": {
+    "description": "Depth of the LFO for the hipass filter, in hz",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "hpdepthfrequency": {
+    "description": "Depth of the LFO for the hipass filter, in hz",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "hpe": {
+    "description": "Sets the highpass filter envelope modulation depth.",
+    "params": [
+      "modulation (number | Pattern): depth of the highpass filter envelope between 0 and n"
+    ]
+  },
+  "hpenv": {
+    "description": "Sets the highpass filter envelope modulation depth.",
+    "params": [
+      "modulation (number | Pattern): depth of the highpass filter envelope between 0 and n"
+    ]
+  },
+  "hpf": {
+    "description": "Applies the cutoff frequency of the high-pass filter. When using mininotation, you can also optionally add the 'hpq' parameter, separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): audible between 0 and 20000"
+    ]
+  },
+  "hpq": {
+    "description": "Controls the high-pass q-value.",
+    "params": [
+      "q (number | Pattern): resonance factor between 0 and 50"
+    ]
+  },
+  "hpr": {
+    "description": "Sets the release time for the highpass filter envelope.",
+    "params": [
+      "release (number | Pattern): time of the highpass filter envelope"
+    ]
+  },
+  "hprate": {
+    "description": "Rate of the LFO for the highpass filter",
+    "params": [
+      "rate (number | Pattern): rate in hertz"
+    ]
+  },
+  "hprelease": {
+    "description": "Sets the release time for the highpass filter envelope.",
+    "params": [
+      "release (number | Pattern): time of the highpass filter envelope"
+    ]
+  },
+  "hps": {
+    "description": "Sets the sustain amplitude for the highpass filter envelope.",
+    "params": [
+      "sustain (number | Pattern): amplitude of the highpass filter envelope"
+    ]
+  },
+  "hpshape": {
+    "description": "Shape of the LFO for the highpass filter",
+    "params": [
+      "shape (number | Pattern): Shape of the lfo (0, 1, 2, ..)"
+    ]
+  },
+  "hpskew": {
+    "description": "Skew of the LFO for the highpass filter",
+    "params": [
+      "skew (number | Pattern): How much to bend the LFO shape"
+    ]
+  },
+  "hpsustain": {
+    "description": "Sets the sustain amplitude for the highpass filter envelope.",
+    "params": [
+      "sustain (number | Pattern): amplitude of the highpass filter envelope"
+    ]
+  },
+  "hpsync": {
+    "description": "Cycle-synced rate of the LFO for the highpass filter",
+    "params": [
+      "rate (number | Pattern): rate in cycles"
+    ]
+  },
+  "hresonance": {
+    "description": "Controls the high-pass q-value.",
+    "params": [
+      "q (number | Pattern): resonance factor between 0 and 50"
+    ]
+  },
+  "hurry": {
+    "description": "Both speeds up the pattern (like 'fast') and the sample playback (like 'speed').",
+    "params": []
+  },
+  "hush": {
+    "description": "Silences a pattern.",
+    "params": []
+  },
+  "i": {
+    "description": "Selects the given degree. Currently used in xen and tune:",
+    "params": [
+      "value (number | Pattern)"
+    ]
+  },
+  "id": {
+    "description": "",
+    "params": []
+  },
+  "inhabit": {
+    "description": "Picks patterns (or plain values) either from a list (by index) or a lookup table (by name). Similar to pick, but cycles are squeezed into the target ('inhabited') pattern.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "inhabitmod": {
+    "description": "The same as inhabit, but if you pick a number greater than the size of the list, it wraps around, rather than sticking at the maximum value. For example, if you pick the fifth pattern of a list of three, you'll get the second one.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "inside": {
+    "description": "Carries out an operation 'inside' a cycle.",
+    "params": []
+  },
+  "into": {
+    "description": "Breaks a pattern into pieces according to the structure of a given pattern. True values in the given pattern cause the corresponding subcycle of the source pattern to be looped, and for an (optional) given function to be applied. False values result in the corresponding part of the source pattern to be played unchanged.",
+    "params": []
+  },
+  "inv": {
+    "description": "Swaps 1s and 0s in a binary pattern.",
+    "params": []
+  },
+  "invert": {
+    "description": "Swaps 1s and 0s in a binary pattern.",
+    "params": []
+  },
+  "ir": {
+    "description": "Sets the sample to use as an impulse response for the reverb.",
+    "params": [
+      "sample (string | Pattern): to use as an impulse response"
+    ]
+  },
+  "irand": {
+    "description": "A continuous pattern of random integers, between 0 and n-1.",
+    "params": [
+      "n (number): max value (exclusive)"
+    ]
+  },
+  "irbegin": {
+    "description": "Sets the beginning of the IR response sample",
+    "params": [
+      "begin (string | Pattern): between 0 and 1"
+    ]
+  },
+  "iresponse": {
+    "description": "Sets the sample to use as an impulse response for the reverb.",
+    "params": [
+      "sample (string | Pattern): to use as an impulse response"
+    ]
+  },
+  "irspeed": {
+    "description": "Sets speed of the sample for the impulse response.",
+    "params": [
+      "speed (string | Pattern)"
+    ]
+  },
+  "isaw": {
+    "description": "A sawtooth signal between 1 and 0 (like saw, but flipped).",
+    "params": []
+  },
+  "isaw2": {
+    "description": "A sawtooth signal between 1 and -1 (like saw2, but flipped).",
     "params": []
   },
   "iter": {
-    "description": "Divides a pattern into a given number of subdivisions, plays the subdivisions in order, but increments the starting subdivision each cycle.",
+    "description": "Divides a pattern into a given number of subdivisions, plays the subdivisions in order, but increments the starting subdivision each cycle. The pattern wraps to the first subdivision after the last subdivision is played.",
+    "params": []
+  },
+  "iterBack": {
+    "description": "Like iter, but plays the subdivisions in reverse order. Known as iter' in tidalcycles",
     "params": []
   },
   "iterback": {
-    "description": "Like iter, but plays the subdivisions in reverse order.",
+    "description": "Like iter, but plays the subdivisions in reverse order. Known as iter' in tidalcycles",
     "params": []
   },
-  "ply": {
-    "description": "The ply function repeats each event the given number of times.",
+  "itri": {
+    "description": "An inverted triangle signal between 1 and 0 (like tri, but flipped).",
     "params": []
   },
-  "segment": {
-    "description": "Samples the pattern at a rate of n events per cycle.",
+  "itri2": {
+    "description": "An inverted triangle signal between -1 and 1 (like itri, but bipolar).",
+    "params": []
+  },
+  "jux": {
+    "description": "The jux function creates strange stereo effects, by applying a function to a pattern, but only in the right-hand channel.",
+    "params": []
+  },
+  "juxBy": {
+    "description": "Jux with adjustable stereo width. 0 = mono, 1 = full stereo.",
+    "params": []
+  },
+  "juxFlip": {
+    "description": "Like jux, but flips the ears each cycle.",
+    "params": []
+  },
+  "juxFlipBy": {
+    "description": "Like juxBy, except it flips the ears each cycle.",
+    "params": []
+  },
+  "juxby": {
+    "description": "Jux with adjustable stereo width. 0 = mono, 1 = full stereo.",
+    "params": []
+  },
+  "juxflip": {
+    "description": "Like jux, but flips the ears each cycle.",
+    "params": []
+  },
+  "juxflipby": {
+    "description": "Like juxBy, except it flips the ears each cycle.",
+    "params": []
+  },
+  "keep": {
+    "description": "When called on a pattern a, with a input pattern b (a.keep(b)), combines a and b such that anything defined in a, and anything defined in b that is not defined in a will be in the resulting pattern The structure is maintained from a, because the default pattern alignment is in, see the section on Pattern Alignment in the technical manual in the docs This is the inverse of set See examples below",
     "params": [
-      "segments (number): number of segments per cycle"
+      "pat (Pattern)"
     ]
   },
-  "compress": {
-    "description": "Compress each cycle into the given timespan, leaving a gap",
+  "keyDown": {
+    "description": "returns true when a key or array of keys is held Key name reference",
     "params": []
   },
-  "zoom": {
-    "description": "Plays a portion of a pattern, specified by the beginning and end of a time span.",
+  "label": {
+    "description": "Sets the displayed text for an event on the pianoroll",
+    "params": [
+      "label (string): text to display"
+    ]
+  },
+  "lastOf": {
+    "description": "Applies the given function every n cycles, starting from the last cycle.",
+    "params": [
+      "n (number): how many cycles",
+      "func (function): function to apply"
+    ]
+  },
+  "late": {
+    "description": "Nudge a pattern to start later in time. Equivalent of Tidal's ~> operator",
+    "params": [
+      "cycles (number | Pattern): number of cycles to nudge right"
+    ]
+  },
+  "layer": {
+    "description": "Layers the result of the given function(s). Like superimpose, but without the original pattern:",
     "params": []
+  },
+  "legato": {
+    "description": "Multiplies the duration with the given number. Also cuts samples off at the end if they exceed the duration.",
+    "params": [
+      "factor (number | Pattern): = 0"
+    ]
+  },
+  "lfo": {
+    "description": "Configures an LFO. Can be called in sequence like pat.lfo(...).lfo(...) to set up multiple LFOs. There are two ways to declare which control will be modulated: Explicitly put control in the config (e.g. lfo({ c: &quot;lpf&quot; })) If the control parameter is absent, the control immediately before the lfo call will be used (e.g. s(&quot;saw&quot;).lpf(500).lfo() to modulate lpf) Modulators can be referred to by id so that they can be updated later e.g. inside a sometimes. See example below.",
+    "params": [
+      "config (Object): LFO configuration.",
+      "config.control (string | Pattern): Node to modulate. Aliases: c",
+      "config.subControl (string | Pattern): Sub-control name to append to the control key. Aliases: sc",
+      "config.rate (number | Pattern): Modulation rate. Aliases: r",
+      "config.sync (number | Pattern): Tempo-synced modulation rate. Aliases: s",
+      "config.depth (number | Pattern): Relative modulation depth. Aliases: dep, dr",
+      "config.depthabs (number | Pattern): Absolute modulation depth. Aliases: da",
+      "config.dcoffset (number | Pattern): DC offset / bias for the waveform. Aliases: dc",
+      "config.shape (number | Pattern): Shape index. Aliases: sh",
+      "config.skew (number | Pattern): Skew amount. Aliases: sk",
+      "config.curve (number | Pattern): Exponential curve amount. Aliases: cu",
+      "config.retrig (number | Pattern): If > 0.5, the LFO will retrigger on each event. Aliases: rt",
+      "config.fxi (number | Pattern): FX index to target",
+      "id (string | Pattern): ID to use for this modulator"
+    ]
   },
   "linger": {
     "description": "Selects the given fraction of the pattern and repeats that part to fill the remainder of the cycle.",
@@ -135,236 +1778,2061 @@
       "fraction (number): fraction to select"
     ]
   },
-  "fastgap": {
-    "description": "speeds up a pattern like fast, but rather than it playing multiple times as fast would it instead leaves a gap.",
+  "log": {
+    "description": "Writes the content of the current event to the console (visible in the side menu).",
     "params": []
   },
-  "inside": {
-    "description": "Carries out an operation 'inside' a cycle.",
+  "logValues": {
+    "description": "A simplified version of log which writes all &quot;values&quot; (various configurable parameters) within the event to the console (visible in the side menu).",
     "params": []
   },
-  "outside": {
-    "description": "Carries out an operation 'outside' a cycle.",
-    "params": []
-  },
-  "cpm": {
-    "description": "Plays the pattern at the given cycles per minute.",
-    "params": []
-  },
-  "ribbon": {
-    "description": "Loops the pattern inside an offset for cycles.",
+  "loop": {
+    "description": "Loops the sample. Note that the tempo of the loop is not synced with the cycle tempo. To change the loop region, use loopBegin / loopEnd.",
     "params": [
-      "offset (number): start point of loop in cycles",
-      "cycles (number): loop length in cycles"
+      "on (number | Pattern): If 1, the sample is looped"
     ]
   },
-  "swingby": {
-    "description": "Delays events in the second half of each slice by the amount x.",
+  "loopAt": {
+    "description": "Makes the sample fit the given number of cycles by changing the speed.",
+    "params": []
+  },
+  "loopAtCps": {
+    "description": "Makes the sample fit the given number of cycles and cps value, by changing the speed. deprecated: use loopAt or fit instead, together with setCps / setCpm.",
+    "params": []
+  },
+  "loopBegin": {
+    "description": "Begin to loop at a specific point in the sample (inbetween begin and end). Note that the loop point must be inbetween begin and end, and before loopEnd! Note: Samples starting with wt_ will automatically loop! (wt = wavetable)",
     "params": [
-      "subdivision (number): slice size",
-      "offset (number): delay amount"
+      "time (number | Pattern): between 0 and 1, where 1 is the length of the sample"
     ]
   },
-  "swing": {
-    "description": "Shorthand for swingBy with 1/3.",
+  "loopEnd": {
+    "description": "End the looping section at a specific point in the sample (inbetween begin and end). Note that the loop point must be inbetween begin and end, and after loopBegin!",
+    "params": [
+      "time (number | Pattern): between 0 and 1, where 1 is the length of the sample"
+    ]
+  },
+  "loopb": {
+    "description": "Begin to loop at a specific point in the sample (inbetween begin and end). Note that the loop point must be inbetween begin and end, and before loopEnd! Note: Samples starting with wt_ will automatically loop! (wt = wavetable)",
+    "params": [
+      "time (number | Pattern): between 0 and 1, where 1 is the length of the sample"
+    ]
+  },
+  "loope": {
+    "description": "End the looping section at a specific point in the sample (inbetween begin and end). Note that the loop point must be inbetween begin and end, and after loopBegin!",
+    "params": [
+      "time (number | Pattern): between 0 and 1, where 1 is the length of the sample"
+    ]
+  },
+  "lp": {
+    "description": "Applies the cutoff frequency of the low-pass filter. When using mininotation, you can also optionally add the 'lpq' parameter, separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): audible between 0 and 20000"
+    ]
+  },
+  "lpa": {
+    "description": "Sets the attack duration for the lowpass filter envelope.",
+    "params": [
+      "attack (number | Pattern): time of the filter envelope"
+    ]
+  },
+  "lpattack": {
+    "description": "Sets the attack duration for the lowpass filter envelope.",
+    "params": [
+      "attack (number | Pattern): time of the filter envelope"
+    ]
+  },
+  "lpd": {
+    "description": "Sets the decay duration for the lowpass filter envelope.",
+    "params": [
+      "decay (number | Pattern): time of the filter envelope"
+    ]
+  },
+  "lpdc": {
+    "description": "DC offset of the LFO for the lowpass filter",
+    "params": [
+      "dcoffset (number | Pattern): dc offset. set to 0 for unipolar"
+    ]
+  },
+  "lpdecay": {
+    "description": "Sets the decay duration for the lowpass filter envelope.",
+    "params": [
+      "decay (number | Pattern): time of the filter envelope"
+    ]
+  },
+  "lpdepth": {
+    "description": "Depth of the LFO for the lowpass filter",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "lpdepthfreq": {
+    "description": "Depth of the LFO for the lowpass filter, in HZ",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "lpdepthfrequency": {
+    "description": "Depth of the LFO for the lowpass filter, in HZ",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "lpe": {
+    "description": "Sets the lowpass filter envelope modulation depth.",
+    "params": [
+      "modulation (number | Pattern): depth of the lowpass filter envelope between 0 and n"
+    ]
+  },
+  "lpenv": {
+    "description": "Sets the lowpass filter envelope modulation depth.",
+    "params": [
+      "modulation (number | Pattern): depth of the lowpass filter envelope between 0 and n"
+    ]
+  },
+  "lpf": {
+    "description": "Applies the cutoff frequency of the low-pass filter. When using mininotation, you can also optionally add the 'lpq' parameter, separated by ':'.",
+    "params": [
+      "frequency (number | Pattern): audible between 0 and 20000"
+    ]
+  },
+  "lpq": {
+    "description": "Controls the low-pass q-value.",
+    "params": [
+      "q (number | Pattern): resonance factor between 0 and 50"
+    ]
+  },
+  "lpr": {
+    "description": "Sets the release time for the lowpass filter envelope.",
+    "params": [
+      "release (number | Pattern): time of the filter envelope"
+    ]
+  },
+  "lprate": {
+    "description": "Rate of the LFO for the lowpass filter",
+    "params": [
+      "rate (number | Pattern): rate in hertz"
+    ]
+  },
+  "lprelease": {
+    "description": "Sets the release time for the lowpass filter envelope.",
+    "params": [
+      "release (number | Pattern): time of the filter envelope"
+    ]
+  },
+  "lps": {
+    "description": "Sets the sustain amplitude for the lowpass filter envelope.",
+    "params": [
+      "sustain (number | Pattern): amplitude of the lowpass filter envelope"
+    ]
+  },
+  "lpshape": {
+    "description": "Shape of the LFO for the lowpass filter",
+    "params": [
+      "shape (number | Pattern): Shape of the lfo (0, 1, 2, ..)"
+    ]
+  },
+  "lpskew": {
+    "description": "Skew of the LFO for the lowpass filter",
+    "params": [
+      "skew (number | Pattern): How much to bend the LFO shape"
+    ]
+  },
+  "lpsustain": {
+    "description": "Sets the sustain amplitude for the lowpass filter envelope.",
+    "params": [
+      "sustain (number | Pattern): amplitude of the lowpass filter envelope"
+    ]
+  },
+  "lpsync": {
+    "description": "Cycle-synced rate of the LFO for the lowpass filter",
+    "params": [
+      "rate (number | Pattern): rate in cycles"
+    ]
+  },
+  "markcss": {
+    "description": "Overrides the css of highlighted events. Make sure to use single quotes!",
     "params": []
   },
-  "add": {
-    "description": "Adds the given number to each item in the pattern.",
+  "mask": {
+    "description": "Returns silence when mask is 0 or &quot;~&quot;",
     "params": []
   },
-  "sub": {
-    "description": "Like add, but the given numbers are subtracted.",
+  "midi": {
+    "description": "MIDI output: Opens a MIDI output port.",
+    "params": [
+      "midiport (string | number): MIDI device name or index defaulting to 0",
+      "options (object): Additional MIDI configuration options"
+    ]
+  },
+  "midibend": {
+    "description": "MIDI pitch bend: Sends a MIDI pitch bend message.",
+    "params": [
+      "midibend (number | Pattern): MIDI pitch bend (-1 - 1)"
+    ]
+  },
+  "midichan": {
+    "description": "MIDI channel: Sets the MIDI channel for the event.",
+    "params": [
+      "channel (number | Pattern): MIDI channel number (0-15)"
+    ]
+  },
+  "midicmd": {
+    "description": "MIDI command: Sends a MIDI command message.",
+    "params": [
+      "command (number | Pattern): MIDI command"
+    ]
+  },
+  "midikeys": {
+    "description": "MIDI keyboard: Opens a MIDI input port to receive MIDI keyboard messages. The note length is fixed as Superdough is not currently set up for undetermined note durations",
+    "params": [
+      "input (string | number): MIDI device name or index defaulting to 0"
+    ]
+  },
+  "midimaps": {
+    "description": "Adds midimaps to the registry. Inside each midimap, control names (e.g. lpf) are mapped to cc numbers.",
+    "params": []
+  },
+  "midin": {
+    "description": "MIDI input: Opens a MIDI input port to receive MIDI control change messages. The output is a function that accepts a midi cc value to query as well as (optionally) a midi channel",
+    "params": [
+      "input (string | number): MIDI device name or index defaulting to 0"
+    ]
+  },
+  "midiport": {
+    "description": "MIDI port: Sets the MIDI port for the event.",
+    "params": [
+      "port (number | Pattern): MIDI port"
+    ]
+  },
+  "miditouch": {
+    "description": "MIDI key after touch: Sends a MIDI key after touch message.",
+    "params": [
+      "miditouch (number | Pattern): MIDI key after touch (0-1)"
+    ]
+  },
+  "mode": {
+    "description": "Remove anchor note from the voicing. Useful for melody harmonization",
+    "params": [
+      "modeName (string | Pattern): one of {below | above | duck | root}"
+    ]
+  },
+  "morph": {
+    "description": "Takes two binary rhythms represented as lists of 1s and 0s, and a number between 0 and 1 that morphs between them. The two lists should contain the same number of true values.",
+    "params": []
+  },
+  "mousex": {
+    "description": "The mouse's x position value ranges from 0 to 1.",
+    "params": []
+  },
+  "mousey": {
+    "description": "The mouse's y position value ranges from 0 to 1.",
     "params": []
   },
   "mul": {
     "description": "Multiplies each number by the given factor.",
     "params": []
   },
-  "div": {
-    "description": "Divides each number by the given factor.",
-    "params": []
-  },
-  "round": {
-    "description": "Returns a new pattern with all values rounded to the nearest integer.",
-    "params": []
-  },
-  "floor": {
-    "description": "Returns a new pattern with all values set to their mathematical floor.",
-    "params": []
-  },
-  "ceil": {
-    "description": "Returns a new pattern with all values set to their mathematical ceiling.",
-    "params": []
-  },
-  "range": {
-    "description": "Returns a new pattern with values scaled to the given min/max range (from 0..1).",
-    "params": []
-  },
-  "rangex": {
-    "description": "Returns a new pattern with values scaled to the given min/max range, following an exponential curve.",
-    "params": []
-  },
-  "range2": {
-    "description": "Returns a new pattern with values scaled to the given min/max range (from -1..1).",
-    "params": []
-  },
-  "ratio": {
-    "description": "Allows dividing numbers via list notation using \":\".",
-    "params": []
-  },
-  "as": {
-    "description": "Sets properties in a batch.",
+  "n": {
+    "description": "Selects the given index: for samples, it picks the sample by index, with wrap around for scales, it picks the scale degree for voicings, it picks the voice index",
     "params": [
-      "mapping (String|Array): the control names that are set"
+      "value (number | Pattern): sample index starting from 0"
     ]
   },
-  "begin": {
-    "description": "Skips the beginning of each sample.",
-    "params": [
-      "amount (number|Pattern): between 0 and 1"
-    ]
-  },
-  "end": {
-    "description": "Cuts off the end off each sample.",
-    "params": [
-      "length (number|Pattern): 1 = whole sample"
-    ]
-  },
-  "loop": {
-    "description": "Loops the sample.",
-    "params": [
-      "on (number|Pattern): If 1, the sample is looped"
-    ]
-  },
-  "loopbegin": {
-    "description": "Begin to loop at a specific point in the sample.",
-    "params": [
-      "time (number|Pattern): between 0 and 1"
-    ]
-  },
-  "loopend": {
-    "description": "End the looping section at a specific point in the sample.",
-    "params": [
-      "time (number|Pattern): between 0 and 1"
-    ]
-  },
-  "cut": {
-    "description": "Cut will stop a playing sample as soon as another samples with in same cutgroup is to be played.",
-    "params": [
-      "group (number|Pattern): cut group number"
-    ]
-  },
-  "loopat": {
-    "description": "Makes the sample fit the given number of cycles by changing the speed.",
+  "never": {
+    "description": "Shorthand for .sometimesBy(0, fn) (never calls fn)",
     "params": []
-  },
-  "fit": {
-    "description": "Makes the sample fit its event duration.",
-    "params": []
-  },
-  "chop": {
-    "description": "Cuts each sample into the given number of parts.",
-    "params": []
-  },
-  "striate": {
-    "description": "Cuts each sample into the given number of parts, triggering progressive portions.",
-    "params": []
-  },
-  "slice": {
-    "description": "Chops samples into the given number of slices, triggering those slices with a given pattern.",
-    "params": []
-  },
-  "splice": {
-    "description": "Works the same as slice, but changes the playback speed of each slice.",
-    "params": []
-  },
-  "scrub": {
-    "description": "Allows you to scrub an audio file like a tape loop.",
-    "params": []
-  },
-  "speed": {
-    "description": "Changes the speed of sample playback.",
-    "params": [
-      "speed (number|Pattern): playback speed"
-    ]
-  },
-  "basicwaveforms": {
-    "description": "s, sound Selects the sound/synth to use.",
-    "params": [
-      "sound (string): sine, sawtooth, square, triangle, or sample name"
-    ]
   },
   "noise": {
-    "description": "noise Adds noise to the sound.",
+    "description": "Adds pink noise to the mix",
     "params": [
-      "amount (number): noise amount"
-    ]
-  },
-  "vib": {
-    "description": "vibrato, v, vib Applies a vibrato to the frequency of the oscillator.",
-    "params": [
-      "frequency (number|Pattern): of the vibrato in hertz"
-    ]
-  },
-  "vibmod": {
-    "description": "vmod Sets the vibrato depth in semitones.",
-    "params": [
-      "depth (number|Pattern): of vibrato (in semitones)"
-    ]
-  },
-  "fm": {
-    "description": "fmi Sets the Frequency Modulation of the synth.",
-    "params": [
-      "brightness (number|Pattern): modulation index"
-    ]
-  },
-  "fmh": {
-    "description": "Sets the Frequency Modulation Harmonicity Ratio.",
-    "params": [
-      "harmonicity (number|Pattern): ratio"
-    ]
-  },
-  "fmattack": {
-    "description": "Attack time for the FM envelope.",
-    "params": [
-      "time (number|Pattern): attack time"
-    ]
-  },
-  "fmdecay": {
-    "description": "Decay time for the FM envelope.",
-    "params": [
-      "time (number|Pattern): decay time"
-    ]
-  },
-  "fmsustain": {
-    "description": "Sustain level for the FM envelope.",
-    "params": [
-      "level (number|Pattern): sustain level"
-    ]
-  },
-  "fmenv": {
-    "description": "Ramp type of fm envelope.",
-    "params": [
-      "type (number|Pattern): lin | exp"
+      "wet (number | Pattern): wet amount"
     ]
   },
   "note": {
-    "description": "note Sets the note to play.",
+    "description": "Plays the given note name or midi number. A note name consists of a letter (a-g or A-G) optional accidentals (b or #) optional (possibly negative) octave number (0-9). Defaults to 3 Examples of valid note names: c, bb, Bb, f#, c3, A4, Eb2, c#5 You can also use midi numbers instead of note names, where 69 is mapped to A4 440Hz in 12EDO.",
+    "params": []
+  },
+  "nrpnn": {
+    "description": "MIDI NRPN non-registered parameter number: Sends a MIDI NRPN non-registered parameter number message.",
     "params": [
-      "note (string|number): note name or midi number"
+      "nrpnn (number | Pattern): MIDI NRPN non-registered parameter number (0-127)"
     ]
   },
-  "gain": {
-    "description": "gain Sets the volume of the sound.",
+  "nrpv": {
+    "description": "MIDI NRPN non-registered parameter value: Sends a MIDI NRPN non-registered parameter value message.",
     "params": [
-      "amount (number): volume (0..1 usually)"
+      "nrpv (number | Pattern): MIDI NRPN non-registered parameter value (0-127)"
     ]
   },
-  "cutoff": {
-    "description": "cutoff Sets the filter cutoff frequency.",
+  "o": {
+    "description": "An orbit is a global parameter context for patterns. Patterns with the same orbit will share the same global effects.",
     "params": [
-      "frequency (number): cutoff in Hz"
+      "number (number | Pattern)"
     ]
+  },
+  "oct": {
+    "description": "Sets the default octave of a synth.",
+    "params": [
+      "octave (number | Pattern): octave number"
+    ]
+  },
+  "octave": {
+    "description": "Sets the default octave of a synth.",
+    "params": [
+      "octave (number | Pattern): octave number"
+    ]
+  },
+  "octaves": {
+    "description": "How many octaves are voicing steps spread apart, defaults to 1",
+    "params": [
+      "count (number | Pattern): the number of octaves"
+    ]
+  },
+  "off": {
+    "description": "Superimposes the function result on top of the original pattern, delayed by the given time.",
+    "params": [
+      "time (Pattern | number): offset time",
+      "func (function): function to apply"
+    ]
+  },
+  "offset": {
+    "description": "Sets how the voicing is offset from the anchored position",
+    "params": [
+      "shift (number | Pattern): the amount to shift the voicing up or down"
+    ]
+  },
+  "often": {
+    "description": "Shorthand for .sometimesBy(0.75, fn)",
+    "params": []
+  },
+  "onTriggerTime": {
+    "description": "make something happen on event time uses browser timeout which is innacurate for audio tasks",
+    "params": []
+  },
+  "orbit": {
+    "description": "An orbit is a global parameter context for patterns. Patterns with the same orbit will share the same global effects.",
+    "params": [
+      "number (number | Pattern)"
+    ]
+  },
+  "oriA": {
+    "description": "The device's orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "oriB": {
+    "description": "The device's orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "oriG": {
+    "description": "The device's orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "oriX": {
+    "description": "The device's orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "oriY": {
+    "description": "The device's orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "oriZ": {
+    "description": "The device's orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "orientationAlpha": {
+    "description": "The device's orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "orientationBeta": {
+    "description": "The device's orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "orientationGamma": {
+    "description": "The device's orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "orientationX": {
+    "description": "The device's orientation beta value ranges from 0 to 1.",
+    "params": []
+  },
+  "orientationY": {
+    "description": "The device's orientation gamma value ranges from 0 to 1.",
+    "params": []
+  },
+  "orientationZ": {
+    "description": "The device's orientation alpha value ranges from 0 to 1.",
+    "params": []
+  },
+  "osc": {
+    "description": "Sends each hap as an OSC message, which can be picked up by SuperCollider or any other OSC-enabled software. For more info, read MIDI & OSC in the docs",
+    "params": []
+  },
+  "oschost": {
+    "description": "The host to send open sound control messages to. Requires running the OSC bridge.",
+    "params": [
+      "oschost (string | Pattern): e.g. 'localhost'"
+    ]
+  },
+  "oscport": {
+    "description": "The port to send open sound control messages to. Requires running the OSC bridge.",
+    "params": [
+      "oscport (number | Pattern): e.g. 57120"
+    ]
+  },
+  "out": {
+    "description": "",
+    "params": []
+  },
+  "outside": {
+    "description": "Carries out an operation 'outside' a cycle.",
+    "params": []
+  },
+  "pace": {
+    "description": "Experimental Speeds a pattern up or down, to fit to the given number of steps per cycle.",
+    "params": []
+  },
+  "palindrome": {
+    "description": "Applies rev to a pattern every other cycle, so that the pattern alternates between forwards and backwards.",
+    "params": []
+  },
+  "pan": {
+    "description": "Sets position in stereo.",
+    "params": [
+      "pan (number | Pattern): between 0 and 1, from left to right (assuming stereo), once round a circle (assuming multichannel)"
+    ]
+  },
+  "panchor": {
+    "description": "Sets the range anchor of the envelope: anchor 0: range = [note, note + penv] anchor 1: range = [note - penv, note] If you don't set an anchor, the value will default to the psustain value.",
+    "params": [
+      "anchor (number | Pattern): anchor offset"
+    ]
+  },
+  "panspan": {
+    "description": "Controls how much multichannel output is fanned out",
+    "params": [
+      "span (number | Pattern): between -inf and inf, negative is backwards ordering"
+    ]
+  },
+  "pansplay": {
+    "description": "Controls how much multichannel output is spread",
+    "params": [
+      "spread (number | Pattern): between 0 and 1"
+    ]
+  },
+  "parray": {
+    "description": "Turns a list of patterns into a single pattern which outputs list-values",
+    "params": []
+  },
+  "partials": {
+    "description": "Scale the magnitude of the harmonics of one of the core synths ('sine', 'tri', 'saw', ..) Can also be used to create a new synth via s('user').partials(...)",
+    "params": [
+      "magnitudes (Array.<number> | Pattern): List of [0, 1] magnitudes for partials. 0th entry is the fundamental harmonic (i.e. DC offset is skipped)"
+    ]
+  },
+  "patt": {
+    "description": "Attack time of pitch envelope.",
+    "params": [
+      "time (number | Pattern): time in seconds"
+    ]
+  },
+  "pattack": {
+    "description": "Attack time of pitch envelope.",
+    "params": [
+      "time (number | Pattern): time in seconds"
+    ]
+  },
+  "pcurve": {
+    "description": "Curve of envelope. Defaults to linear. exponential is good for kicks",
+    "params": [
+      "type (number | Pattern): 0 = linear, 1 = exponential"
+    ]
+  },
+  "pdec": {
+    "description": "Decay time of pitch envelope.",
+    "params": [
+      "time (number | Pattern): time in seconds"
+    ]
+  },
+  "pdecay": {
+    "description": "Decay time of pitch envelope.",
+    "params": [
+      "time (number | Pattern): time in seconds"
+    ]
+  },
+  "penv": {
+    "description": "Amount of pitch envelope. Negative values will flip the envelope. If you don't set other pitch envelope controls, pattack:.2 will be the default.",
+    "params": [
+      "semitones (number | Pattern): change in semitones"
+    ]
+  },
+  "per": {
+    "description": "A pattern measuring the 'shortness' of events, or in other words, the duration of pattern events, in events per cycle. per doesn't have structure itself, but takes structure, and therefore event durations, from the pattern that it is combined with. For example per.struct(&quot;1 1 [1 1] 1&quot;) would give the same as &quot;4 4 [8 8] 4&quot;. See also its reciprocal, cyclesPer.",
+    "params": []
+  },
+  "perCycle": {
+    "description": "A pattern measuring the 'shortness' of events, or in other words, the duration of pattern events, in events per cycle. per doesn't have structure itself, but takes structure, and therefore event durations, from the pattern that it is combined with. For example per.struct(&quot;1 1 [1 1] 1&quot;) would give the same as &quot;4 4 [8 8] 4&quot;. See also its reciprocal, cyclesPer.",
+    "params": []
+  },
+  "perlin": {
+    "description": "Generates a continuous pattern of perlin noise, in the range 0..1.",
+    "params": []
+  },
+  "perx": {
+    "description": "Like per but measures the shortness of events according to an exponential curve. In particular, where the event duration halves, the returned value increases by one. perx.struct(&quot;1 1 [1 [1 1]] 1&quot;) would therefore be the same as &quot;3 3 [4 [5 5]] 3&quot;.",
+    "params": []
+  },
+  "ph": {
+    "description": "Phaser audio effect that approximates popular guitar pedals.",
+    "params": [
+      "speed (number | Pattern): speed of modulation"
+    ]
+  },
+  "phasdp": {
+    "description": "The amount the signal is affected by the phaser effect. Defaults to 0.75",
+    "params": [
+      "depth (number | Pattern): number between 0 and 1"
+    ]
+  },
+  "phaser": {
+    "description": "Phaser audio effect that approximates popular guitar pedals.",
+    "params": [
+      "speed (number | Pattern): speed of modulation"
+    ]
+  },
+  "phasercenter": {
+    "description": "The center frequency of the phaser in HZ. Defaults to 1000",
+    "params": [
+      "centerfrequency (number | Pattern): in HZ"
+    ]
+  },
+  "phaserdepth": {
+    "description": "The amount the signal is affected by the phaser effect. Defaults to 0.75",
+    "params": [
+      "depth (number | Pattern): number between 0 and 1"
+    ]
+  },
+  "phasersweep": {
+    "description": "The frequency sweep range of the lfo for the phaser effect. Defaults to 2000",
+    "params": [
+      "phasersweep (number | Pattern): most useful values are between 0 and 4000"
+    ]
+  },
+  "phases": {
+    "description": "Rotates the harmonics of one of the core synths ('sine', 'tri', 'saw', 'user', ..) by a list of phases",
+    "params": [
+      "phases (Array.<number> | Pattern): List of [0, 1) phases for partials. 0th entry is the fundamental phase (i.e. DC offset is skipped)"
+    ]
+  },
+  "phc": {
+    "description": "The center frequency of the phaser in HZ. Defaults to 1000",
+    "params": [
+      "centerfrequency (number | Pattern): in HZ"
+    ]
+  },
+  "phd": {
+    "description": "The amount the signal is affected by the phaser effect. Defaults to 0.75",
+    "params": [
+      "depth (number | Pattern): number between 0 and 1"
+    ]
+  },
+  "phs": {
+    "description": "The frequency sweep range of the lfo for the phaser effect. Defaults to 2000",
+    "params": [
+      "phasersweep (number | Pattern): most useful values are between 0 and 4000"
+    ]
+  },
+  "pianoroll": {
+    "description": "Visualises a pattern as a scrolling 'pianoroll', displayed in the background of the editor. To show a pianoroll for all running patterns, use all(pianoroll). To have a pianoroll appear below a pattern instead, prefix with _, e.g.: sound(&quot;bd sd&quot;)._pianoroll().",
+    "params": [
+      "options (Object): Object containing all the optional following parameters as key value pairs:",
+      "cycles (integer): number of cycles to be displayed at the same time - defaults to 4",
+      "playhead (number): location of the active notes on the time axis - 0 to 1, defaults to 0.5",
+      "vertical (boolean): displays the roll vertically - 0 by default",
+      "labels (boolean): displays labels on individual notes (see the label function) - 0 by default",
+      "flipTime (boolean): reverse the direction of the roll - 0 by default",
+      "flipValues (boolean): reverse the relative location of notes on the value axis - 0 by default",
+      "overscan (number): lookup X cycles outside of the cycles window to display notes in advance - 1 by default",
+      "hideNegative (boolean): hide notes with negative time (before starting playing the pattern) - 0 by default",
+      "smear (boolean): notes leave a solid trace - 0 by default",
+      "fold (boolean): notes takes the full value axis width - 0 by default",
+      "active (string): hexadecimal or CSS color of the active notes - defaults to #FFCA28",
+      "inactive (string): hexadecimal or CSS color of the inactive notes - defaults to #7491D2",
+      "background (string): hexadecimal or CSS color of the background - defaults to transparent",
+      "playheadColor (string): hexadecimal or CSS color of the line representing the play head - defaults to white",
+      "fill (boolean): notes are filled with color (otherwise only the label is displayed) - 0 by default",
+      "fillActive (boolean): active notes are filled with color - 0 by default",
+      "stroke (boolean): notes are shown with colored borders - 0 by default",
+      "strokeActive (boolean): active notes are shown with colored borders - 0 by default",
+      "hideInactive (boolean): only active notes are shown - 0 by default",
+      "colorizeInactive (boolean): use note color for inactive notes - 1 by default",
+      "fontFamily (string): define the font used by notes labels - defaults to 'monospace'",
+      "minMidi (integer): minimum note value to display on the value axis - defaults to 10",
+      "maxMidi (integer): maximum note value to display on the value axis - defaults to 90",
+      "autorange (boolean): automatically calculate the minMidi and maxMidi parameters - 0 by default"
+    ]
+  },
+  "pick": {
+    "description": "Picks patterns (or plain values) either from a list (by index) or a lookup table (by name). Similar to inhabit, but maintains the structure of the original patterns.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickAndRename": {
+    "description": "Selects entries from source and renames them via map",
+    "params": []
+  },
+  "pickF": {
+    "description": "pickF lets you use a pattern of numbers to pick which function to apply to another pattern.",
+    "params": [
+      "pat (Pattern)",
+      "lookup (Pattern): a pattern of indices or names",
+      "lookup (Array.<function()> | object): the array or lookup object of functions from which to pull"
+    ]
+  },
+  "pickOut": {
+    "description": "Similar to pick, but it applies an outerJoin instead of an innerJoin.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickReset": {
+    "description": "Similar to pick, but the choosen pattern is reset when its index is triggered.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickRestart": {
+    "description": "Similar to pick, but the choosen pattern is restarted when its index is triggered.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickSqueeze": {
+    "description": "Picks patterns (or plain values) either from a list (by index) or a lookup table (by name). Similar to pick, but cycles are squeezed into the target ('inhabited') pattern.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickmod": {
+    "description": "The same as pick, but if you pick a number greater than the size of the list, it wraps around, rather than sticking at the maximum value. For example, if you pick the fifth pattern of a list of three, you'll get the second one.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickmodF": {
+    "description": "The same as pickF, but if you pick a number greater than the size of the functions list, it wraps around, rather than sticking at the maximum value.",
+    "params": [
+      "pat (Pattern)",
+      "lookup (Pattern): a pattern of indices or names",
+      "lookup (Array.<function()> | object): the array or lookup object of functions from which to pull"
+    ]
+  },
+  "pickmodOut": {
+    "description": "The same as pickOut, but if you pick a number greater than the size of the list, it wraps around, rather than sticking at the maximum value.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickmodReset": {
+    "description": "The same as pickReset, but if you pick a number greater than the size of the list, it wraps around, rather than sticking at the maximum value.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickmodRestart": {
+    "description": "The same as pickRestart, but if you pick a number greater than the size of the list, it wraps around, rather than sticking at the maximum value.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pickmodSqueeze": {
+    "description": "The same as inhabit, but if you pick a number greater than the size of the list, it wraps around, rather than sticking at the maximum value. For example, if you pick the fifth pattern of a list of three, you'll get the second one.",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "pitchwheel": {
+    "description": "Renders a pitch circle to visualize frequencies within one octave",
+    "params": [
+      "hapcircles (number)",
+      "circle (number)",
+      "edo (number)",
+      "root (string)",
+      "thickness (number)",
+      "hapRadius (number)",
+      "mode (string)",
+      "margin (number)"
+    ]
+  },
+  "ply": {
+    "description": "The ply function repeats each event the given number of times.",
+    "params": []
+  },
+  "plyForEach": {
+    "description": "The plyForEach function repeats each event the given number of times, applying the given function to each event. This version of ply uses the iteration index as an argument to the function, similar to echoWith.",
+    "params": [
+      "factor (number): how many times to repeat",
+      "func (function): function to apply, given the pattern and the iteration index"
+    ]
+  },
+  "plyWith": {
+    "description": "The plyWith function repeats each event the given number of times, applying the given function to each event.\\n",
+    "params": [
+      "factor (number): how many times to repeat",
+      "func (function): function to apply, given the pattern"
+    ]
+  },
+  "plyforeach": {
+    "description": "The plyForEach function repeats each event the given number of times, applying the given function to each event. This version of ply uses the iteration index as an argument to the function, similar to echoWith.",
+    "params": [
+      "factor (number): how many times to repeat",
+      "func (function): function to apply, given the pattern and the iteration index"
+    ]
+  },
+  "plywith": {
+    "description": "The plyWith function repeats each event the given number of times, applying the given function to each event.\\n",
+    "params": [
+      "factor (number): how many times to repeat",
+      "func (function): function to apply, given the pattern"
+    ]
+  },
+  "pm": {
+    "description": "Experimental Aligns the steps of the patterns, creating polymeters. The patterns are repeated until they all fit the cycle. For example, in the below the first pattern is repeated twice, and the second is repeated three times, to fit the lowest common multiple of six steps.",
+    "params": []
+  },
+  "polymeter": {
+    "description": "Experimental Aligns the steps of the patterns, creating polymeters. The patterns are repeated until they all fit the cycle. For example, in the below the first pattern is repeated twice, and the second is repeated three times, to fit the lowest common multiple of six steps.",
+    "params": []
+  },
+  "polyrhythm": {
+    "description": "The given items are played at the same time at the same length.",
+    "params": []
+  },
+  "postgain": {
+    "description": "Gain applied after all effects have been processed.",
+    "params": []
+  },
+  "pr": {
+    "description": "The given items are played at the same time at the same length.",
+    "params": []
+  },
+  "prel": {
+    "description": "Release time of pitch envelope",
+    "params": [
+      "time (number | Pattern): time in seconds"
+    ]
+  },
+  "prelease": {
+    "description": "Release time of pitch envelope",
+    "params": [
+      "time (number | Pattern): time in seconds"
+    ]
+  },
+  "prepareInputBuffersToSend": {
+    "description": "Copy contents of input buffers to buffer actually sent to process",
+    "params": []
+  },
+  "press": {
+    "description": "Syncopates a rhythm, by shifting each event halfway into its timespan.",
+    "params": []
+  },
+  "pressBy": {
+    "description": "Like press, but allows you to specify the amount by which each event is shifted. pressBy(0.5) is the same as press, while pressBy(1/3) shifts each event by a third of its timespan.",
+    "params": []
+  },
+  "progNum": {
+    "description": "MIDI program number: Sends a MIDI program change message.",
+    "params": [
+      "program (number | Pattern): MIDI program number (0-127)"
+    ]
+  },
+  "psustain": {
+    "description": "",
+    "params": []
+  },
+  "punchcard": {
+    "description": "Visualises a pattern as a scrolling 'pianoroll', displayed in the background of the editor. To show a pianoroll for all running patterns, use all(pianoroll). To have a pianoroll appear below a pattern instead, prefix with _, e.g.: sound(&quot;bd sd&quot;)._pianoroll().",
+    "params": [
+      "options (Object): Object containing all the optional following parameters as key value pairs:",
+      "cycles (integer): number of cycles to be displayed at the same time - defaults to 4",
+      "playhead (number): location of the active notes on the time axis - 0 to 1, defaults to 0.5",
+      "vertical (boolean): displays the roll vertically - 0 by default",
+      "labels (boolean): displays labels on individual notes (see the label function) - 0 by default",
+      "flipTime (boolean): reverse the direction of the roll - 0 by default",
+      "flipValues (boolean): reverse the relative location of notes on the value axis - 0 by default",
+      "overscan (number): lookup X cycles outside of the cycles window to display notes in advance - 1 by default",
+      "hideNegative (boolean): hide notes with negative time (before starting playing the pattern) - 0 by default",
+      "smear (boolean): notes leave a solid trace - 0 by default",
+      "fold (boolean): notes takes the full value axis width - 0 by default",
+      "active (string): hexadecimal or CSS color of the active notes - defaults to #FFCA28",
+      "inactive (string): hexadecimal or CSS color of the inactive notes - defaults to #7491D2",
+      "background (string): hexadecimal or CSS color of the background - defaults to transparent",
+      "playheadColor (string): hexadecimal or CSS color of the line representing the play head - defaults to white",
+      "fill (boolean): notes are filled with color (otherwise only the label is displayed) - 0 by default",
+      "fillActive (boolean): active notes are filled with color - 0 by default",
+      "stroke (boolean): notes are shown with colored borders - 0 by default",
+      "strokeActive (boolean): active notes are shown with colored borders - 0 by default",
+      "hideInactive (boolean): only active notes are shown - 0 by default",
+      "colorizeInactive (boolean): use note color for inactive notes - 1 by default",
+      "fontFamily (string): define the font used by notes labels - defaults to 'monospace'",
+      "minMidi (integer): minimum note value to display on the value axis - defaults to 10",
+      "maxMidi (integer): maximum note value to display on the value axis - defaults to 90",
+      "autorange (boolean): automatically calculate the minMidi and maxMidi parameters - 0 by default"
+    ]
+  },
+  "pw": {
+    "description": "Controls the pulsewidth of the pulse oscillator",
+    "params": [
+      "pulsewidth (number | Pattern)"
+    ]
+  },
+  "pwr": {
+    "description": "Controls the lfo rate for the pulsewidth of the pulse oscillator",
+    "params": [
+      "rate (number | Pattern)"
+    ]
+  },
+  "pwrate": {
+    "description": "Controls the lfo rate for the pulsewidth of the pulse oscillator",
+    "params": [
+      "rate (number | Pattern)"
+    ]
+  },
+  "pws": {
+    "description": "Controls the lfo sweep for the pulsewidth of the pulse oscillator",
+    "params": [
+      "sweep (number | Pattern)"
+    ]
+  },
+  "pwsweep": {
+    "description": "Controls the lfo sweep for the pulsewidth of the pulse oscillator",
+    "params": [
+      "sweep (number | Pattern)"
+    ]
+  },
+  "rand": {
+    "description": "A continuous pattern of random numbers, between 0 and 1.",
+    "params": []
+  },
+  "rand2": {
+    "description": "A continuous pattern of random numbers, between -1 and 1",
+    "params": []
+  },
+  "randL": {
+    "description": "Creates a list of random numbers of the given length",
+    "params": [
+      "n (number): Number of random numbers to sample"
+    ]
+  },
+  "randcat": {
+    "description": "Picks one of the elements at random each cycle.",
+    "params": []
+  },
+  "randomSample": {
+    "description": "",
+    "params": []
+  },
+  "range": {
+    "description": "Assumes a numerical pattern, containing unipolar values in the range 0 .. 1. Returns a new pattern with values scaled to the given min/max range. Most useful in combination with continuous patterns.",
+    "params": []
+  },
+  "range2": {
+    "description": "Assumes a numerical pattern, containing bipolar values in the range -1 .. 1 Returns a new pattern with values scaled to the given min/max range.",
+    "params": []
+  },
+  "rangex": {
+    "description": "Assumes a numerical pattern, containing unipolar values in the range 0 .. 1 Returns a new pattern with values scaled to the given min/max range, following an exponential curve.",
+    "params": []
+  },
+  "rarely": {
+    "description": "Shorthand for .sometimesBy(0.25, fn)",
+    "params": []
+  },
+  "ratio": {
+    "description": "Allows dividing numbers via list notation using &quot;:&quot;. Returns a new pattern with just numbers.",
+    "params": []
+  },
+  "rdim": {
+    "description": "Reverb lowpass frequency at -60dB (in hertz). When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "frequency (number): between 0 and 20000hz"
+    ]
+  },
+  "readInputs": {
+    "description": "Read next web audio block to input buffers",
+    "params": []
+  },
+  "reallocateChannelsIfNeeded": {
+    "description": "Handles dynamic reallocation of input/output channels buffer (channel numbers may vary during lifecycle)",
+    "params": []
+  },
+  "ref": {
+    "description": "exposes a custom value at query time. basically allows mutating state without evaluation",
+    "params": []
+  },
+  "register": {
+    "description": "Registers a new pattern method. The method is added to the Pattern class + the standalone function is returned from register.",
+    "params": [
+      "name (string | Array.<string>): name of the function, or an array of names to be used as synonyms",
+      "func (function): function with 1 or more params, where last is the current pattern",
+      "patternify (bool): defaults to true; if set to false, you will have more control over the arguments to func as they will be in their raw form and it will be up to you to patternify them and/or query them for values"
+    ]
+  },
+  "rel": {
+    "description": "Amplitude envelope release time: The time it takes after the offset to go from sustain level to zero.",
+    "params": [
+      "time (number | Pattern): release time in seconds"
+    ]
+  },
+  "release": {
+    "description": "Amplitude envelope release time: The time it takes after the offset to go from sustain level to zero.",
+    "params": [
+      "time (number | Pattern): release time in seconds"
+    ]
+  },
+  "repeatCycles": {
+    "description": "Repeats each cycle the given number of times.",
+    "params": []
+  },
+  "replicate": {
+    "description": "Experimental replicate is similar to fast in that it increases its density, but it also increases the step count accordingly. So stepcat(&quot;a b&quot;.replicate(2), &quot;c d&quot;) would be the same as &quot;a b a b c d&quot;, whereas stepcat(&quot;a b&quot;.fast(2), &quot;c d&quot;) would be the same as &quot;[a b] [a b] c d&quot;. TODO: find out how this function differs from extend",
+    "params": []
+  },
+  "reset": {
+    "description": "Resets the pattern to the start of the cycle for each onset of the reset pattern.",
+    "params": []
+  },
+  "resonance": {
+    "description": "Controls the low-pass q-value.",
+    "params": [
+      "q (number | Pattern): resonance factor between 0 and 50"
+    ]
+  },
+  "restart": {
+    "description": "Restarts the pattern for each onset of the restart pattern. While reset will only reset the current cycle, restart will start from cycle 0.",
+    "params": []
+  },
+  "rev": {
+    "description": "Reverse all cycles in a pattern. See also revv for reversing a whole pattern.",
+    "params": []
+  },
+  "revv": {
+    "description": "Reverse a whole pattern. See also rev for reversing each cycle.",
+    "params": []
+  },
+  "rfade": {
+    "description": "Reverb fade time (in seconds). When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "seconds (number): for the reverb to fade"
+    ]
+  },
+  "rib": {
+    "description": "Loops the pattern inside an offset for cycles. If you think of the entire span of time in cycles as a ribbon, you can cut a single piece and loop it.",
+    "params": [
+      "offset (number): start point of loop in cycles",
+      "cycles (number): loop length in cycles"
+    ]
+  },
+  "ribbon": {
+    "description": "Loops the pattern inside an offset for cycles. If you think of the entire span of time in cycles as a ribbon, you can cut a single piece and loop it.",
+    "params": [
+      "offset (number): start point of loop in cycles",
+      "cycles (number): loop length in cycles"
+    ]
+  },
+  "rlp": {
+    "description": "Reverb lowpass starting frequency (in hertz). When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "frequency (number): between 0 and 20000hz"
+    ]
+  },
+  "room": {
+    "description": "Sets the level of reverb. When using mininotation, you can also optionally add the 'size' parameter, separated by ':'.",
+    "params": [
+      "level (number | Pattern): between 0 and 1"
+    ]
+  },
+  "roomdim": {
+    "description": "Reverb lowpass frequency at -60dB (in hertz). When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "frequency (number): between 0 and 20000hz"
+    ]
+  },
+  "roomfade": {
+    "description": "Reverb fade time (in seconds). When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "seconds (number): for the reverb to fade"
+    ]
+  },
+  "roomlp": {
+    "description": "Reverb lowpass starting frequency (in hertz). When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "frequency (number): between 0 and 20000hz"
+    ]
+  },
+  "roomsize": {
+    "description": "Sets the room size of the reverb, see room. When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "size (number | Pattern): between 0 and 10"
+    ]
+  },
+  "rootNotes": {
+    "description": "Maps the chords of the incoming pattern to root notes in the given octave.",
+    "params": [
+      "octave (octave): octave to use"
+    ]
+  },
+  "rotA": {
+    "description": "The device's rotation around the alpha-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotB": {
+    "description": "The device's rotation around the beta-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotG": {
+    "description": "The device's rotation around the gamma-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotX": {
+    "description": "The device's rotation around the beta-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotY": {
+    "description": "The device's rotation around the gamma-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotZ": {
+    "description": "The device's rotation around the alpha-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotationAlpha": {
+    "description": "The device's rotation around the alpha-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotationBeta": {
+    "description": "The device's rotation around the beta-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotationGamma": {
+    "description": "The device's rotation around the gamma-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotationX": {
+    "description": "The device's rotation around the beta-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotationY": {
+    "description": "The device's rotation around the gamma-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "rotationZ": {
+    "description": "The device's rotation around the alpha-axis value ranges from 0 to 1.",
+    "params": []
+  },
+  "round": {
+    "description": "Assumes a numerical pattern. Returns a new pattern with all values rounded to the nearest integer.",
+    "params": []
+  },
+  "rsize": {
+    "description": "Sets the room size of the reverb, see room. When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "size (number | Pattern): between 0 and 10"
+    ]
+  },
+  "run": {
+    "description": "A discrete pattern of numbers from 0 to n-1",
+    "params": []
+  },
+  "s": {
+    "description": "Select a sound / sample by name. When using mininotation, you can also optionally supply 'n' and 'gain' parameters separated by ':'.",
+    "params": [
+      "sound (string | Pattern): The sound / pattern of sounds to pick"
+    ]
+  },
+  "samples": {
+    "description": "Loads a collection of samples to use with s",
+    "params": []
+  },
+  "saw": {
+    "description": "A sawtooth signal between 0 and 1.",
+    "params": []
+  },
+  "saw2": {
+    "description": "A sawtooth signal between -1 and 1 (like saw, but bipolar).",
+    "params": []
+  },
+  "scale": {
+    "description": "Turns numbers into notes in the scale (zero indexed) or quantizes notes to a scale. When describing notes via numbers, note that negative numbers can be used to wrap backwards in the scale as well as sharps or flats to produce notes outside of the scale. Also sets scale for other scale operations, like {@link Pattern#scaleTranspose}. A scale consists of a root note (e.g. c4, c, f#, bb4) followed by semicolon (':') and then a scale type. The scale name must be written without spaces (because it would be interpreted as a multi-step pattern otherwise). If your scale name includes spaces, replace them with colons. The root note defaults to octave 3, if no octave number is given.",
+    "params": [
+      "scale (string): Name of scale"
+    ]
+  },
+  "scaleTrans": {
+    "description": "Transposes notes inside the scale by the number of steps. Expected to be called on a Pattern which already has a {@link Pattern#scale}",
+    "params": [
+      "offset (offset): number of steps inside the scale"
+    ]
+  },
+  "scaleTranspose": {
+    "description": "Transposes notes inside the scale by the number of steps. Expected to be called on a Pattern which already has a {@link Pattern#scale}",
+    "params": [
+      "offset (offset): number of steps inside the scale"
+    ]
+  },
+  "scope": {
+    "description": "Renders an oscilloscope for the time domain of the audio signal.",
+    "params": [
+      "config (object): optional config with options:",
+      "align (boolean): if 1, the scope will be aligned to the first zero crossing. defaults to 1",
+      "color (string): line color as hex or color name. defaults to white.",
+      "thickness (number): line thickness. defaults to 3",
+      "scale (number): scales the y-axis. Defaults to 0.25",
+      "pos (number): y-position relative to screen height. 0 = top, 1 = bottom of screen",
+      "trigger (number): amplitude value that is used to align the scope. defaults to 0."
+    ]
+  },
+  "scramble": {
+    "description": "Slices a pattern into the given number of parts, then plays those parts at random. Similar to shuffle, but parts might be played more than once, or not at all, per cycle.",
+    "params": []
+  },
+  "scrub": {
+    "description": "Allows you to scrub an audio file like a tape loop by passing values that represents the position in the audio file in the optional array syntax ex: &quot;0.5:2&quot;, the second value controls the speed of playback",
+    "params": []
+  },
+  "seed": {
+    "description": "Change the seed for random signals. Normally, random signals depend on time, so two patterns at the same time will have the same random values. Specifying a new seed changes the signal output by rand. This also affects other functions that use randomness, like shuffle and sometimes.",
+    "params": [
+      "n (number): A new seed. Can be any number."
+    ]
+  },
+  "seg": {
+    "description": "Samples the pattern at a rate of n events per cycle. Useful for turning a continuous pattern into a discrete one.",
+    "params": [
+      "segments (number): number of segments per cycle"
+    ]
+  },
+  "segment": {
+    "description": "Samples the pattern at a rate of n events per cycle. Useful for turning a continuous pattern into a discrete one.",
+    "params": [
+      "segments (number): number of segments per cycle"
+    ]
+  },
+  "seq": {
+    "description": "Like cat, but the items are crammed into one cycle.",
+    "params": []
+  },
+  "seqPLoop": {
+    "description": "Similarly to arrange, allows you to arrange multiple patterns together over multiple cycles. Unlike arrange, you specify a start and stop time for each pattern rather than duration, which means that patterns can overlap.",
+    "params": []
+  },
+  "sequence": {
+    "description": "See fastcat",
+    "params": []
+  },
+  "sequenceP": {
+    "description": "Takes a list of patterns, and returns a pattern of lists.",
+    "params": []
+  },
+  "set": {
+    "description": "When called on a pattern a, with a input pattern b (a.set(b)), combines a and b such that anything defined in b and anything defined in a that is not defined in b will be in the resulting pattern. The structure is maintained from a, because the default pattern alignment is in, see the section on Pattern Alignment in the technical manual in the docs This is the inverse of keep See examples below",
+    "params": [
+      "pat (Pattern)"
+    ]
+  },
+  "setDefaultJoin": {
+    "description": "Sets the default method of combining events from two patterns (aka alignment) in Strudel. The default method is 'in', meaning that patterns to the left will (typically) dictate the event timings when combined with patterns to the right. By changing alignment to 'out', the opposite will happen. With 'mix', they will combine their event timings. Note that we say the default method, because alignments can also be set explicitly with calls like 'add.mix', 'set.squeeze', etc.",
+    "params": [
+      "method (string): Default join method to use. Options: 'in', 'out', 'mix', 'squeeze', 'squeezeout', 'reset', 'restart', 'poly'"
+    ]
+  },
+  "setGainCurve": {
+    "description": "Apply a function to all gains provided in patterns. Can be used to rescale gain to be quadratic, exponential, etc. rather than linear",
+    "params": [
+      "function (function): to apply to all gain values"
+    ]
+  },
+  "setMaxPolyphony": {
+    "description": "Set the max polyphony. If notes are ringing out via release then they will start to die out in first-in-first-out order once the max polyphony has been hit",
+    "params": [
+      "Max (number): polyphony. Defaults to 128"
+    ]
+  },
+  "setcpm": {
+    "description": "Changes the global tempo to the given cycles per minute",
+    "params": [
+      "cpm (number): cycles per minute"
+    ]
+  },
+  "shape": {
+    "description": "(Deprecated) Wave shaping distortion. WARNING: can suddenly get unpredictably loud. Please use distort instead, which has a more predictable response curve second option in optional array syntax (ex: &quot;.9:.5&quot;) applies a postgain to the output",
+    "params": [
+      "distortion (number | Pattern): between 0 and 1"
+    ]
+  },
+  "shiftInputBuffers": {
+    "description": "Shift left content of input buffers to receive new web audio block",
+    "params": []
+  },
+  "shiftOutputBuffers": {
+    "description": "Shift left content of output buffers to receive new web audio block",
+    "params": []
+  },
+  "shiftPeaks": {
+    "description": "Shift peaks and regions of influence by pitchFactor into new specturm",
+    "params": []
+  },
+  "shrink": {
+    "description": "Experimental Progressively shrinks the pattern by 'n' steps until there's nothing left, or if a second value is given (using mininotation list syntax with :), that number of times. A positive number will progressively drop steps from the start of a pattern, and a negative number from the end.",
+    "params": []
+  },
+  "shuffle": {
+    "description": "Slices a pattern into the given number of parts, then plays those parts in random order. Each part will be played exactly once per cycle.",
+    "params": []
+  },
+  "silence": {
+    "description": "Does absolutely nothing..",
+    "params": []
+  },
+  "sine": {
+    "description": "A sine signal between 0 and 1.",
+    "params": []
+  },
+  "sine2": {
+    "description": "A sine signal between -1 and 1 (like sine, but bipolar).",
+    "params": []
+  },
+  "sinefold": {
+    "description": "Wavefolding distortion composed with sinusoid",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "size": {
+    "description": "Sets the room size of the reverb, see room. When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "size (number | Pattern): between 0 and 10"
+    ]
+  },
+  "slice": {
+    "description": "Chops samples into the given number of slices, triggering those slices with a given pattern of slice numbers. Instead of a number, it also accepts a list of numbers from 0 to 1 to slice at specific points.",
+    "params": []
+  },
+  "slider": {
+    "description": "Displays a slider widget to allow the user manipulate a value",
+    "params": [
+      "value (number): Initial value",
+      "min (number): Minimum value - optional, defaults to 0",
+      "max (number): Maximum value - optional, defaults to 1",
+      "step (number): Step size - optional"
+    ]
+  },
+  "slow": {
+    "description": "Slow down a pattern over the given number of cycles. Like the &quot;/&quot; operator in mini notation.",
+    "params": [
+      "factor (number | Pattern): slow down factor"
+    ]
+  },
+  "slowChunk": {
+    "description": "Divides a pattern into a given number of parts, then cycles through those parts in turn, applying the given function to each part in turn (one part per cycle).",
+    "params": []
+  },
+  "slowcat": {
+    "description": "Concatenation: combines a list of patterns, switching between them successively, one per cycle.",
+    "params": []
+  },
+  "slowcatPrime": {
+    "description": "Concatenation: combines a list of patterns, switching between them successively, one per cycle. Unlike slowcat, this version will skip cycles.",
+    "params": [
+      "items (any): The items to concatenate"
+    ]
+  },
+  "slowchunk": {
+    "description": "Divides a pattern into a given number of parts, then cycles through those parts in turn, applying the given function to each part in turn (one part per cycle).",
+    "params": []
+  },
+  "soft": {
+    "description": "Soft-clipping distortion",
+    "params": [
+      "distortion (number | Pattern): amount of distortion to apply",
+      "volume (number | Pattern): linear postgain of the distortion"
+    ]
+  },
+  "someCycles": {
+    "description": "Shorthand for .someCyclesBy(0.5, fn)",
+    "params": []
+  },
+  "someCyclesBy": {
+    "description": "Randomly applies the given function by the given probability on a cycle by cycle basis. Similar to sometimesBy",
+    "params": [
+      "probability (number | Pattern): a number between 0 and 1",
+      "function (function): the transformation to apply"
+    ]
+  },
+  "sometimes": {
+    "description": "Applies the given function with a 50% chance",
+    "params": [
+      "function (function): the transformation to apply"
+    ]
+  },
+  "sometimesBy": {
+    "description": "Randomly applies the given function by the given probability. Similar to someCyclesBy",
+    "params": [
+      "probability (number | Pattern): a number between 0 and 1",
+      "function (function): the transformation to apply"
+    ]
+  },
+  "sound": {
+    "description": "Select a sound / sample by name. When using mininotation, you can also optionally supply 'n' and 'gain' parameters separated by ':'.",
+    "params": [
+      "sound (string | Pattern): The sound / pattern of sounds to pick"
+    ]
+  },
+  "soundAlias": {
+    "description": "Register an alias for a sound.",
+    "params": [
+      "original (string): The original sound name",
+      "alias (string): The alias to use for the sound"
+    ]
+  },
+  "source": {
+    "description": "Define a custom webaudio node to use as a sound source.",
+    "params": [
+      "getSource (function)"
+    ]
+  },
+  "sparsity": {
+    "description": "Slow down a pattern over the given number of cycles. Like the &quot;/&quot; operator in mini notation.",
+    "params": [
+      "factor (number | Pattern): slow down factor"
+    ]
+  },
+  "spectrum": {
+    "description": "Renders a spectrum analyzer for the incoming audio signal.",
+    "params": [
+      "config (object): optional config with options:",
+      "thickness (integer): line thickness in px (default 3)",
+      "speed (integer): scroll speed (default 1)",
+      "min (integer): min db (default -80)",
+      "max (integer): max db (default 0)"
+    ]
+  },
+  "speed": {
+    "description": "Changes the speed of sample playback, i.e. a cheap way of changing pitch.",
+    "params": [
+      "speed (number | Pattern): inf to inf, negative numbers play the sample backwards."
+    ]
+  },
+  "spiral": {
+    "description": "Displays a spiral visual.",
+    "params": [
+      "options (Object): Object containing all the optional following parameters as key value pairs:",
+      "stretch (number): controls the rotations per cycle ratio, where 1 = 1 cycle / 360 degrees",
+      "size (number): the diameter of the spiral",
+      "thickness (number): line thickness",
+      "cap (string): style of line ends: butt (default), round, square",
+      "inset (string): number of rotations before spiral starts (default 3)",
+      "playheadColor (string): color of playhead, defaults to white",
+      "playheadLength (number): length of playhead in rotations, defaults to 0.02",
+      "playheadThickness (number): thickness of playheadrotations, defaults to thickness",
+      "padding (number): space around spiral",
+      "steady (number): steadyness of spiral vs playhead. 1 = spiral doesn't move, playhead does.",
+      "activeColor (number): color of active segment. defaults to foreground of theme",
+      "inactiveColor (number): color of inactive segments. defaults to gutterForeground of theme",
+      "colorizeInactive (boolean): wether or not to colorize inactive segments, defaults to 0",
+      "fade (boolean): wether or not past and future should fade out. defaults to 1",
+      "logSpiral (boolean): wether or not the spiral should be logarithmic. defaults to 0"
+    ]
+  },
+  "splice": {
+    "description": "Works the same as slice, but changes the playback speed of each slice to match the duration of its step.",
+    "params": []
+  },
+  "spread": {
+    "description": "Set the stereo pan spread for supported oscillators",
+    "params": [
+      "spread (number | Pattern): between 0 and 1"
+    ]
+  },
+  "square": {
+    "description": "A square signal between 0 and 1.",
+    "params": []
+  },
+  "square2": {
+    "description": "A square signal between -1 and 1 (like square, but bipolar).",
+    "params": []
+  },
+  "squeeze": {
+    "description": "Pick from the list of values (or patterns of values) via the index using the given pattern of integers. The selected pattern will be compressed to fit the duration of the selecting event",
+    "params": [
+      "pat (Pattern)",
+      "xs (*)"
+    ]
+  },
+  "src": {
+    "description": "Define a custom webaudio node to use as a sound source.",
+    "params": [
+      "getSource (function)"
+    ]
+  },
+  "stack": {
+    "description": "The given items are played at the same time at the same length.",
+    "params": []
+  },
+  "stepalt": {
+    "description": "Experimental Concatenates patterns stepwise, according to an inferred 'steps per cycle'. Similar to stepcat, but if an argument is a list, the whole pattern will alternate between the elements in the list.",
+    "params": []
+  },
+  "stepcat": {
+    "description": "'Concatenates' patterns like fastcat, but proportional to a number of steps per cycle. The steps can either be inferred from the pattern, or provided as a [length, pattern] pair. Has the alias timecat.",
+    "params": []
+  },
+  "strans": {
+    "description": "Transposes notes inside the scale by the number of steps. Expected to be called on a Pattern which already has a {@link Pattern#scale}",
+    "params": [
+      "offset (offset): number of steps inside the scale"
+    ]
+  },
+  "stretch": {
+    "description": "Changes the pitch of the sample without changing its speed. The frequencies are multiplied by (factor + 1) for positive numbers and by max(factor / 4 + 1, 0) for negative numbers. So tuning up by octaves can be done with 1, 3, 7, ... and tuning down by octaves with -2, -3, -3.5...",
+    "params": [
+      "factor (number | Pattern): between -4 and inf. Positive increases pitch, 0 does nothing, negative decreases the pitch."
+    ]
+  },
+  "striate": {
+    "description": "Cuts each sample into the given number of parts, triggering progressive portions of each sample at each loop.",
+    "params": []
+  },
+  "struct": {
+    "description": "Applies the given structure to the pattern:",
+    "params": []
+  },
+  "stut": {
+    "description": "Deprecated. Like echo, but the last 2 parameters are flipped.",
+    "params": [
+      "times (number): how many times to repeat",
+      "feedback (number): velocity multiplicator for each iteration",
+      "time (number): cycle offset between iterations"
+    ]
+  },
+  "stutWith": {
+    "description": "Superimpose and offset multiple times, applying the given function each time.",
+    "params": [
+      "times (number): how many times to repeat",
+      "time (number): cycle offset between iterations",
+      "func (function): function to apply, given the pattern and the iteration index"
+    ]
+  },
+  "stutwith": {
+    "description": "Superimpose and offset multiple times, applying the given function each time.",
+    "params": [
+      "times (number): how many times to repeat",
+      "time (number): cycle offset between iterations",
+      "func (function): function to apply, given the pattern and the iteration index"
+    ]
+  },
+  "sub": {
+    "description": "Like add, but the given numbers are subtracted.",
+    "params": []
+  },
+  "superimpose": {
+    "description": "Superimposes the result of the given function(s) on top of the original pattern:",
+    "params": []
+  },
+  "sus": {
+    "description": "Amplitude envelope sustain level: The level which is reached after attack / decay, being sustained until the offset.",
+    "params": [
+      "gain (number | Pattern): sustain level between 0 and 1"
+    ]
+  },
+  "sustain": {
+    "description": "Amplitude envelope sustain level: The level which is reached after attack / decay, being sustained until the offset.",
+    "params": [
+      "gain (number | Pattern): sustain level between 0 and 1"
+    ]
+  },
+  "swing": {
+    "description": "Shorthand for swingBy with 1/3:",
+    "params": [
+      "subdivision (number)"
+    ]
+  },
+  "swingBy": {
+    "description": "The function swingBy x n breaks each cycle into n slices, and then delays events in the second half of each slice by the amount x, which is relative to the size of the (half) slice. So if x is 0 it does nothing, 0.5 delays for half the note duration, and 1 will wrap around to doing nothing again. The end result is a shuffle or swing-like rhythm",
+    "params": [
+      "subdivision (number)",
+      "offset (number)"
+    ]
+  },
+  "sysex": {
+    "description": "MIDI sysex: Sends a MIDI sysex message.",
+    "params": [
+      "id (number | Pattern): Sysex ID",
+      "data (number | Pattern): Sysex data"
+    ]
+  },
+  "sysexdata": {
+    "description": "MIDI sysex data: Sends a MIDI sysex message.",
+    "params": [
+      "data (number | Pattern): Sysex data"
+    ]
+  },
+  "sysexid": {
+    "description": "MIDI sysex ID: Sends a MIDI sysex identifier message.",
+    "params": [
+      "id (number | Pattern): Sysex ID"
+    ]
+  },
+  "sz": {
+    "description": "Sets the room size of the reverb, see room. When this property is changed, the reverb will be recaculated, so only change this sparsely..",
+    "params": [
+      "size (number | Pattern): between 0 and 10"
+    ]
+  },
+  "tables": {
+    "description": "Loads a collection of wavetables to use with s",
+    "params": []
+  },
+  "tag": {
+    "description": "Tags each Hap with an identifier. Good for filtering. The function populates Hap.context.tags (Array).",
+    "params": [
+      "tag (string): anything unique"
+    ]
+  },
+  "take": {
+    "description": "Experimental Takes the given number of steps from a pattern (dropping the rest). A positive number will take steps from the start of a pattern, and a negative number from the end.",
+    "params": []
+  },
+  "time": {
+    "description": "A signal representing the cycle time.",
+    "params": []
+  },
+  "timeCat": {
+    "description": "'Concatenates' patterns like fastcat, but proportional to a number of steps per cycle. The steps can either be inferred from the pattern, or provided as a [length, pattern] pair. Has the alias timecat.",
+    "params": []
+  },
+  "timecat": {
+    "description": "'Concatenates' patterns like fastcat, but proportional to a number of steps per cycle. The steps can either be inferred from the pattern, or provided as a [length, pattern] pair. Has the alias timecat.",
+    "params": []
+  },
+  "tour": {
+    "description": "Experimental Inserts a pattern into a list of patterns. On the first repetition it will be inserted at the end of the list, then moved backwards through the list on successive repetitions. The patterns are added together stepwise, with all repetitions taking place over a single cycle. Using pace to set the number of steps per cycle is therefore usually recommended.",
+    "params": []
+  },
+  "trans": {
+    "description": "Change the pitch of each value by the given amount. Expects numbers or note strings as values. The amount can be given as a number of semitones or as a string in interval short notation. If you don't care about enharmonic correctness, just use numbers. Otherwise, pass the interval of the form: ST where S is the degree number and T the type of interval with M = major m = minor P = perfect A = augmented d = diminished Examples intervals: 1P = unison 3M = major third 3m = minor third 4P = perfect fourth 4A = augmented fourth 5P = perfect fifth 5d = diminished fifth",
+    "params": [
+      "amount (string | number): Either number of semitones or interval string."
+    ]
+  },
+  "transient": {
+    "description": "Transient shaper. Gives independent control over the emphasis on transients and sustains",
+    "params": [
+      "attack (number | Pattern): Emphasis on transients; between -1 (deaccentuate) and 1 (accentuate)",
+      "sustain (number | Pattern): Emphasis on the sustains; between -1 (deaccentuate) and 1 (accentuate)"
+    ]
+  },
+  "transpose": {
+    "description": "Change the pitch of each value by the given amount. Expects numbers or note strings as values. The amount can be given as a number of semitones or as a string in interval short notation. If you don't care about enharmonic correctness, just use numbers. Otherwise, pass the interval of the form: ST where S is the degree number and T the type of interval with M = major m = minor P = perfect A = augmented d = diminished Examples intervals: 1P = unison 3M = major third 3m = minor third 4P = perfect fourth 4A = augmented fourth 5P = perfect fifth 5d = diminished fifth",
+    "params": [
+      "amount (string | number): Either number of semitones or interval string."
+    ]
+  },
+  "trem": {
+    "description": "Modulate the amplitude of a sound with a continuous waveform",
+    "params": [
+      "speed (number | Pattern): modulation speed in HZ"
+    ]
+  },
+  "tremdepth": {
+    "description": "Depth of amplitude modulation",
+    "params": [
+      "depth (number | Pattern)"
+    ]
+  },
+  "tremolo": {
+    "description": "Modulate the amplitude of a sound with a continuous waveform",
+    "params": [
+      "speed (number | Pattern): modulation speed in HZ"
+    ]
+  },
+  "tremolodepth": {
+    "description": "Depth of amplitude modulation",
+    "params": [
+      "depth (number | Pattern)"
+    ]
+  },
+  "tremolophase": {
+    "description": "Alter the phase of the modulation waveform",
+    "params": [
+      "offset (number | Pattern): the offset in cycles of the modulation"
+    ]
+  },
+  "tremoloshape": {
+    "description": "Shape of amplitude modulation",
+    "params": [
+      "shape (number | Pattern): tri | square | sine | saw | ramp"
+    ]
+  },
+  "tremoloskew": {
+    "description": "Alter the shape of the modulation waveform",
+    "params": [
+      "amount (number | Pattern): between 0 & 1, the shape of the waveform"
+    ]
+  },
+  "tremolosync": {
+    "description": "Modulate the amplitude of a sound with a continuous waveform",
+    "params": [
+      "cycles (number | Pattern): modulation speed in cycles"
+    ]
+  },
+  "tremphase": {
+    "description": "Alter the phase of the modulation waveform",
+    "params": [
+      "offset (number | Pattern): the offset in cycles of the modulation"
+    ]
+  },
+  "tremshape": {
+    "description": "Shape of amplitude modulation",
+    "params": [
+      "shape (number | Pattern): tri | square | sine | saw | ramp"
+    ]
+  },
+  "tremskew": {
+    "description": "Alter the shape of the modulation waveform",
+    "params": [
+      "amount (number | Pattern): between 0 & 1, the shape of the waveform"
+    ]
+  },
+  "tremsync": {
+    "description": "Modulate the amplitude of a sound with a continuous waveform",
+    "params": [
+      "cycles (number | Pattern): modulation speed in cycles"
+    ]
+  },
+  "tri": {
+    "description": "A triangle signal between 0 and 1.",
+    "params": []
+  },
+  "tri2": {
+    "description": "A triangle signal between -1 and 1 (like tri, but bipolar).",
+    "params": []
+  },
+  "tscope": {
+    "description": "Renders an oscilloscope for the time domain of the audio signal.",
+    "params": [
+      "config (object): optional config with options:",
+      "align (boolean): if 1, the scope will be aligned to the first zero crossing. defaults to 1",
+      "color (string): line color as hex or color name. defaults to white.",
+      "thickness (number): line thickness. defaults to 3",
+      "scale (number): scales the y-axis. Defaults to 0.25",
+      "pos (number): y-position relative to screen height. 0 = top, 1 = bottom of screen",
+      "trigger (number): amplitude value that is used to align the scope. defaults to 0."
+    ]
+  },
+  "tune": {
+    "description": "Assumes pattern contains numerical scale degrees on the i control (see examples below). Accepts a scale name or list of frequencies (see all available names at the link on the reference). Returns a new pattern with all values mapped to a frequency ratio. Similar to xen.",
+    "params": [
+      "scale (string | Array.<number>)"
+    ]
+  },
+  "undegrade": {
+    "description": "Inverse of degrade: Randomly removes 50% of events from the pattern. Shorthand for .undegradeBy(0.5) Events that would be removed by degrade are let through by undegrade and vice versa (see second example).",
+    "params": []
+  },
+  "undegradeBy": {
+    "description": "Inverse of degradeBy: Randomly removes events from the pattern by a given amount. 0 = 100% chance of removal 1 = 0% chance of removal Events that would be removed by degradeBy are let through by undegradeBy and vice versa (see second example).",
+    "params": [
+      "amount (number): a number between 0 and 1"
+    ]
+  },
+  "unison": {
+    "description": "Set number of stacked voices for supported oscillators.",
+    "params": [
+      "numvoices (number | Pattern)"
+    ]
+  },
+  "unit": {
+    "description": "",
+    "params": []
+  },
+  "useRNG": {
+    "description": "Sets which random number generator to use. Historically Strudel would use useRNG('legacy'), which remains the default. To use a new more statistically precise RNG, try useRNG('precise').",
+    "params": [
+      "mod (string): Mode. One of 'legacy', 'precise'"
+    ]
+  },
+  "v": {
+    "description": "Applies a vibrato to the frequency of the oscillator.",
+    "params": [
+      "frequency (number | Pattern): of the vibrato in hertz"
+    ]
+  },
+  "vel": {
+    "description": "Sets the velocity from 0 to 1. Is multiplied together with gain.",
+    "params": []
+  },
+  "velocity": {
+    "description": "Sets the velocity from 0 to 1. Is multiplied together with gain.",
+    "params": []
+  },
+  "vib": {
+    "description": "Applies a vibrato to the frequency of the oscillator.",
+    "params": [
+      "frequency (number | Pattern): of the vibrato in hertz"
+    ]
+  },
+  "vibmod": {
+    "description": "Sets the vibrato depth in semitones. Only has an effect if vibrato | vib | v is is also set",
+    "params": [
+      "depth (number | Pattern): of vibrato (in semitones)"
+    ]
+  },
+  "vibrato": {
+    "description": "Applies a vibrato to the frequency of the oscillator.",
+    "params": [
+      "frequency (number | Pattern): of the vibrato in hertz"
+    ]
+  },
+  "vmod": {
+    "description": "Sets the vibrato depth in semitones. Only has an effect if vibrato | vib | v is is also set",
+    "params": [
+      "depth (number | Pattern): of vibrato (in semitones)"
+    ]
+  },
+  "voicing": {
+    "description": "Turns chord symbols into voicings. You can use the following control params: chord: Note, followed by chord symbol, e.g. C Am G7 Bb^7 dict: voicing dictionary to use, falls back to default dictionary anchor: the note that is used to align the chord mode: how the voicing is aligned to the anchor below: top note <= anchor duck: top note <= anchor, anchor excluded above: bottom note >= anchor offset: whole number that shifts the voicing up or down to the next voicing n: if set, the voicing is played like a scale. Overshooting numbers will be octaved All of the above controls are optional, except chord. If you pass a pattern of strings to voicing, they will be interpreted as chords.",
+    "params": []
+  },
+  "voicings": {
+    "description": "DEPRECATED: still works, but it is recommended you use .voicing instead (without s). Turns chord symbols into voicings, using the smoothest voice leading possible. Uses chord-voicings package.",
+    "params": [
+      "dictionary (string): which voicing dictionary to use."
+    ]
+  },
+  "vowel": {
+    "description": "Formant filter to make things sound like vowels.",
+    "params": [
+      "vowel (string | Pattern): You can use a e i o u ae aa oe ue y uh un en an on, corresponding to [a] [e] [i] [o] [u] [æ] [ɑ] [ø] [y] [ɯ] [ʌ] [œ̃] [ɛ̃] [ɑ̃] [ɔ̃]. Aliases: aa = å = ɑ, oe = ø = ö, y = ı, ae = æ."
+    ]
+  },
+  "warp": {
+    "description": "Amount of warp (alteration of the waveform) to apply to the wavetable oscillator",
+    "params": [
+      "amount (number | Pattern): Warp of the wavetable from 0 to 1"
+    ]
+  },
+  "warpatt": {
+    "description": "Attack time of the wavetable oscillator's warp envelope",
+    "params": [
+      "time (number | Pattern): attack time in seconds"
+    ]
+  },
+  "warpattack": {
+    "description": "Attack time of the wavetable oscillator's warp envelope",
+    "params": [
+      "time (number | Pattern): attack time in seconds"
+    ]
+  },
+  "warpdc": {
+    "description": "DC offset of the LFO for the wavetable oscillator's warp",
+    "params": [
+      "dcoffset (number | Pattern): dc offset. set to 0 for unipolar"
+    ]
+  },
+  "warpdec": {
+    "description": "Decay time of the wavetable oscillator's warp envelope",
+    "params": [
+      "time (number | Pattern): decay time in seconds"
+    ]
+  },
+  "warpdecay": {
+    "description": "Decay time of the wavetable oscillator's warp envelope",
+    "params": [
+      "time (number | Pattern): decay time in seconds"
+    ]
+  },
+  "warpdepth": {
+    "description": "Depth of the LFO for the wavetable oscillator's warp",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "warpenv": {
+    "description": "Amount of envelope applied wavetable oscillator's position envelope",
+    "params": [
+      "amount (number | Pattern): between 0 and 1"
+    ]
+  },
+  "warpmode": {
+    "description": "Type of warp (alteration of the waveform) to apply to the wavetable oscillator. The current options are: none, asym, bendp, bendm, bendmp, sync, quant, fold, pwm, orbit, spin, chaos, primes, binary, brownian, reciprocal, wormhole, logistic, sigmoid, fractal, flip",
+    "params": [
+      "mode (number | string | Pattern): Warp mode"
+    ]
+  },
+  "warprate": {
+    "description": "Rate of the LFO for the wavetable oscillator's warp",
+    "params": [
+      "rate (number | Pattern): rate in hertz"
+    ]
+  },
+  "warprel": {
+    "description": "Release time of the wavetable oscillator's warp envelope",
+    "params": [
+      "time (number | Pattern): release time in seconds"
+    ]
+  },
+  "warprelease": {
+    "description": "Release time of the wavetable oscillator's warp envelope",
+    "params": [
+      "time (number | Pattern): release time in seconds"
+    ]
+  },
+  "warpshape": {
+    "description": "Shape of the LFO for the wavetable oscillator's warp",
+    "params": [
+      "shape (number | Pattern): Shape of the lfo (0, 1, 2, ..)"
+    ]
+  },
+  "warpskew": {
+    "description": "Skew of the LFO for the wavetable oscillator's warp",
+    "params": [
+      "skew (number | Pattern): How much to bend the LFO shape"
+    ]
+  },
+  "warpsus": {
+    "description": "Sustain time of the wavetable oscillator's warp envelope",
+    "params": [
+      "gain (number | Pattern): sustain level (0 to 1)"
+    ]
+  },
+  "warpsustain": {
+    "description": "Sustain time of the wavetable oscillator's warp envelope",
+    "params": [
+      "gain (number | Pattern): sustain level (0 to 1)"
+    ]
+  },
+  "warpsync": {
+    "description": "cycle synced rate of the LFO for the wavetable warp position",
+    "params": [
+      "rate (number | Pattern): rate in cycles"
+    ]
+  },
+  "wavetablePhaseRand": {
+    "description": "Amount of randomness of the initial phase of the wavetable oscillator.",
+    "params": [
+      "amount (number | Pattern): Randomness of the initial phase. Between 0 (not random) and 1 (fully random)"
+    ]
+  },
+  "wavetablePosition": {
+    "description": "Position in the wavetable of the wavetable oscillator",
+    "params": [
+      "position (number | Pattern): Position in the wavetable from 0 to 1"
+    ]
+  },
+  "wavetableWarp": {
+    "description": "Amount of warp (alteration of the waveform) to apply to the wavetable oscillator",
+    "params": [
+      "amount (number | Pattern): Warp of the wavetable from 0 to 1"
+    ]
+  },
+  "wavetableWarpMode": {
+    "description": "Type of warp (alteration of the waveform) to apply to the wavetable oscillator. The current options are: none, asym, bendp, bendm, bendmp, sync, quant, fold, pwm, orbit, spin, chaos, primes, binary, brownian, reciprocal, wormhole, logistic, sigmoid, fractal, flip",
+    "params": [
+      "mode (number | string | Pattern): Warp mode"
+    ]
+  },
+  "wchoose": {
+    "description": "Chooses randomly from the given list of elements by giving a probability to each element",
+    "params": [
+      "pairs (any): arrays of value and weight"
+    ]
+  },
+  "wchooseCycles": {
+    "description": "Picks one of the elements at random each cycle by giving a probability to each element",
+    "params": []
+  },
+  "when": {
+    "description": "Applies the given function whenever the given pattern is in a true state.",
+    "params": [
+      "binary_pat (Pattern)",
+      "func (function)"
+    ]
+  },
+  "whenKey": {
+    "description": "Do something on a keypress, or array of keypresses Key name reference",
+    "params": []
+  },
+  "withBase": {
+    "description": "Assumes pattern of frequencies tuned to some base frequency, such as the output of xen Because xen defaults to 220Hz, so will withBase. but you can specify a different original base with the standard optional array syntax ':'",
+    "params": [
+      "base (number)",
+      "(optional) (number): originalBase"
+    ]
+  },
+  "withSeed": {
+    "description": "Modify a pattern by applying a function to the randomSeed control if present",
+    "params": [
+      "func (function): Function from seed (or undefined) to seed (or undefined)",
+      "pat (Pattern): Pattern to update"
+    ]
+  },
+  "withValue": {
+    "description": "Returns a new pattern, with the function applied to the value of each hap. It has the alias fmap.",
+    "params": [
+      "func (function): to to apply to the value"
+    ]
+  },
+  "within": {
+    "description": "Use within to apply a function to only a part of a pattern.",
+    "params": [
+      "start (number): start within cycle (0 - 1)",
+      "end (number): end within cycle (0 - 1). Must be > start",
+      "func (function): function to be applied to the sub-pattern"
+    ]
+  },
+  "wordfall": {
+    "description": "Displays a vertical pianoroll with event labels. Supports all the same options as pianoroll.",
+    "params": []
+  },
+  "wrandcat": {
+    "description": "Picks one of the elements at random each cycle by giving a probability to each element",
+    "params": []
+  },
+  "writeOutputs": {
+    "description": "Write next web audio block from output buffers",
+    "params": []
+  },
+  "wt": {
+    "description": "Position in the wavetable of the wavetable oscillator",
+    "params": [
+      "position (number | Pattern): Position in the wavetable from 0 to 1"
+    ]
+  },
+  "wtatt": {
+    "description": "Attack time of the wavetable oscillator's position envelope",
+    "params": [
+      "time (number | Pattern): attack time in seconds"
+    ]
+  },
+  "wtattack": {
+    "description": "Attack time of the wavetable oscillator's position envelope",
+    "params": [
+      "time (number | Pattern): attack time in seconds"
+    ]
+  },
+  "wtdc": {
+    "description": "DC offset of the LFO for the wavetable oscillator's position",
+    "params": [
+      "dcoffset (number | Pattern): dc offset. set to 0 for unipolar"
+    ]
+  },
+  "wtdec": {
+    "description": "Decay time of the wavetable oscillator's position envelope",
+    "params": [
+      "time (number | Pattern): decay time in seconds"
+    ]
+  },
+  "wtdecay": {
+    "description": "Decay time of the wavetable oscillator's position envelope",
+    "params": [
+      "time (number | Pattern): decay time in seconds"
+    ]
+  },
+  "wtdepth": {
+    "description": "Depth of the LFO for the wavetable oscillator's position",
+    "params": [
+      "depth (number | Pattern): depth of modulation"
+    ]
+  },
+  "wtenv": {
+    "description": "Amount of envelope applied wavetable oscillator's position envelope",
+    "params": [
+      "amount (number | Pattern): between 0 and 1"
+    ]
+  },
+  "wtphaserand": {
+    "description": "Amount of randomness of the initial phase of the wavetable oscillator.",
+    "params": [
+      "amount (number | Pattern): Randomness of the initial phase. Between 0 (not random) and 1 (fully random)"
+    ]
+  },
+  "wtrate": {
+    "description": "Rate of the LFO for the wavetable oscillator's position",
+    "params": [
+      "rate (number | Pattern): rate in hertz"
+    ]
+  },
+  "wtrel": {
+    "description": "Release time of the wavetable oscillator's position envelope",
+    "params": [
+      "time (number | Pattern): release time in seconds"
+    ]
+  },
+  "wtrelease": {
+    "description": "Release time of the wavetable oscillator's position envelope",
+    "params": [
+      "time (number | Pattern): release time in seconds"
+    ]
+  },
+  "wtshape": {
+    "description": "Shape of the LFO for the wavetable oscillator's position",
+    "params": [
+      "shape (number | Pattern): Shape of the lfo (0, 1, 2, ..)"
+    ]
+  },
+  "wtskew": {
+    "description": "Skew of the LFO for the wavetable oscillator's position",
+    "params": [
+      "skew (number | Pattern): How much to bend the LFO shape"
+    ]
+  },
+  "wtsus": {
+    "description": "Sustain time of the wavetable oscillator's position envelope",
+    "params": [
+      "gain (number | Pattern): sustain level (0 to 1)"
+    ]
+  },
+  "wtsustain": {
+    "description": "Sustain time of the wavetable oscillator's position envelope",
+    "params": [
+      "gain (number | Pattern): sustain level (0 to 1)"
+    ]
+  },
+  "wtsync": {
+    "description": "cycle synced rate of the LFO for the wavetable oscillator's position",
+    "params": [
+      "rate (number | Pattern): rate in cycles"
+    ]
+  },
+  "xen": {
+    "description": "Assumes a numerical pattern of scale steps, and a scale. Scales accepted are all preset scale names of tune, arbitrary edos such as 31edo, or an array of frequency ratios. Assumes scales repeat at octave (2/1). Returns a new pattern with all values mapped to their associated frequency, assuming a base frequency of 220hz.",
+    "params": [
+      "scaleNameOrRatios (string | Array.<number>)"
+    ]
+  },
+  "xfade": {
+    "description": "Cross-fades between left and right from 0 to 1: 0 = (full left, no right) .5 = (both equal) 1 = (no left, full right)",
+    "params": []
+  },
+  "zip": {
+    "description": "Experimental 'zips' together the steps of the provided patterns. This can create a long repetition, taking place over a single, dense cycle. Using pace to set the number of steps per cycle is therefore usually recommended.",
+    "params": []
+  },
+  "zoom": {
+    "description": "Plays a portion of a pattern, specified by the beginning and end of a time span. The new resulting pattern is played over the time period of the original pattern:",
+    "params": []
   }
 }

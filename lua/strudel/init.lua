@@ -9,14 +9,17 @@ M.config = {
 function M.setup(opts)
   M.is_setup = true
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-  
+
+  -- Forward visual_effects opts to the visual module
+  require("strudel.visual").setup((opts or {}).visual_effects)
+
   -- Setup dictionary for autocomplete (if setup is called)
   local plugin_dir = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":h:h:h")
   local dict_path = plugin_dir .. "/dict/strudel.dict"
-  
+
   -- Add autocmd to set dictionary for javascript files (or specific filetype)
   vim.api.nvim_create_autocmd("FileType", {
-    pattern = {"javascript", "javascriptreact"},
+    pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact", "strudel" },
     callback = function()
       vim.opt_local.dictionary:append(dict_path)
       vim.opt_local.complete:append("k")
@@ -57,7 +60,17 @@ function M.eval(code)
   osc.send(M.config.host, M.config.port, "/eval", { code })
 end
 
+local function visual()
+  -- Lazy load to avoid hard dep at file scope
+  return require("strudel.visual")
+end
+
 function M.eval_line()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local row = vim.api.nvim_win_get_cursor(0)[1] - 1  -- 0-indexed
+  local offset = vim.api.nvim_buf_get_offset(bufnr, row)
+  visual().set_last_eval(bufnr, offset)
+
   local line = vim.api.nvim_get_current_line()
   M.eval(line)
 end
@@ -66,14 +79,18 @@ function M.eval_visual()
   -- Get visual selection
   local _, start_row, start_col, _ = unpack(vim.fn.getpos("'<"))
   local _, end_row, end_col, _ = unpack(vim.fn.getpos("'>"))
-  
+
   -- Adjust for 0-based indexing in API
   start_row = start_row - 1
   start_col = start_col - 1
   end_row = end_row - 1
-  
+
   -- Handle end_col being 2147483647 (max int) when selecting whole line
   if end_col > 2147483647 then end_col = 2147483647 end
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  local offset = vim.api.nvim_buf_get_offset(bufnr, start_row) + start_col
+  visual().set_last_eval(bufnr, offset)
 
   local lines = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
   local code = table.concat(lines, "\n")
@@ -81,6 +98,9 @@ function M.eval_visual()
 end
 
 function M.eval_file()
+  local bufnr = vim.api.nvim_get_current_buf()
+  visual().set_last_eval(bufnr, 0)
+
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local code = table.concat(lines, "\n")
   M.eval(code)
@@ -113,9 +133,16 @@ function M.start_bridge()
 
   M.bridge_job_id = vim.fn.jobstart({"node", script_path}, {
     on_stdout = function(_, data)
-      if data then
-        for _, line in ipairs(data) do
-          if line ~= "" then print("[Strudel] " .. line) end
+      if not data then return end
+      local prefix = "__STRUDEL_EVENT__"
+      local prefix_len = #prefix
+      for _, line in ipairs(data) do
+        if line ~= "" then
+          if line:sub(1, prefix_len) == prefix then
+            require("strudel.visual").handle_event(line:sub(prefix_len + 1))
+          else
+            print("[Strudel] " .. line)
+          end
         end
       end
     end,
@@ -128,6 +155,7 @@ function M.start_bridge()
     end,
     on_exit = function()
       M.bridge_job_id = nil
+      require("strudel.visual").clear_all()
       print("[Strudel] Bridge stopped.")
     end,
   })
@@ -144,6 +172,7 @@ function M.stop_bridge()
   if M.bridge_job_id then
     vim.fn.jobstop(M.bridge_job_id)
     M.bridge_job_id = nil
+    require("strudel.visual").clear_all()
   else
     vim.notify("Strudel Bridge is not running.", vim.log.levels.WARN)
   end

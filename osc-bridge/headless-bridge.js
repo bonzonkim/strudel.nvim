@@ -3,6 +3,54 @@ const dgram = require('dgram');
 
 const UDP_PORT = 9129;
 
+// Install the visual-effects hook by wrapping scheduler.setPattern.
+//
+// We can't access Strudel's `all()` from `page.evaluate` (it's module-scoped
+// inside @strudel/core), and `repl.evaluate(<hook code>)` hangs because the
+// transpiler treats the snippet as a pattern. Instead we wrap the scheduler's
+// setPattern method: every evaluated pattern flows through it, and we attach
+// `.onTrigger(fn, false)` before delegating to the original.
+async function injectHook(page) {
+    try {
+        await page.evaluate(() => {
+            if (window.__strudelHookInstalled) return;
+            const sch = window.strudelMirror && window.strudelMirror.repl && window.strudelMirror.repl.scheduler;
+            if (!sch || typeof sch.setPattern !== 'function') {
+                console.error('Strudel visual hook: scheduler.setPattern unavailable');
+                return;
+            }
+            window.__strudelHookInstalled = true;
+            const orig = sch.setPattern.bind(sch);
+            sch.setPattern = async function(pat, autostart) {
+                if (pat && typeof pat.onTrigger === 'function') {
+                    try {
+                        pat = pat.onTrigger((hap, dur, cps, t) => {
+                            const locs = hap && hap.context && hap.context.locations;
+                            if (!locs || !locs.length) return;
+                            const v = hap.value || {};
+                            let sound;
+                            if (v.s != null) sound = String(v.s);
+                            else if (v.note != null) sound = 'note:' + v.note;
+                            else if (v.n != null) sound = 'n:' + v.n;
+                            else sound = 'unknown';
+                            console.log('__STRUDEL_EVENT__' + JSON.stringify({
+                                locs: locs.map((l) => [l.start, l.end]),
+                                s: sound,
+                                dur: (hap.duration && cps) ? (hap.duration / cps) : 0.1,
+                            }));
+                        }, false);  // false = NOT dominant; preserves audio output
+                    } catch (e) {
+                        console.error('Strudel visual hook wrap failed:', e && e.message);
+                    }
+                }
+                return orig(pat, autostart);
+            };
+        });
+    } catch (err) {
+        console.error('injectHook page.evaluate failed:', err && err.message);
+    }
+}
+
 (async () => {
     console.log('Starting Headless Strudel...');
 
@@ -20,11 +68,29 @@ const UDP_PORT = 9129;
     const page = await browser.newPage();
     await page.setViewport({ width: 800, height: 600 })
 
-    // Log console messages (only errors)
+    // Forward event payloads from console.log lines, and surface real errors.
     page.on('console', msg => {
-        if (msg.type() === 'error') {
-            console.log('BROWSER ERROR:', msg.text());
+        const text = msg.text();
+        if (text.startsWith('__STRUDEL_EVENT__')) {
+            console.log(text);
+            return;
         }
+        if (msg.type() === 'error') {
+            // msg.text() shows `@JSHandle@error` for Error objects.
+            // JSHandle.evaluate runs in the browser, where we can extract real fields.
+            Promise.all(msg.args().map(arg => arg.evaluate(o => {
+                if (o instanceof Error) return o.stack || o.message || String(o);
+                if (o && typeof o === 'object') {
+                    try { return JSON.stringify(o); } catch (_) { return String(o); }
+                }
+                return String(o);
+            }).catch(() => null)))
+                .then(vals => console.log('BROWSER ERROR:', ...vals.map(v => v == null ? text : v)))
+                .catch(() => console.log('BROWSER ERROR:', text));
+        }
+    });
+    page.on('pageerror', err => {
+        console.log('BROWSER PAGE ERROR:', err && err.message ? err.message : String(err));
     });
 
     console.log('Loading Strudel...');
@@ -55,6 +121,25 @@ const UDP_PORT = 9129;
             // console.log("AudioContext state:", ctx.state);
         }
     });
+
+    // Install the visual-effects onTrigger hook ONCE, before any user eval.
+    // `all(fn)` registers a transformation that gets applied to every pattern
+    // evaluated thereafter — so it must be set before the first user /eval.
+    await injectHook(page);
+
+    // Unlock audio context first (a click event is required by browser autoplay
+    // policy). Without this, repl.evaluate hangs because the scheduler can't
+    // start without audio. Then silence strudel.cc's auto-loaded starter
+    // pattern — otherwise its haps keep firing through our hook with locations
+    // that don't correspond to the user's buffer, producing phantom highlights
+    // when a user eval errors (e.g. an outdated .play() call).
+    try {
+        const playBtn = await page.$('button[title="play"]');
+        if (playBtn) { await playBtn.click(); } else { await page.click('body'); }
+        await page.evaluate(() => window.strudelMirror.repl.evaluate('silence'));
+    } catch (e) {
+        console.error('Failed to silence starter pattern:', e && e.message);
+    }
 
     console.log('Strudel loaded!');
 
@@ -137,6 +222,8 @@ const UDP_PORT = 9129;
                     console.error('Could not find REPL instance');
                 }
             }, code);
+
+            await injectHook(page);
         } catch (err) {
             console.error('Eval failed:', err);
         }
