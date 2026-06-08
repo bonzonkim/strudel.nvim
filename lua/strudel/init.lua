@@ -19,7 +19,7 @@ function M.setup(opts)
 
   -- Add autocmd to set dictionary for javascript files (or specific filetype)
   vim.api.nvim_create_autocmd("FileType", {
-    pattern = {"javascript", "javascriptreact"},
+    pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact", "strudel" },
     callback = function()
       vim.opt_local.dictionary:append(dict_path)
       vim.opt_local.complete:append("k")

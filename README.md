@@ -86,6 +86,31 @@ If autocompletion doesn't work (e.g., due to lazy loading order), you can manual
 require("cmp").register_source("strudel", require("strudel.cmp").new())
 ```
 
+Completion data is loaded from the bundled `dict/strudel_completions.json` catalog, so runtime completion works offline and does not require the upstream Strudel repository. The catalog mirrors upstream reference metadata for function names, documented aliases, parameters, and examples; `dict/strudel.dict` remains available as a Vim keyword-completion fallback.
+
+The source is active for Strudel-oriented buffers (`javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `strudel`) and returns documented aliases as their own selectable entries. Inside sound string arguments such as `s("...")` and `sound("...")`, catalog entries marked as sounds are suggested when available; outside those contexts the source falls back to Strudel function completions.
+
+Maintainers can refresh the catalog from a local Strudel checkout:
+
+```bash
+# In the upstream Strudel checkout first:
+cd /path/to/strudel
+pnpm i
+npm run jsdoc-json
+
+# Then in strudel.nvim:
+node dict/generate_completions.js --strudel-repo /path/to/strudel
+node tests/generate_completions_spec.js
+make test
+```
+
+Manual acceptance check:
+
+1. Run `:StrudelDebug` and confirm the completion catalog path, load status, and entry count are printed.
+2. In a JavaScript Strudel buffer, trigger completion for a canonical function prefix and an alias prefix.
+3. Inspect a completion detail window and confirm description, aliases, parameters, or examples appear when available.
+4. In an unrelated filetype buffer, confirm the `strudel` source is not active unless you manually opt into it in your completion setup.
+
 ## Visual Effects Configuration
 
 When Strudel is playing, each mini-notation token in your buffer flashes the moment its sound triggers. Colors are assigned automatically per sound name (deterministic FNV-1a hash → HSL hue); override per-sound if you want specific colors:

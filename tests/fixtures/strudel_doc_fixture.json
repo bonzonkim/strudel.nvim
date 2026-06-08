@@ -1,0 +1,91 @@
+{
+  "docs": [
+    {
+      "name": "sound",
+      "kind": "function",
+      "description": "Set the sound name.",
+      "synonyms": ["s"],
+      "synonyms_text": "s",
+      "tags": ["controls"],
+      "params": [
+        {
+          "name": "name",
+          "type": { "names": ["string"] },
+          "description": "Sound name or mini-notation pattern."
+        }
+      ],
+      "examples": ["sound(\"bd sd\")"]
+    },
+    {
+      "name": "slow",
+      "kind": "function",
+      "description": "Slow a pattern by the given factor.",
+      "synonyms": ["slowcat"],
+      "tags": [{ "originalTitle": "time" }],
+      "params": [
+        {
+          "name": "factor",
+          "type": { "names": ["number"] },
+          "description": "Amount to slow down."
+        }
+      ],
+      "examples": ["slow(2, sound(\"bd sd\"))"]
+    },
+    {
+      "name": "_internal",
+      "kind": "function",
+      "description": "Internal helper that should never complete."
+    },
+    {
+      "name": "packageEntry",
+      "kind": "package",
+      "description": "Package metadata that should never complete."
+    },
+    {
+      "name": "hidden",
+      "kind": "function",
+      "description": "Explicitly disabled completion.",
+      "tags": [{ "originalTitle": "noAutocomplete" }]
+    },
+    {
+      "name": "superOnly",
+      "kind": "function",
+      "description": "SuperDirt-only function.",
+      "tags": [{ "originalTitle": "superdirtOnly" }]
+    },
+    {
+      "longname": "gain",
+      "kind": "function",
+      "description": "<p>Set output gain.</p>",
+      "synonyms": ["amp", "volume"],
+      "params": [
+        {
+          "name": "value",
+          "type": { "names": ["number", "Pattern"] },
+          "description": "<strong>Gain</strong> value."
+        }
+      ],
+      "examples": ["sound(\"bd\").gain(0.8)"]
+    },
+    {
+      "name": "minimal",
+      "kind": "function"
+    },
+    {
+      "name": "duplicate",
+      "kind": "function",
+      "description": "First duplicate wins.",
+      "synonyms": ["dupAlias"]
+    },
+    {
+      "name": "duplicate",
+      "kind": "function",
+      "description": "Second duplicate is ignored."
+    },
+    {
+      "name": "bd",
+      "kind": "sound",
+      "description": "Bass drum sound."
+    }
+  ]
+}
