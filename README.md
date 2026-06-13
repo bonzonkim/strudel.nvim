@@ -5,9 +5,7 @@ A Neovim plugin for live coding with [Strudel](https://strudel.cc/), bringing th
 ## Demo
 
 
-https://github.com/user-attachments/assets/86431c80-c05c-4d93-833d-c56ed92e7e2f
-
-code source: (switch angel) https://www.youtube.com/shorts/AJ7atBkisOU 
+https://github.com/user-attachments/assets/a95e018b-d354-4c08-b9e0-b7bcca437ef5
 
 
 ## How it Works
