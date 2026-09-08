@@ -16,8 +16,7 @@ function M.setup(opts)
   -- Setup dictionary for autocomplete (if setup is called)
   local plugin_dir = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":h:h:h")
   local dict_path = plugin_dir .. "/dict/strudel.dict"
-
-  -- Add autocmd to set dictionary for javascript files (or specific filetype)
+  -- Add autocmd to set the dictionary for Strudel-oriented buffers.
   vim.api.nvim_create_autocmd("FileType", {
     pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact", "strudel" },
     callback = function()

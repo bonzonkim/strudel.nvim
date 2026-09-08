@@ -8,8 +8,8 @@ const root = path.resolve(__dirname, '..');
 const generator = path.join(root, 'dict', 'generate_completions.js');
 const fixture = path.join(root, 'tests', 'fixtures', 'strudel_doc_fixture.json');
 
-function runGenerator(outDir) {
-  execFileSync(process.execPath, [generator, '--doc-json', fixture, '--out-dir', outDir], {
+function runGenerator(outDir, docJson = fixture) {
+  execFileSync(process.execPath, [generator, '--doc-json', docJson, '--out-dir', outDir], {
     cwd: root,
     stdio: 'pipe',
   });
@@ -46,8 +46,9 @@ test('generates canonical entries aliases and excludes hidden upstream docs', ()
     const labels = catalog.entries.map((entry) => entry.label);
 
     assert.strictEqual(catalog.version, 1);
-    assert(labels.includes('sound'));
     assert(labels.includes('s'));
+    assert(labels.includes('sound'));
+    assert(labels.includes('note'));
     assert(labels.includes('gain'));
     assert(labels.includes('amp'));
     assert(labels.includes('volume'));
@@ -74,6 +75,9 @@ test('generates sorted duplicate-free output with first duplicate retained', () 
     const duplicate = catalog.entries.find((entry) => entry.label === 'duplicate');
     assert.strictEqual(duplicate.documentation.description, 'First duplicate wins.');
     assert(labels.includes('dupAlias'));
+
+    const sEntry = catalog.entries.find((entry) => entry.label === 's');
+    assert.strictEqual(sEntry.canonical, undefined);
   });
 });
 
@@ -87,11 +91,7 @@ test('sorts labels with the same bytewise order used by Lua validation', () => {
       ],
     }));
 
-    execFileSync(process.execPath, [generator, '--doc-json', docJson, '--out-dir', dir], {
-      cwd: root,
-      stdio: 'pipe',
-    });
-
+    runGenerator(dir, docJson);
     const catalog = readJson(path.join(dir, 'strudel_completions.json'));
     assert.deepStrictEqual(catalog.entries.map((entry) => entry.label), ['absOriA', 'absoluteOrientationZ']);
   });
@@ -106,7 +106,35 @@ test('normalizes documentation parameters examples and html', () => {
     assert.strictEqual(gain.documentation.description, 'Set output gain.');
     assert.deepStrictEqual(gain.documentation.parameters[0].types, ['number', 'Pattern']);
     assert.strictEqual(gain.documentation.parameters[0].description, 'Gain value.');
-    assert.deepStrictEqual(gain.documentation.examples, ['sound("bd").gain(0.8)']);
+    assert.deepStrictEqual(gain.documentation.examples, ['s("bd").gain(0.8)']);
+  });
+});
+
+test('preserves upstream synonym text instead of recomputing it per alias', () => {
+  withTempDir((dir) => {
+    runGenerator(dir);
+    const catalog = readJson(path.join(dir, 'strudel_completions.json'));
+    const expected = 'ftrans, fTrans, ftranspose, fTranspose';
+
+    for (const label of ['ftranspose', 'ftrans', 'fTrans', 'fTranspose']) {
+      const entry = catalog.entries.find((candidate) => candidate.label === label);
+      assert.strictEqual(entry.documentation.synonyms_text, expected);
+    }
+  });
+});
+
+test('generates value catalogs for sound bank pitch scale mode and chord', () => {
+  withTempDir((dir) => {
+    runGenerator(dir);
+    const catalog = readJson(path.join(dir, 'strudel_completions.json'));
+
+    assert(catalog.value_catalogs.sound.entries.some((entry) => entry.label === 'bd'));
+    assert(catalog.value_catalogs.sound.entries.some((entry) => entry.label === 'hh'));
+    assert(catalog.value_catalogs.bank.entries.some((entry) => entry.label === 'RolandTR909'));
+    assert(catalog.value_catalogs.pitch.entries.some((entry) => entry.label === 'C'));
+    assert(catalog.value_catalogs.scale.entries.some((entry) => entry.label === 'minor'));
+    assert(catalog.value_catalogs.mode.entries.some((entry) => entry.label === 'below'));
+    assert(catalog.value_catalogs.chord.entries.some((entry) => entry.label === 'm7'));
   });
 });
 
@@ -118,10 +146,14 @@ test('generates compatibility strudel.dict and strudel_docs.json outputs', () =>
 
     assert(dict.includes('sound'));
     assert(dict.includes('s'));
-    assert(dict.includes('gain'));
+    assert(dict.includes('note'));
     assert.strictEqual(docs.sound.description, 'Set the sound name.');
     assert.strictEqual(docs.s.description, 'Set the sound name.');
     assert(docs.gain.params.includes('value (number | Pattern): Gain value.'));
+    assert.deepStrictEqual(docs.ftranspose.examples, ['i("0 1 2").ftrans("7")']);
+    assert.strictEqual(docs.ftranspose.synonyms_text, 'ftrans, fTrans, ftranspose, fTranspose');
+    assert.deepStrictEqual(docs.ftranspose.synonyms, ['ftrans', 'fTrans', 'ftranspose', 'fTranspose']);
+    assert.deepStrictEqual(docs.ftranspose.tags, ['tonal']);
   });
 });
 
@@ -142,6 +174,42 @@ test('is deterministic for repeated generation from the same fixture', () => {
     };
 
     assert.deepStrictEqual(second, first);
+  });
+});
+
+test('provenance is portable and output is independent of the local input path', () => {
+  withTempDir((dir) => {
+    const sourceA = path.join(dir, 'checkout-a', 'doc.json');
+    const sourceB = path.join(dir, 'checkout-b', 'doc.json');
+    fs.mkdirSync(path.dirname(sourceA), { recursive: true });
+    fs.mkdirSync(path.dirname(sourceB), { recursive: true });
+    fs.copyFileSync(fixture, sourceA);
+    fs.copyFileSync(fixture, sourceB);
+
+    const outA = path.join(dir, 'out-a');
+    const outB = path.join(dir, 'out-b');
+    runGenerator(outA, sourceA);
+    runGenerator(outB, sourceB);
+
+    const first = {
+      catalog: fs.readFileSync(path.join(outA, 'strudel_completions.json'), 'utf8'),
+      dict: fs.readFileSync(path.join(outA, 'strudel.dict'), 'utf8'),
+      docs: fs.readFileSync(path.join(outA, 'strudel_docs.json'), 'utf8'),
+    };
+    const second = {
+      catalog: fs.readFileSync(path.join(outB, 'strudel_completions.json'), 'utf8'),
+      dict: fs.readFileSync(path.join(outB, 'strudel.dict'), 'utf8'),
+      docs: fs.readFileSync(path.join(outB, 'strudel_docs.json'), 'utf8'),
+    };
+
+    assert.deepStrictEqual(second, first);
+    const metadata = readJson(path.join(outA, 'strudel_completions.json')).generated_from;
+    assert.deepStrictEqual(metadata, {
+      source: 'strudel',
+      path: 'doc.json',
+      revision: 'unknown',
+    });
+    assert(!path.isAbsolute(metadata.path));
   });
 });
 

@@ -5,7 +5,9 @@ A Neovim plugin for live coding with [Strudel](https://strudel.cc/), bringing th
 ## Demo
 
 
-https://github.com/user-attachments/assets/a95e018b-d354-4c08-b9e0-b7bcca437ef5
+https://github.com/user-attachments/assets/86431c80-c05c-4d93-833d-c56ed92e7e2f
+
+code source: (switch angel) https://www.youtube.com/shorts/AJ7atBkisOU
 
 
 ## How it Works
@@ -28,7 +30,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
 | **Code Evaluation** | ✅ | Eval line, selection, or entire file (`:StrudelEvalFile`). |
 | **Bridge Management** | ✅ | Start/Stop the audio engine directly from Neovim (`:StrudelStart`). |
 | **Visuals** | ✅ | In-buffer per-note flash on the exact mini-notation token, distinct color per sound. Browser window: `:StrudelShow` / `:StrudelHide`. |
-| **Autocomplete** | ✅ | Native `nvim-cmp` source + Dictionary support. |
+| **Autocomplete** | ✅ | Native `nvim-cmp` source backed by an offline catalog, with Dictionary fallback support. |
 | **Syntax Highlighting** | 🚧 | Uses standard JavaScript syntax highlighting. |
 
 ## Installation
@@ -86,51 +88,25 @@ require("cmp").register_source("strudel", require("strudel.cmp").new())
 
 Completion data is loaded from the bundled `dict/strudel_completions.json` catalog, so runtime completion works offline and does not require the upstream Strudel repository. The catalog mirrors upstream reference metadata for function names, documented aliases, parameters, and examples; `dict/strudel.dict` remains available as a Vim keyword-completion fallback.
 
-The source is active for Strudel-oriented buffers (`javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `strudel`) and returns documented aliases as their own selectable entries. Inside sound string arguments such as `s("...")` and `sound("...")`, catalog entries marked as sounds are suggested when available; outside those contexts the source falls back to Strudel function completions.
+The source is active for `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, and `strudel` buffers. It includes documented aliases as selectable entries, so core names such as `note`, `s`, and `sound` should all appear. It also provides context-aware value suggestions inside quoted `s("...")`, `sound("...")`, `bank("...")`, `scale("...")`, `mode("...")`, and `chord("...")` arguments.
 
-Maintainers can refresh the catalog from a local Strudel checkout:
+Run `:StrudelDebug` when completion is missing. The report shows whether `nvim-cmp` is available, whether the current filetype is eligible, where the catalog was loaded from, whether `note`, `s`, and `sound` are present, value-family counts, and a next action.
+
+Maintainers can refresh the bundled catalog from a local upstream Strudel checkout:
 
 ```bash
 # In the upstream Strudel checkout first:
-cd /path/to/strudel
-pnpm i
-npm run jsdoc-json
+rtk pnpm i
+rtk npm run jsdoc-json
 
 # Then in strudel.nvim:
-node dict/generate_completions.js --strudel-repo /path/to/strudel
-node tests/generate_completions_spec.js
-make test
-```
+rtk node dict/generate_completions.js --strudel-repo /path/to/strudel --out-dir dict
+rtk node tests/generate_completions_spec.js
+rtk make test
 
-Manual acceptance check:
-
-1. Run `:StrudelDebug` and confirm the completion catalog path, load status, and entry count are printed.
-2. In a JavaScript Strudel buffer, trigger completion for a canonical function prefix and an alias prefix.
-3. Inspect a completion detail window and confirm description, aliases, parameters, or examples appear when available.
-4. In an unrelated filetype buffer, confirm the `strudel` source is not active unless you manually opt into it in your completion setup.
-
-## Visual Effects Configuration
-
-When Strudel is playing, each mini-notation token in your buffer flashes the moment its sound triggers. Colors are assigned automatically per sound name (deterministic FNV-1a hash → HSL hue); override per-sound if you want specific colors:
-
-```lua
-require("strudel").setup({
-  visual_effects = {
-    enabled = true,  -- default; set false to suppress all highlights
-    colors = {
-      bd = "#ff5555",   -- override auto-assigned color
-      sd = "#55ff55",
-    },
-  }
-})
-```
-
-### Development
-
-Tests use [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). With plenary installed via your plugin manager, run:
-
-```bash
-make test
+# Regenerate once more and confirm deterministic output:
+rtk node dict/generate_completions.js --strudel-repo /path/to/strudel --out-dir dict
+rtk git diff -- dict/strudel_completions.json dict/strudel.dict dict/strudel_docs.json
 ```
 
 ## Usage
@@ -154,6 +130,31 @@ make test
     *   **In-buffer**: highlights flash on each mini-notation token in beat with the audio. Automatic — no command needed. Configure colors via `setup({ visual_effects = ... })` (see below).
     *   **Browser window**: `<leader>sv` (Show), `<leader>sh` (Hide).
     *   **Text log**: add `.log()` to your pattern (e.g., `s("bd").log()`) to see events in Neovim's `:messages`.
+
+## Visual Effects Configuration
+
+When Strudel is playing, each mini-notation token in your buffer flashes the moment its sound triggers. Colors are assigned automatically per sound name (deterministic FNV-1a hash → HSL hue); override per-sound if you want specific colors:
+
+```lua
+require("strudel").setup({
+  visual_effects = {
+    enabled = true,  -- default; set false to suppress all highlights
+    colors = {
+      bd = "#ff5555",   -- override auto-assigned color
+      sd = "#55ff55",
+    }
+  }
+})
+```
+
+### Development
+
+Tests use [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). With plenary installed via your plugin manager, run:
+
+```bash
+rtk node tests/generate_completions_spec.js
+rtk make test
+```
 
 ## Keybindings
 

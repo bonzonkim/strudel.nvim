@@ -2,11 +2,25 @@ describe("strudel.cmp catalog loading", function()
   local cmp_source
   local tmpdir
 
+  local function encode(value)
+    if vim.json and vim.json.encode then
+      return vim.json.encode(value)
+    end
+    return vim.fn.json_encode(value)
+  end
+
   local function write_file(path, content)
     vim.fn.mkdir(vim.fn.fnamemodify(path, ":h"), "p")
     local fd = assert(io.open(path, "w"))
     fd:write(content)
     fd:close()
+  end
+
+  local function write_catalog(catalog)
+    local path = tmpdir .. "/catalog.json"
+    write_file(path, encode(catalog))
+    cmp_source._set_catalog_path(path)
+    return path
   end
 
   before_each(function()
@@ -27,17 +41,15 @@ describe("strudel.cmp catalog loading", function()
   end)
 
   it("loads a valid catalog and returns sorted entries", function()
-    local path = tmpdir .. "/catalog.json"
-    write_file(path, vim.json.encode({
+    write_catalog({
       version = 1,
       generated_from = { source = "test" },
       entries = {
         { label = "gain", kind = "function" },
         { label = "sound", kind = "function" },
       },
-    }))
+    })
 
-    cmp_source._set_catalog_path(path)
     local ok, catalog = cmp_source._load_catalog()
 
     assert.is_true(ok)
@@ -46,7 +58,7 @@ describe("strudel.cmp catalog loading", function()
     assert.are.equal("sound", catalog.entries[2].label)
   end)
 
-  it("loads the bundled catalog and includes note and s entries", function()
+  it("loads the bundled catalog and includes note s and sound entries", function()
     local ok, catalog = cmp_source._load_catalog()
 
     assert.is_true(ok)
@@ -58,6 +70,7 @@ describe("strudel.cmp catalog loading", function()
     end
     assert.is_true(labels.note)
     assert.is_true(labels.s)
+    assert.is_true(labels.sound)
   end)
 
   it("returns an empty catalog for a missing file", function()
@@ -82,34 +95,42 @@ describe("strudel.cmp catalog loading", function()
     assert.is_truthy(catalog.error:match("invalid JSON"))
   end)
 
+  it("rejects unsupported schema versions", function()
+    write_catalog({
+      version = 99,
+      entries = {},
+    })
+
+    local ok, catalog = cmp_source._load_catalog()
+
+    assert.is_false(ok)
+    assert.is_truthy(catalog.error:match("unsupported"))
+  end)
+
   it("rejects duplicate labels", function()
-    local path = tmpdir .. "/duplicates.json"
-    write_file(path, vim.json.encode({
+    write_catalog({
       version = 1,
       entries = {
         { label = "sound", kind = "function" },
         { label = "sound", kind = "function" },
       },
-    }))
-    cmp_source._set_catalog_path(path)
+    })
 
     local ok, catalog = cmp_source._load_catalog()
 
     assert.is_false(ok)
     assert.are.equal(0, #catalog.entries)
-    assert.is_truthy(catalog.error:match("duplicate label"))
+    assert.is_truthy(catalog.error:match("duplicate"))
   end)
 
   it("rejects unsorted labels", function()
-    local path = tmpdir .. "/unsorted.json"
-    write_file(path, vim.json.encode({
+    write_catalog({
       version = 1,
       entries = {
         { label = "sound", kind = "function" },
         { label = "gain", kind = "function" },
       },
-    }))
-    cmp_source._set_catalog_path(path)
+    })
 
     local ok, catalog = cmp_source._load_catalog()
 
@@ -119,20 +140,18 @@ describe("strudel.cmp catalog loading", function()
   end)
 
   it("cache reset forces the next load to read the updated file", function()
-    local path = tmpdir .. "/catalog.json"
-    write_file(path, vim.json.encode({
+    local path = write_catalog({
       version = 1,
       entries = {
         { label = "gain", kind = "function" },
       },
-    }))
-    cmp_source._set_catalog_path(path)
+    })
 
     local ok, catalog = cmp_source._load_catalog()
     assert.is_true(ok)
     assert.are.equal(1, #catalog.entries)
 
-    write_file(path, vim.json.encode({
+    write_file(path, encode({
       version = 1,
       entries = {
         { label = "gain", kind = "function" },
@@ -148,22 +167,34 @@ describe("strudel.cmp catalog loading", function()
     assert.are.equal(2, #reloaded.entries)
   end)
 
-  it("reports catalog status for debug output", function()
-    local path = tmpdir .. "/catalog.json"
-    write_file(path, vim.json.encode({
+  it("reports representative entries and value family availability", function()
+    local path = write_catalog({
       version = 1,
       generated_from = { source = "test" },
       entries = {
-        { label = "gain", kind = "function" },
+        { label = "note", kind = "function" },
+        { label = "s", kind = "function" },
         { label = "sound", kind = "function" },
       },
-    }))
-    cmp_source._set_catalog_path(path)
+      value_catalogs = {
+        sound = { availability = "generated", entries = { { label = "bd", kind = "sound" } } },
+        bank = { availability = "generated", entries = { { label = "tr909", kind = "bank" } } },
+        pitch = { availability = "bundled", entries = { { label = "C", kind = "pitch" } } },
+        scale = { availability = "bundled", entries = { { label = "minor", kind = "scale" } } },
+        mode = { availability = "bundled", entries = { { label = "below", kind = "mode" } } },
+        chord = { availability = "bundled", entries = { { label = "m7", kind = "chord" } } },
+      },
+    })
 
     local status = cmp_source._catalog_status()
 
     assert.are.equal(path, status.path)
     assert.is_true(status.ok)
-    assert.are.equal(2, status.entry_count)
+    assert.are.equal(3, status.entry_count)
+    assert.is_true(status.samples.note)
+    assert.is_true(status.samples.s)
+    assert.is_true(status.samples.sound)
+    assert.is_true(status.value_catalogs.sound.available)
+    assert.are.equal(1, status.value_catalogs.chord.count)
   end)
 end)
