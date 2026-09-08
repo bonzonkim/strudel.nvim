@@ -54,15 +54,16 @@ vim.keymap.set("n", "<leader>sv", function() strudel.show_window() end, { desc =
 vim.keymap.set("n", "<leader>sh", function() strudel.hide_window() end, { desc = "Strudel Hide Window" })
 
 vim.api.nvim_create_user_command("StrudelDebug", function()
-  local status, cmp = pcall(require, "cmp")
-  print("--- Strudel Debug Info ---")
-  print("nvim-cmp loaded: " .. tostring(status))
-  
+  local cmp_loaded = pcall(require, "cmp")
   local strudel_mod = require("strudel")
+  local cmp_source = require("strudel.cmp")
+
+  for _, line in ipairs(cmp_source._diagnostic_lines(cmp_loaded, vim.bo.filetype)) do
+    print(line)
+  end
   print("Strudel module loaded: true")
   print("Strudel setup called: " .. tostring(strudel_mod.is_setup or false))
-  
-  -- Check dictionary path resolution
+  -- Retain the legacy path checks alongside the catalog diagnostics.
   local info = debug.getinfo(require("strudel.cmp").new().complete, "S")
   local source_path = info.source:sub(2)
   print("cmp.lua path: " .. source_path)
@@ -81,13 +82,5 @@ vim.api.nvim_create_user_command("StrudelDebug", function()
     print("Dictionary file exists: NO")
   end
 
-  local catalog_status = require("strudel.cmp")._catalog_status()
-  print("Completion catalog path: " .. catalog_status.path)
-  print("Completion catalog loaded: " .. tostring(catalog_status.ok))
-  print("Completion catalog entries: " .. tostring(catalog_status.entry_count))
-  if catalog_status.error then
-    print("Completion catalog error: " .. catalog_status.error)
-  end
-  
   print("--------------------------")
 end, {})

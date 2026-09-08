@@ -1,12 +1,12 @@
 {
   "docs": [
     {
-      "name": "sound",
+      "name": "s",
       "kind": "function",
       "description": "Set the sound name.",
-      "synonyms": ["s"],
-      "synonyms_text": "s",
-      "tags": ["controls"],
+      "synonyms": ["sound"],
+      "synonyms_text": "sound",
+      "tags": ["controls", "samples"],
       "params": [
         {
           "name": "name",
@@ -14,7 +14,35 @@
           "description": "Sound name or mini-notation pattern."
         }
       ],
-      "examples": ["sound(\"bd sd\")"]
+      "examples": ["s(\"bd sd hh cp\")", "s(\"bd:0 bd:1\")"]
+    },
+    {
+      "name": "note",
+      "kind": "function",
+      "description": "Set pitch notes.",
+      "tags": [{ "originalTitle": "pitch" }],
+      "params": [
+        {
+          "name": "notes",
+          "type": { "names": ["string", "Pattern"] },
+          "description": "Note names."
+        }
+      ],
+      "examples": ["note(\"c3 eb3 g3\")"]
+    },
+    {
+      "name": "bank",
+      "kind": "function",
+      "description": "Select sample bank.",
+      "tags": ["samples"],
+      "params": [
+        {
+          "name": "bank",
+          "type": { "names": ["string"] },
+          "description": "Bank name."
+        }
+      ],
+      "examples": ["s(\"bd sd\").bank(\"RolandTR909\")"]
     },
     {
       "name": "slow",
@@ -51,12 +79,12 @@
       "name": "superOnly",
       "kind": "function",
       "description": "SuperDirt-only function.",
-      "tags": [{ "originalTitle": "superdirtOnly" }]
+      "superdirtOnly": true
     },
     {
       "longname": "gain",
       "kind": "function",
-      "description": "<p>Set output gain.</p>",
+      "description": "<p>Set output <strong>gain</strong>.</p>",
       "synonyms": ["amp", "volume"],
       "params": [
         {
@@ -65,27 +93,31 @@
           "description": "<strong>Gain</strong> value."
         }
       ],
-      "examples": ["sound(\"bd\").gain(0.8)"]
+      "examples": ["s(\"bd\").gain(0.8)"]
     },
     {
       "name": "minimal",
       "kind": "function"
     },
     {
+      "name": "ftranspose",
+      "kind": "function",
+      "description": "Frequency transpose.",
+      "synonyms": ["ftrans", "fTrans", "ftranspose", "fTranspose"],
+      "synonyms_text": "ftrans, fTrans, ftranspose, fTranspose",
+      "tags": ["tonal"],
+      "examples": ["i(\"0 1 2\").ftrans(\"7\")"]
+    },
+    {
       "name": "duplicate",
       "kind": "function",
       "description": "First duplicate wins.",
-      "synonyms": ["dupAlias"]
+      "synonyms": ["dupAlias", "s"]
     },
     {
       "name": "duplicate",
       "kind": "function",
       "description": "Second duplicate is ignored."
-    },
-    {
-      "name": "bd",
-      "kind": "sound",
-      "description": "Bass drum sound."
     }
   ]
 }
