@@ -1,7 +1,167 @@
-const puppeteer = require('puppeteer');
 const dgram = require('dgram');
 
 const UDP_PORT = 9129;
+
+/**
+ * Turn a Strudel hap into the small, JSON-only event contract consumed by the
+ * editor.  This deliberately has no dependencies: the same function is
+ * stringified and installed in the browser page by injectHook, and is also
+ * exported for node-side contract tests.
+ */
+function serializeBridgeEvent(hap, timeOrOptions, cps, secondsDuration) {
+    const finiteNumber = (value) => {
+        if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+        if (value == null || typeof value === 'string' || typeof value === 'boolean') return null;
+        try {
+            const number = Number(value);
+            return Number.isFinite(number) ? number : null;
+        } catch (_) {
+            return null;
+        }
+    };
+    const scalar = (value) => {
+        if (typeof value === 'string' || typeof value === 'boolean') return value;
+        if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+        return null;
+    };
+    const text = (value) => {
+        if (value == null) return null;
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+        return null;
+    };
+    const safeString = (value) => {
+        try {
+            return String(value);
+        } catch (_) {
+            return null;
+        }
+    };
+    const property = (object, key) => {
+        if (!object || (typeof object !== 'object' && typeof object !== 'function')) return undefined;
+        try {
+            return object[key];
+        } catch (_) {
+            return undefined;
+        }
+    };
+
+    // Accept an options object as well as positional arguments.  The latter
+    // keeps this helper convenient for tests and the former makes its contract
+    // unambiguous at call sites.
+    const hasTimeOption = timeOrOptions && typeof timeOrOptions === 'object' && !Array.isArray(timeOrOptions)
+        && (property(timeOrOptions, 'time') !== undefined || property(timeOrOptions, 't') !== undefined
+            || property(timeOrOptions, 'cps') !== undefined || property(timeOrOptions, 'secondsDuration') !== undefined
+            || property(timeOrOptions, 'dur') !== undefined);
+    if (hasTimeOption) {
+        const options = timeOrOptions;
+        timeOrOptions = property(options, 'time');
+        if (timeOrOptions == null) timeOrOptions = property(options, 't');
+        cps = property(options, 'cps');
+        secondsDuration = property(options, 'secondsDuration');
+        if (secondsDuration == null) secondsDuration = property(options, 'dur');
+    }
+
+    const value = property(hap, 'value');
+    const eventValue = value && typeof value === 'object' ? value : {};
+    const whole = property(hap, 'whole');
+    const begin = finiteNumber(property(whole, 'begin'));
+    const end = finiteNumber(property(whole, 'end'));
+    const endClipped = finiteNumber(property(hap, 'endClipped'));
+    const cycleDuration = finiteNumber(property(hap, 'duration'));
+    const time = finiteNumber(timeOrOptions);
+
+    // This is intentionally the same precedence as draw/pianoroll.mjs:
+    // frequency first, then note, then n.  An invalid higher-priority value
+    // does not make a valid lower-priority value unusable.
+    const freq = finiteNumber(property(eventValue, 'freq'));
+    let noteValue;
+    if (property(eventValue, 'note') != null) noteValue = property(eventValue, 'note');
+    else if (property(eventValue, 'n') != null) noteValue = property(eventValue, 'n');
+    const normalizedNote = scalar(noteValue);
+    let pitch = null;
+    if (freq != null && freq > 0) {
+        const midi = (12 * Math.log(freq / 440)) / Math.LN2 + 69;
+        pitch = Number.isFinite(midi) ? midi : null;
+    } else if (typeof noteValue === 'number') {
+        pitch = Number.isFinite(noteValue) ? noteValue : null;
+    } else if (typeof noteValue === 'string') {
+        // Strudel accepts repeated #/b (and the s/f aliases), with an
+        // optional signed octave.  An omitted octave means octave 3.
+        const match = noteValue.match(/^([a-gA-G])([#bsf]*)([+-]?\d*)$/);
+        if (match) {
+            const chroma = { c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11 }[match[1].toLowerCase()];
+            const accidental = match[2].split('').reduce((offset, part) => offset + ({ '#': 1, b: -1, s: 1, f: -1 }[part] || 0), 0);
+            const octave = match[3] === '' || match[3] === '+' || match[3] === '-' ? 3 : Number(match[3]);
+            const midi = (octave + 1) * 12 + chroma + accidental;
+            pitch = Number.isFinite(midi) ? midi : null;
+        }
+    }
+
+    const soundValue = property(eventValue, 's') != null ? property(eventValue, 's') : property(eventValue, 'sound');
+    const sound = text(soundValue);
+    const velocityValue = finiteNumber(property(eventValue, 'velocity'));
+    const gainValue = finiteNumber(property(eventValue, 'gain'));
+    const velocity = velocityValue == null ? 1 : velocityValue;
+    const gain = gainValue == null ? 1 : gainValue;
+
+    const customLabel = text(property(eventValue, 'label'));
+    const explicitNote = property(eventValue, 'note');
+    let label = customLabel;
+    if (label == null && explicitNote != null) label = safeString(explicitNote);
+    if (label == null && sound != null) {
+      const n = property(eventValue, 'n');
+      const nText = n ? safeString(n) : null;
+      label = sound + (nText != null ? ':' + nText : '');
+    }
+    if (label == null && normalizedNote != null) label = safeString(normalizedNote);
+    if (label == null && freq != null) label = safeString(freq) + 'Hz';
+    if (label == null) label = 'unknown';
+
+    const locations = property(property(hap, 'context'), 'locations');
+    const locs = Array.isArray(locations)
+        ? locations.map((location) => [
+            finiteNumber(property(location, 'start')),
+            finiteNumber(property(location, 'end')),
+        ])
+        : [];
+
+    let legacyDuration = finiteNumber(secondsDuration);
+    if (legacyDuration == null && cycleDuration != null) {
+        const cyclesPerSecond = finiteNumber(cps);
+        if (cyclesPerSecond != null && cyclesPerSecond !== 0) legacyDuration = cycleDuration / cyclesPerSecond;
+    }
+    if (legacyDuration == null || !Number.isFinite(legacyDuration)) legacyDuration = 0.1;
+
+    // Keep locs, s, and dur stable for existing Neovim clients while adding
+    // the cycle-space fields needed by a real piano roll.
+    const legacySound = sound != null
+        ? sound
+        : property(eventValue, 'note') != null
+            ? 'note:' + (safeString(property(eventValue, 'note')) || 'unknown')
+            : property(eventValue, 'n') != null
+                ? 'n:' + (safeString(property(eventValue, 'n')) || 'unknown')
+                : 'unknown';
+
+    return {
+        schema: 'strudel-event',
+        version: 1,
+        time,
+        begin,
+        end,
+        end_clipped: endClipped,
+        duration: cycleDuration,
+        pitch,
+        note: normalizedNote,
+        sound,
+        velocity,
+        gain,
+        label,
+        locs,
+        s: legacySound,
+        dur: legacyDuration,
+    };
+}
 
 // Install the visual-effects hook by wrapping scheduler.setPattern.
 //
@@ -12,7 +172,10 @@ const UDP_PORT = 9129;
 // `.onTrigger(fn, false)` before delegating to the original.
 async function injectHook(page) {
     try {
-        await page.evaluate(() => {
+        await page.evaluate((serializerSource) => {
+            // The helper is dependency-free so it can safely cross the node /
+            // browser boundary without duplicating the event contract.
+            const serializePayload = Function('return (' + serializerSource + ')')();
             if (window.__strudelHookInstalled) return;
             const sch = window.strudelMirror && window.strudelMirror.repl && window.strudelMirror.repl.scheduler;
             if (!sch || typeof sch.setPattern !== 'function') {
@@ -24,20 +187,15 @@ async function injectHook(page) {
             sch.setPattern = async function(pat, autostart) {
                 if (pat && typeof pat.onTrigger === 'function') {
                     try {
-                        pat = pat.onTrigger((hap, dur, cps, t) => {
+                        // Pattern.onTrigger callbacks receive (hap, currentTime,
+                        // cps, targetTime); unlike scheduler outputs they do not
+                        // receive deadline or duration arguments.
+                        pat = pat.onTrigger((hap, currentTime, cps, targetTime) => {
                             const locs = hap && hap.context && hap.context.locations;
                             if (!locs || !locs.length) return;
-                            const v = hap.value || {};
-                            let sound;
-                            if (v.s != null) sound = String(v.s);
-                            else if (v.note != null) sound = 'note:' + v.note;
-                            else if (v.n != null) sound = 'n:' + v.n;
-                            else sound = 'unknown';
-                            console.log('__STRUDEL_EVENT__' + JSON.stringify({
-                                locs: locs.map((l) => [l.start, l.end]),
-                                s: sound,
-                                dur: (hap.duration && cps) ? (hap.duration / cps) : 0.1,
-                            }));
+                            console.log('__STRUDEL_EVENT__' + JSON.stringify(
+                                serializePayload(hap, targetTime, cps, currentTime),
+                            ));
                         }, false);  // false = NOT dominant; preserves audio output
                     } catch (e) {
                         console.error('Strudel visual hook wrap failed:', e && e.message);
@@ -45,16 +203,17 @@ async function injectHook(page) {
                 }
                 return orig(pat, autostart);
             };
-        });
+        }, serializeBridgeEvent.toString());
     } catch (err) {
         console.error('injectHook page.evaluate failed:', err && err.message);
     }
 }
 
-(async () => {
+async function main() {
     console.log('Starting Headless Strudel...');
 
     // Launch Chrome with autoplay allowed
+    const puppeteer = require('puppeteer');
     const browser = await puppeteer.launch({
         headless: 'new', // Launch headless
         ignoreDefaultArgs: ['--mute-audio'],
@@ -239,4 +398,21 @@ async function injectHook(page) {
         })
     } catch (e) { }
 
-})();
+}
+
+if (require.main === module) {
+    main().catch((err) => {
+        console.error('Headless Strudel failed:', err && err.stack ? err.stack : err);
+        process.exitCode = 1;
+    });
+}
+
+module.exports = {
+    main,
+    injectHook,
+    serializeBridgeEvent,
+    // These aliases make the payload helper easy to discover without making
+    // callers depend on the bridge's startup function.
+    serializeEventPayload: serializeBridgeEvent,
+    createBridgeEventPayload: serializeBridgeEvent,
+};

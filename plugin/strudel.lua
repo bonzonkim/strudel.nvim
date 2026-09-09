@@ -41,6 +41,18 @@ vim.api.nvim_create_user_command("StrudelHide", function()
   strudel.hide_window()
 end, {})
 
+vim.api.nvim_create_user_command("StrudelPianoRoll", function()
+  require("strudel.piano_roll").open()
+end, {})
+
+vim.api.nvim_create_user_command("StrudelPianoRollClose", function()
+  require("strudel.piano_roll").close()
+end, {})
+
+vim.api.nvim_create_user_command("StrudelPianoRollClear", function()
+  require("strudel.piano_roll").clear()
+end, {})
+
 -- Keybindings
 vim.keymap.set("n", "<leader>se", function() strudel.eval_line() end, { desc = "Strudel Eval Line" })
 vim.keymap.set("v", "<leader>se", function() strudel.eval_visual() end, { desc = "Strudel Eval Selection" })
@@ -52,6 +64,7 @@ vim.keymap.set("n", "<leader>sS", function() strudel.start_bridge() end, { desc 
 vim.keymap.set("n", "<leader>sq", function() strudel.stop_bridge() end, { desc = "Strudel Stop Bridge" })
 vim.keymap.set("n", "<leader>sv", function() strudel.show_window() end, { desc = "Strudel Show Window" })
 vim.keymap.set("n", "<leader>sh", function() strudel.hide_window() end, { desc = "Strudel Hide Window" })
+vim.keymap.set("n", "<leader>sp", function() require("strudel.piano_roll").toggle() end, { desc = "Strudel Toggle Piano Roll" })
 
 vim.api.nvim_create_user_command("StrudelDebug", function()
   local cmp_loaded = pcall(require, "cmp")

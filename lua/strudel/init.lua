@@ -12,6 +12,7 @@ function M.setup(opts)
 
   -- Forward visual_effects opts to the visual module
   require("strudel.visual").setup((opts or {}).visual_effects)
+  require("strudel.piano_roll").setup((opts or {}).piano_roll)
 
   -- Setup dictionary for autocomplete (if setup is called)
   local plugin_dir = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":h:h:h")
@@ -138,7 +139,9 @@ function M.start_bridge()
       for _, line in ipairs(data) do
         if line ~= "" then
           if line:sub(1, prefix_len) == prefix then
-            require("strudel.visual").handle_event(line:sub(prefix_len + 1))
+            local event = line:sub(prefix_len + 1)
+            require("strudel.visual").handle_event(event)
+            require("strudel.piano_roll").handle_event(event)
           else
             print("[Strudel] " .. line)
           end
@@ -155,6 +158,7 @@ function M.start_bridge()
     on_exit = function()
       M.bridge_job_id = nil
       require("strudel.visual").clear_all()
+      require("strudel.piano_roll").shutdown()
       print("[Strudel] Bridge stopped.")
     end,
   })
@@ -172,6 +176,7 @@ function M.stop_bridge()
     vim.fn.jobstop(M.bridge_job_id)
     M.bridge_job_id = nil
     require("strudel.visual").clear_all()
+    require("strudel.piano_roll").shutdown()
   else
     vim.notify("Strudel Bridge is not running.", vim.log.levels.WARN)
   end
