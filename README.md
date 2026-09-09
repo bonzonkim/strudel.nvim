@@ -30,6 +30,7 @@ This plugin enables a seamless "Neovim-only" live coding experience by bridging 
 | **Code Evaluation** | ✅ | Eval line, selection, or entire file (`:StrudelEvalFile`). |
 | **Bridge Management** | ✅ | Start/Stop the audio engine directly from Neovim (`:StrudelStart`). |
 | **Visuals** | ✅ | In-buffer per-note flash on the exact mini-notation token, distinct color per sound. Browser window: `:StrudelShow` / `:StrudelHide`. |
+| **Piano Roll** | ✅ | Live rolling note view fed by bridge events. |
 | **Autocomplete** | ✅ | Native `nvim-cmp` source backed by an offline catalog, with Dictionary fallback support. |
 | **Syntax Highlighting** | 🚧 | Uses standard JavaScript syntax highlighting. |
 
@@ -147,6 +148,26 @@ require("strudel").setup({
 })
 ```
 
+### Piano Roll
+
+The piano roll is a live rolling view of bridge events. Configure it under
+`piano_roll`:
+
+```lua
+require("strudel").setup({
+  piano_roll = {
+    width = 80, height = 20, cycles = 8,
+    redraw_hz = 30, max_events = 2000,
+    midi_low = 36, midi_high = 84,
+  },
+})
+```
+
+Use `:StrudelPianoRoll` to open, `:StrudelPianoRollClose` to close, or
+`:StrudelPianoRollClear` to clear events. The normal-mode toggle is `<leader>sp`.
+This is a live view only: it does not edit patterns or control transport, and
+source highlighting remains independent.
+
 ### Development
 
 Tests use [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). With plenary installed via your plugin manager, run:
@@ -167,3 +188,4 @@ rtk make test
 | `<leader>ss` | Stop Sound (Hush) |
 | `<leader>sv` | Show Browser Window |
 | `<leader>sh` | Hide Browser Window |
+| `<leader>sp` | Toggle Piano Roll |
