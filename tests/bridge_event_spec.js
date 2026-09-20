@@ -60,20 +60,24 @@ test('derives legacy seconds duration when no trigger duration is supplied', () 
   assert.strictEqual(event.dur, 0.25);
 });
 
-test('uses headed Chrome and one real mouse gesture for audio activation', () => {
-  assert.match(bridgeSource, /headless:\s*false/);
-  assert.match(bridgeSource, /await page\.mouse\.click\(400, 300\)/);
-  assert.doesNotMatch(bridgeSource, /headless:\s*['"]new['"]/);
-  assert.doesNotMatch(bridgeSource, /page\.evaluate\(\(\) => window\.strudelMirror\.repl\.evaluate\(['"]silence['"]\)/);
-  assert.doesNotMatch(bridgeSource, /button\[title="play"\]/);
+test('retains the known-good headless launch and startup audio sequence', () => {
+  assert.match(bridgeSource, /headless:\s*['"]new['"]/);
+  assert.match(bridgeSource, /window\.strudelMirror\.repl\.start\(\)/);
+  assert.match(bridgeSource, /scheduler\?\.audioContext/);
+  assert.match(bridgeSource, /new \(window\.AudioContext \|\| window\.webkitAudioContext\)\(\)/);
+  assert.match(bridgeSource, /button\[title="play"\]/);
+  assert.match(bridgeSource, /window\.strudelMirror\.repl\.evaluate\(['"]silence['"]\)/);
+  assert.doesNotMatch(bridgeSource, /headless:\s*false/);
+  assert.doesNotMatch(bridgeSource, /page\.mouse\.click/);
 });
 
-test('awaits pattern evaluation without audio-context fallbacks or toggles', () => {
-  assert.match(bridgeSource, /page\.evaluate\(async \(code\) =>/);
-  assert.match(bridgeSource, /return await window\.strudelMirror\.repl\.evaluate\(code\)/);
-  assert.match(bridgeSource, /return await window\.repl\.evaluate\(code\)/);
-  assert.doesNotMatch(bridgeSource, /scheduler\?\.audioContext/);
-  assert.doesNotMatch(bridgeSource, /new \(window\.AudioContext \|\| window\.webkitAudioContext\)\(\)/);
+test('retains the known-good per-eval audio and scheduler behavior', () => {
+  assert.match(bridgeSource, /page\.evaluate\(\(code\) =>/);
+  assert.match(bridgeSource, /window\.strudelMirror\.repl\.evaluate\(code\);/);
+  assert.match(bridgeSource, /window\.repl\.evaluate\(code\);/);
+  assert.match(bridgeSource, /await page\.click\('body'\)/);
+  assert.match(bridgeSource, /serializePayload\(hap, t, cps\)/);
+  assert.doesNotMatch(bridgeSource, /return await window\.strudelMirror\.repl\.evaluate\(code\)/);
 });
 
 test('uses frequency, note, then n for normalized MIDI pitch', () => {
