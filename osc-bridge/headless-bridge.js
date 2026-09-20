@@ -194,7 +194,7 @@ async function injectHook(page) {
                             const locs = hap && hap.context && hap.context.locations;
                             if (!locs || !locs.length) return;
                             console.log('__STRUDEL_EVENT__' + JSON.stringify(
-                                serializePayload(hap, targetTime, cps, currentTime),
+                                serializePayload(hap, targetTime, cps),
                             ));
                         }, false);  // false = NOT dominant; preserves audio output
                     } catch (e) {
@@ -215,7 +215,7 @@ async function main() {
     // Launch Chrome with autoplay allowed
     const puppeteer = require('puppeteer');
     const browser = await puppeteer.launch({
-        headless: 'new', // Launch headless
+        headless: false, // Hardware audio is unreliable in headless Chrome.
         ignoreDefaultArgs: ['--mute-audio'],
         args: [
             '--autoplay-policy=no-user-gesture-required',
@@ -263,41 +263,18 @@ async function main() {
         console.log('Warning: Timeout waiting for strudelMirror, proceeding anyway...');
     }
 
-    // Try to start the audio engine and resume context
-    await page.evaluate(async () => {
-        if (window.strudelMirror && window.strudelMirror.repl) {
-            // console.log("Starting REPL...");
-            window.strudelMirror.repl.start();
-        }
-
-        // Force resume AudioContext
-        const ctx = window.strudelMirror?.repl?.scheduler?.audioContext || new (window.AudioContext || window.webkitAudioContext)();
-        if (ctx.state === 'suspended') {
-            // console.log("AudioContext suspended, trying to resume...");
-            await ctx.resume();
-            // console.log("AudioContext state after resume:", ctx.state);
-        } else {
-            // console.log("AudioContext state:", ctx.state);
-        }
-    });
-
     // Install the visual-effects onTrigger hook ONCE, before any user eval.
     // `all(fn)` registers a transformation that gets applied to every pattern
     // evaluated thereafter — so it must be set before the first user /eval.
     await injectHook(page);
 
-    // Unlock audio context first (a click event is required by browser autoplay
-    // policy). Without this, repl.evaluate hangs because the scheduler can't
-    // start without audio. Then silence strudel.cc's auto-loaded starter
-    // pattern — otherwise its haps keep firing through our hook with locations
-    // that don't correspond to the user's buffer, producing phantom highlights
-    // when a user eval errors (e.g. an outdated .play() call).
+    // Trigger Strudel's first-user-gesture audio initializer with a real input
+    // event. Do not toggle the Play control: repl.evaluate autostarts each
+    // pattern received over OSC.
     try {
-        const playBtn = await page.$('button[title="play"]');
-        if (playBtn) { await playBtn.click(); } else { await page.click('body'); }
-        await page.evaluate(() => window.strudelMirror.repl.evaluate('silence'));
+        await page.mouse.click(400, 300);
     } catch (e) {
-        console.error('Failed to silence starter pattern:', e && e.message);
+        console.error('Failed to activate Strudel audio:', e && e.message);
     }
 
     console.log('Strudel loaded!');
@@ -347,36 +324,14 @@ async function main() {
 
         console.log('Playing...');
 
-        // Simulate a click on the Play button to ensure audio context is unlocked
-        try {
-            // Try to find and click the play button
-            const playBtn = await page.$('button[title="play"]');
-            if (playBtn) {
-                await playBtn.click();
-                // console.log('Clicked Play button');
-            } else {
-                // Fallback to body click
-                await page.click('body');
-                // console.log('Clicked body (Play button not found)');
-            }
-        } catch (e) {
-            // console.log('Click failed:', e.message);
-        }
-
         // Evaluate in browser
         try {
-            await page.evaluate((code) => {
-                // Force resume AudioContext again just in case
-                const ctx = window.strudelMirror?.repl?.scheduler?.audioContext || new (window.AudioContext || window.webkitAudioContext)();
-                if (ctx.state === 'suspended') {
-                    ctx.resume();
-                }
-
+            await page.evaluate(async (code) => {
                 // Try to find the REPL instance
                 if (window.strudelMirror && window.strudelMirror.repl) {
-                    window.strudelMirror.repl.evaluate(code);
+                    return await window.strudelMirror.repl.evaluate(code);
                 } else if (window.repl && typeof window.repl.evaluate === 'function') {
-                    window.repl.evaluate(code);
+                    return await window.repl.evaluate(code);
                 } else {
                     console.error('Could not find REPL instance');
                 }
@@ -390,13 +345,6 @@ async function main() {
 
     udp.bind(UDP_PORT);
     console.log(`Listening for OSC on UDP ${UDP_PORT}`);
-
-    // Simulate a click to unlock audio context
-    try {
-        await page.evaluate(() => {
-          document.body.click();
-        })
-    } catch (e) { }
 
 }
 

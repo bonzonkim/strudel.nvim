@@ -1,7 +1,14 @@
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 const {
   serializeBridgeEvent,
 } = require('../osc-bridge/headless-bridge.js');
+
+const bridgeSource = fs.readFileSync(
+  path.join(__dirname, '..', 'osc-bridge', 'headless-bridge.js'),
+  'utf8',
+);
 
 function test(name, fn) {
   try {
@@ -44,6 +51,29 @@ test('keeps the legacy fields and adds cycle-space event data', () => {
   assert.strictEqual(event.velocity, 0.8);
   assert.strictEqual(event.gain, 1);
   assert.strictEqual(event.label, 'C4');
+});
+
+test('derives legacy seconds duration when no trigger duration is supplied', () => {
+  const event = serializeBridgeEvent(hap(), 12.5, 2);
+
+  assert.strictEqual(event.duration, 0.5);
+  assert.strictEqual(event.dur, 0.25);
+});
+
+test('uses headed Chrome and one real mouse gesture for audio activation', () => {
+  assert.match(bridgeSource, /headless:\s*false/);
+  assert.match(bridgeSource, /await page\.mouse\.click\(400, 300\)/);
+  assert.doesNotMatch(bridgeSource, /headless:\s*['"]new['"]/);
+  assert.doesNotMatch(bridgeSource, /page\.evaluate\(\(\) => window\.strudelMirror\.repl\.evaluate\(['"]silence['"]\)/);
+  assert.doesNotMatch(bridgeSource, /button\[title="play"\]/);
+});
+
+test('awaits pattern evaluation without audio-context fallbacks or toggles', () => {
+  assert.match(bridgeSource, /page\.evaluate\(async \(code\) =>/);
+  assert.match(bridgeSource, /return await window\.strudelMirror\.repl\.evaluate\(code\)/);
+  assert.match(bridgeSource, /return await window\.repl\.evaluate\(code\)/);
+  assert.doesNotMatch(bridgeSource, /scheduler\?\.audioContext/);
+  assert.doesNotMatch(bridgeSource, /new \(window\.AudioContext \|\| window\.webkitAudioContext\)\(\)/);
 });
 
 test('uses frequency, note, then n for normalized MIDI pitch', () => {
